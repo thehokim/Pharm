@@ -6,6 +6,7 @@ import {
   CreditCard,
   Wallet,
   BarChart3,
+  Circle,
 } from "lucide-react";
 
 const menu = [
@@ -18,16 +19,23 @@ const menu = [
 
 const AccountantSidebar = () => {
   return (
-    <aside className="w-64 h-screen border-r bg-white fixed top-0 left-0">
-      <div className="p-4 text-lg font-bold border-b">Финансы</div>
-      <nav className="flex flex-col gap-1 p-4">
+    <aside className="w-66 rounded-r-xl h-screen top-0 left-0 z-50 border-r border-gray-100 fixed hidden md:block bg-white">
+      {/* Header */}
+      <div className="p-4 text-lg font-bold border-b border-dashed border-gray-100 flex items-center justify-center gap-2">
+        <Circle /> Бухгалтерия
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex flex-col gap-1 px-2 py-2">
         {menu.map((item, index) => (
           <NavLink
             key={index}
             to={`/accountant/${item.to}`}
             className={({ isActive }) =>
-              `flex items-center gap-2 px-3 py-2 rounded hover:bg-gray-100 text-sm ${
-                isActive ? "bg-gray-100 font-semibold" : "text-gray-700"
+              `flex items-center gap-2 px-3 py-3 rounded-xl transition-colors duration-200 text-sm ${
+                isActive
+                  ? "bg-blue-50 font-semibold text-blue-600"
+                  : "text-gray-700 hover:bg-gray-100"
               }`
             }
             end={item.to === ""}

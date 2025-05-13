@@ -2,12 +2,12 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import SalesSidebar from "../components/layout/SalesSidebar";
 
-import Home from "../pages/dashboard/sales/Home";
 import Products from "../pages/dashboard/sales/Products";
 import Clients from "../pages/dashboard/sales/Clients";
 import Orders from "../pages/dashboard/sales/Orders";
 import Booking from "../pages/dashboard/sales/Booking";
 import Analytics from "../pages/dashboard/sales/Analytics";
+import Home from "../pages/dashboard/sales/Home/Home";
 
 const SalesRoutes = () => {
   return (

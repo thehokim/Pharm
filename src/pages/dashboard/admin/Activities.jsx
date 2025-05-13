@@ -1,5 +1,5 @@
 import React from "react";
-import { Search } from "lucide-react";
+import { Search, Activity } from "lucide-react";
 
 const activityLog = [
   {
@@ -30,37 +30,43 @@ const activityLog = [
 
 const Activities = () => {
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-4">Активности пользователей</h2>
+    <div className="space-y-4 bg-gray-50">
+      {/* Header */}
+      <div className="bg-white flex items-center justify-between p-4 rounded-xl">
+        <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
+          <Activity size={28} /> Активности пользователей
+        </h2>
 
-      <div className="relative mb-4">
-        <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-        <input
-          type="text"
-          placeholder="Поиск по действиям..."
-          className="pl-10 pr-4 py-2 border rounded w-full focus:outline-none focus:ring focus:ring-blue-200"
-        />
+        <div className="relative w-full max-w-xs">
+          <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+          <input
+            type="text"
+            placeholder="Поиск по действиям..."
+            className="pl-10 pr-4 py-2 border border-gray-300 rounded-full w-full focus:outline-none transition"
+          />
+        </div>
       </div>
 
-      <div className="overflow-x-auto bg-white rounded-xl shadow">
-        <table className="min-w-full text-sm text-left">
-          <thead className="border-b bg-gray-50 text-gray-700">
+      {/* Таблица */}
+      <div className="bg-white rounded-2xl overflow-x-auto">
+        <table className="min-w-full text-sm text-left text-gray-700">
+          <thead className="bg-gray-100 text-xs font-semibold uppercase tracking-wide text-gray-600">
             <tr>
-              <th className="px-4 py-2">Пользователь</th>
-              <th className="px-4 py-2">Действие</th>
-              <th className="px-4 py-2">Дата</th>
-              <th className="px-4 py-2">Статус</th>
+              <th className="px-6 py-4">Пользователь</th>
+              <th className="px-6 py-4">Действие</th>
+              <th className="px-6 py-4">Дата</th>
+              <th className="px-6 py-4">Статус</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-100">
             {activityLog.map((log, i) => (
-              <tr key={i} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2">{log.user}</td>
-                <td className="px-4 py-2">{log.action}</td>
-                <td className="px-4 py-2">{log.date}</td>
-                <td className="px-4 py-2">
+              <tr key={i} className="hover:bg-indigo-50 transition-colors duration-150">
+                <td className="px-6 py-4 font-medium">{log.user}</td>
+                <td className="px-6 py-4">{log.action}</td>
+                <td className="px-6 py-4">{log.date}</td>
+                <td className="px-6 py-4">
                   <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${
                       log.status === "Успешно"
                         ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"

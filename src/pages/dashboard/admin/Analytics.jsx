@@ -1,3 +1,4 @@
+import { BarChartBigIcon } from "lucide-react";
 import React from "react";
 import {
   BarChart,
@@ -24,19 +25,37 @@ const salesData = [
   { month: "Дек", sales: 4500 },
 ];
 
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div className="bg-white rounded-xl border border-gray-200 px-4 py-2">
+        <p className="text-sm font-semibold text-gray-800">{label}</p>
+        <p className="text-xs text-indigo-600">
+          Продажи: {payload[0].value.toLocaleString()} сум
+        </p>
+      </div>
+    );
+  }
+
+  return null;
+};
+
 const Analytics = () => {
   return (
-    <div className="p-6">
-      <h2 className="text-2xl font-bold mb-6">Аналитика продаж</h2>
-
-      <div className="bg-white rounded-xl shadow p-4">
-        <ResponsiveContainer width="100%" height={300}>
-          <BarChart data={salesData}>
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="month" />
-            <YAxis />
-            <Tooltip />
-            <Bar dataKey="sales" fill="#6366f1" radius={[4, 4, 0, 0]} />
+    <div className="space-y-4 bg-gray-50">
+      <div className="bg-white p-4 rounded-xl">
+        <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
+          <BarChartBigIcon /> Аналитика продаж
+        </h2>
+      </div>
+      <div className="bg-white rounded-2xl p-6">
+        <ResponsiveContainer width="100%" height={320}>
+          <BarChart data={salesData} barSize={35}>
+            <CartesianGrid stroke="#e5e7eb" strokeDasharray="3 3" />
+            <XAxis dataKey="month" stroke="#9ca3af" />
+            <YAxis stroke="#9ca3af" />
+            <Tooltip content={<CustomTooltip />} />
+            <Bar dataKey="sales" fill="#6366f1" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

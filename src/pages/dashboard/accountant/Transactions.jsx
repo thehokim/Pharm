@@ -1,6 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { Receipt } from "lucide-react";
 
-const transactions = [
+// Мок-данные (можно заменить на данные с бэкенда)
+const mockTransactions = [
   {
     bank: "First National Bank",
     date: "2025-05-31",
@@ -22,30 +24,42 @@ const transactions = [
 ];
 
 const Transactions = () => {
-  return (
-    <div className="p-6 space-y-6">
-      <h2 className="text-2xl font-bold">Выписки</h2>
-      <p className="text-gray-600">История всех финансовых операций по счетам компании.</p>
+  const [transactions, setTransactions] = useState([]);
 
-      <div className="bg-white shadow rounded-xl p-4 overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="bg-gray-50 border-b text-gray-700">
+  useEffect(() => {
+    // В будущем здесь будет fetch("/api/transactions")
+    setTransactions(mockTransactions);
+  }, []);
+
+  return (
+    <div className="space-y-4 bg-gray-50">
+      {/* Header */}
+      <div className="bg-white flex items-center justify-between p-4 rounded-xl">
+        <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
+          <Receipt className="w-6 h-6" />
+          Выписки
+        </h2>
+      </div>
+
+      {/* Таблица */}
+        <table className="min-w-full text-sm text-left text-gray-700">
+          <thead className="text-xs font-semibold uppercase tracking-wide text-gray-600">
             <tr>
-              <th className="px-4 py-2 text-left">Банк</th>
-              <th className="px-4 py-2 text-left">Дата</th>
-              <th className="px-4 py-2 text-left">Сумма</th>
-              <th className="px-4 py-2 text-left">Статус</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">Банк</th>
+              <th className="px-6 py-4 bg-gray-100">Дата</th>
+              <th className="px-6 py-4 bg-gray-100">Сумма</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl">Статус</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="divide-y divide-gray-100">
             {transactions.map((tx, i) => (
-              <tr key={i} className="border-b hover:bg-gray-50">
-                <td className="px-4 py-2">{tx.bank}</td>
-                <td className="px-4 py-2">{tx.date}</td>
-                <td className="px-4 py-2">{tx.amount}</td>
-                <td className="px-4 py-2">
+              <tr key={i} className="hover:bg-indigo-50 transition-colors duration-150">
+                <td className="bg-white px-6 py-4 font-medium">{tx.bank}</td>
+                <td className="bg-white px-6 py-4">{tx.date}</td>
+                <td className="bg-white px-6 py-4">{tx.amount}</td>
+                <td className="bg-white px-6 py-4">
                   <span
-                    className={`px-2 py-1 text-xs font-medium rounded-full ${
+                    className={`px-3 py-1 text-xs font-medium rounded-full ${
                       tx.status === "Обработано"
                         ? "bg-green-100 text-green-700"
                         : "bg-gray-200 text-gray-800"
@@ -58,7 +72,6 @@ const Transactions = () => {
             ))}
           </tbody>
         </table>
-      </div>
     </div>
   );
 };

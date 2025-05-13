@@ -6,6 +6,7 @@ import {
   ShoppingCart,
   QrCode,
   AlertTriangle,
+  Circle,
 } from "lucide-react";
 
 const WarehouseSidebar = () => {
@@ -18,22 +19,29 @@ const WarehouseSidebar = () => {
   ];
 
   return (
-    <aside className="w-64 bg-white h-screen border-r hidden md:block">
-      <div className="p-6 font-bold text-lg">Управление складом</div>
-      <nav className="px-4 space-y-1">
+    <aside className="w-66 rounded-r-xl h-screen top-0 left-0 z-50 border-r border-gray-100 hidden md:block">
+      {/* Header */}
+      <div className="p-4 text-lg font-bold border-b border-dashed border-gray-100 flex items-center justify-center gap-2">
+        <Circle /> Склад
+      </div>
+
+      {/* Navigation */}
+      <nav className="flex flex-col gap-1 px-2 py-2">
         {links.map(({ to, label, icon }) => (
           <NavLink
             key={to}
             to={`/warehouse/${to}`}
             className={({ isActive }) =>
-              `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 ${
-                isActive ? "bg-gray-200 text-black" : "text-gray-700"
+              `flex items-center gap-2 px-3 py-3 rounded-xl transition-colors duration-200 text-sm ${
+                isActive
+                  ? "bg-blue-50 font-semibold text-blue-600"
+                  : "text-gray-700 hover:bg-gray-100"
               }`
             }
             end={to === ""}
           >
             {icon}
-            {label}
+            <span>{label}</span>
           </NavLink>
         ))}
       </nav>

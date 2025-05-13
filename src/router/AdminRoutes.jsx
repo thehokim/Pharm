@@ -2,18 +2,18 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
 
-import Home from "../pages/dashboard/admin/Home";
-import Users from "../pages/dashboard/admin/Users";
-import Products from "../pages/dashboard/admin/Products";
-import Clients from "../pages/dashboard/admin/Clients";
-import Suppliers from "../pages/dashboard/admin/Suppliers";
-import Orders from "../pages/dashboard/admin/Orders";
+import Home from "../pages/dashboard/admin/Home/Home";
+import Clients from "../pages/dashboard/admin/Client/Clients";
+import Suppliers from "../pages/dashboard/admin/Supplier/Suppliers";
+import Orders from "../pages/dashboard/admin/Order/Orders";
 import Activities from "../pages/dashboard/admin/Activities";
 import Logs from "../pages/dashboard/admin/Logs";
 import Reports from "../pages/dashboard/admin/Reports";
 import Settings from "../pages/dashboard/admin/Settings";
 import Analytics from "../pages/dashboard/admin/Analytics";
 import Booking from "../pages/dashboard/admin/Booking";
+import Products from "../pages/dashboard/admin/Product/Products";
+import Users from "../pages/dashboard/admin/User/Users";
 
 const AdminRoutes = () => {
   return (

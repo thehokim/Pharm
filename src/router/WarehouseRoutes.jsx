@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 
 import WarehouseSidebar from "../components/layout/WarehouseSidebar";
-import Home from "../pages/dashboard/warehouse/Home";
+import Home from "../pages/dashboard/warehouse/Home/Home";
 import Inventory from "../pages/dashboard/warehouse/Inventory";
 import Orders from "../pages/dashboard/warehouse/Orders";
 import ExpiringItems from "../pages/dashboard/warehouse/ExpiringItems";
