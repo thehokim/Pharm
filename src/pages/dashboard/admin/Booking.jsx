@@ -38,14 +38,18 @@ const Booking = () => {
         <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
           <CalendarCheck /> Бронирование
         </h2>
-
-        <div className="relative w-full max-w-xs">
-          <Search className="absolute left-3 top-3 text-gray-400" size={18} />
-          <input
-            type="text"
-            placeholder="Поиск бронирования..."
-            className="pl-10 pr-4 py-2 border border-gray-300 rounded-full w-full focus:outline-none transition"
-          />
+        <div className="flex gap-2">
+          <button className="bg-black flex items-center justify-center w-1/5 rounded-full text-white">
+            +
+          </button>
+          <div className="relative w-full max-w-xs">
+            <Search className="absolute left-3 top-3 text-gray-400" size={18} />
+            <input
+              type="text"
+              placeholder="Поиск бронирования..."
+              className="pl-10 pr-4 py-2 border border-gray-300 rounded-full w-full focus:outline-none transition"
+            />
+          </div>
         </div>
       </div>
 

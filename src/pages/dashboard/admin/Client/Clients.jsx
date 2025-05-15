@@ -12,6 +12,8 @@ const initialClients = [
     address: "г. Ташкент, ул. Шифокор 12",
     status: "Active",
     orders: 25,
+    totalAmount: 12500000,
+    debt: 2300000,
   },
   {
     name: "МедПлюс",
@@ -19,6 +21,8 @@ const initialClients = [
     address: "г. Самарканд, ул. Буюк Ипак Йули 45",
     status: "Inactive",
     orders: 8,
+    totalAmount: 3200000,
+    debt: 0,
   },
   {
     name: "Городская Клиника",
@@ -26,6 +30,8 @@ const initialClients = [
     address: "г. Бухара, ул. Темур Малик 9",
     status: "Active",
     orders: 42,
+    totalAmount: 21300000,
+    debt: 5400000,
   },
 ];
 
@@ -88,7 +94,11 @@ const Clients = () => {
               <th className="px-6 py-4 bg-gray-100">Адрес</th>
               <th className="px-6 py-4 bg-gray-100">Статус</th>
               <th className="px-6 py-4 bg-gray-100">Заказы</th>
-              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl text-center">Действия</th>
+              <th className="px-6 py-4 bg-gray-100">Сумма</th>
+              <th className="px-6 py-4 bg-gray-100">Долг</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl text-center">
+                Действия
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -112,6 +122,17 @@ const Clients = () => {
                   </span>
                 </td>
                 <td className="px-6 py-4">{client.orders}</td>
+                <td className="px-6 py-4 text-gray-700">
+                  {(client.totalAmount ?? 0).toLocaleString()} сум
+                </td>
+                <td
+                  className={`px-6 py-4 ${
+                    (client.debt ?? 0) > 0 ? "text-red-500" : "text-gray-400"
+                  }`}
+                >
+                  {(client.debt ?? 0).toLocaleString()} сум
+                </td>
+
                 <td className="px-6 py-4 flex justify-center">
                   <ActionMenu
                     onEdit={() => {

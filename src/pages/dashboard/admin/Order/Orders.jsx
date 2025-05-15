@@ -14,6 +14,7 @@ const initialOrders = [
     payment_status: "Оплачен",
     notes: "Доставка вовремя",
     total_amount: 1200000,
+    debt: 0,
     date: "2025-05-01",
     items: [],
   },
@@ -25,6 +26,7 @@ const initialOrders = [
     payment_status: "Не оплачен",
     notes: "",
     total_amount: 980000,
+    debt: 980000,
     date: "2025-05-03",
     items: [],
   },
@@ -36,6 +38,7 @@ const initialOrders = [
     payment_status: "Не оплачен",
     notes: "Отмена по запросу клиента",
     total_amount: 0,
+    debt: 0,
     date: "2025-05-05",
     items: [],
   },
@@ -73,7 +76,9 @@ const Orders = () => {
   return (
     <div className="space-y-4 bg-gray-50">
       <div className="bg-white flex items-center justify-between p-4 rounded-xl">
-        <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2"><ShoppingCart/> Заказы</h2>
+        <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
+          <ShoppingCart /> Заказы
+        </h2>
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsAddOpen(true)}
@@ -102,12 +107,18 @@ const Orders = () => {
               <th className="px-6 py-4 bg-gray-100">Статус</th>
               <th className="px-6 py-4 bg-gray-100">Оплата</th>
               <th className="px-6 py-4 bg-gray-100">Сумма</th>
-              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl text-center">Действия</th>
+              <th className="px-6 py-4 bg-gray-100">Задолженность</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl text-center">
+                Действия
+              </th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
             {orders.map((order, i) => (
-              <tr key={i} className="hover:bg-indigo-50 transition-colors duration-150">
+              <tr
+                key={i}
+                className="hover:bg-indigo-50 transition-colors duration-150"
+              >
                 <td className="px-6 py-4 font-medium">{order.id}</td>
                 <td className="px-6 py-4">{order.client}</td>
                 <td className="px-6 py-4">{order.date}</td>
@@ -137,6 +148,13 @@ const Orders = () => {
                 </td>
                 <td className="px-6 py-4 font-semibold text-gray-800">
                   {order.total_amount.toLocaleString()} сум
+                </td>
+                <td
+                  className={`px-6 py-4 font-medium ${
+                    order.debt > 0 ? "text-red-500" : "text-gray-400"
+                  }`}
+                >
+                  {(order.debt ?? 0).toLocaleString()} сум
                 </td>
                 <td className="px-6 py-4 flex justify-center">
                   <ActionMenu

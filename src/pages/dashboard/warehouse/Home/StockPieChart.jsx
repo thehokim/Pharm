@@ -1,3 +1,4 @@
+import React from "react";
 import { LucidePieChart } from "lucide-react";
 import {
   PieChart,
@@ -6,15 +7,14 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import tinycolor from "tinycolor2";
 
 const pieData = [
-  { name: "В наличии", value: 94 },
-  { name: "Низкий остаток", value: 64 },
-  { name: "Истекает срок", value: 18 },
-  { name: "Нет в наличии", value: 22 },
+  { name: "В наличии", value: 94, fill: "#22C55E" },        // зелёный
+  { name: "Низкий остаток", value: 64, fill: "#FBBF24" },    // жёлтый
+  { name: "Истекает срок", value: 18, fill: "#EF4444" },     // красный
+  { name: "Нет в наличии", value: 22, fill: "#9CA3AF" },     // серый
 ];
-
-const COLORS = ["#22C55E", "#FBBF24", "#EF4444", "#9CA3AF"];
 
 // Внутренние проценты
 const renderLabel = ({
@@ -45,19 +45,28 @@ const renderLabel = ({
   );
 };
 
-// Кастомный тултип
+// Кастомный тултип с динамическим цветом фона и текста
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload?.length) {
-    const { name, value } = payload[0];
+    const { name, value, fill } = payload[0].payload;
+
+    // Сделаем фон ярче и насыщеннее
+    const bg = tinycolor(fill).saturate(80).brighten(50).toHexString();
+    const textColor = tinycolor(bg).isLight() ? "#000" : "#fff";
+
     return (
-      <div className="bg-blue-50 border border-gray-100 rounded-lg p-2 text-sm">
-        <p className="font-semibold text-gray-800">{name}</p>
-        <p className="text-gray-500">Количество: {value}</p>
+      <div
+        className="rounded-lg p-2 text-sm shadow-lg"
+        style={{ backgroundColor: bg, color: textColor }}
+      >
+        <p className="font-semibold">{name}</p>
+        <p className="text-xs opacity-90">Количество: {value}</p>
       </div>
     );
   }
   return null;
 };
+
 
 const StockPieChart = () => (
   <div className="bg-white p-4 rounded-2xl">
@@ -66,7 +75,6 @@ const StockPieChart = () => (
       Обзор остатков
     </h2>
 
-    {/* Диаграмма */}
     <ResponsiveContainer width="100%" height={260}>
       <PieChart>
         <Pie
@@ -82,14 +90,13 @@ const StockPieChart = () => (
           labelLine={false}
         >
           {pieData.map((entry, index) => (
-            <Cell key={`cell-${index}`} fill={COLORS[index]} />
+            <Cell key={`cell-${index}`} fill={entry.fill} />
           ))}
         </Pie>
         <Tooltip content={<CustomTooltip />} />
       </PieChart>
     </ResponsiveContainer>
 
-    {/* Легенда снизу в 2 колонки */}
     <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mt-6 text-sm">
       {pieData.map((entry, index) => (
         <div
@@ -99,7 +106,7 @@ const StockPieChart = () => (
           <div className="flex items-center gap-3">
             <span
               className="inline-block w-3 h-3 rounded-full"
-              style={{ backgroundColor: COLORS[index] }}
+              style={{ backgroundColor: entry.fill }}
             />
             <span className="text-gray-700">{entry.name}</span>
           </div>

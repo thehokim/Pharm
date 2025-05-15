@@ -7,35 +7,35 @@ import ClientDebts from "./ClientDebts";
 import {
   BarChart2,
   User,
-  ChartCandlestick,
-  Users,
+  AlertCircle,
+  CreditCard,
 } from "lucide-react";
 
 const mockData = {
   stats: [
     {
-      icon: <BarChart2 className="w-4 h-4" />,
+      icon: <BarChart2 className="w-5 h-5 text-indigo-600" />,
       title: "Общая выручка",
       value: "$24,563.82",
       sub: "+15.2% за месяц",
       subColor: "text-green-600",
     },
     {
-      icon: <User className="w-4 h-4" />,
+      icon: <User className="w-5 h-5 text-emerald-600" />,
       title: "Активные клиенты",
       value: "245",
       sub: "+12 новых клиентов",
       subColor: "text-green-600",
     },
     {
-      icon: <ChartCandlestick className="w-4 h-4" />,
+      icon: <AlertCircle className="w-5 h-5 text-yellow-500" />,
       title: "Истекающие товары",
       value: "28",
       sub: "в течение 90 дней",
       subColor: "text-yellow-600",
     },
     {
-      icon: <Users className="w-4 h-4" />,
+      icon: <CreditCard className="w-5 h-5 text-rose-600" />,
       title: "Долги клиентов",
       value: "$12,450.00",
       sub: "+$2,100 за месяц",

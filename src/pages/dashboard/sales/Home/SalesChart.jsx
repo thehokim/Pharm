@@ -24,7 +24,7 @@ import {
   };
   
   const SalesChart = ({ data }) => (
-    <div className="bg-white rounded-2xl p-6">
+    <div className="bg-white rounded-2xl p-4">
       <h3 className="flex items-center text-lg text-gray-700 gap-2 mb-4">
         <ChartColumnStacked className="w-5 h-5" />
         Ежемесячный доход

@@ -14,6 +14,8 @@ const initialProducts = [
     incoming: 1500000,
     outgoing: 750000,
     active: true,
+    arrivalDate: "2024-04-15",
+    expirationDate: "2026-04-15",
   },
   {
     name: "Амоксициллин",
@@ -23,6 +25,8 @@ const initialProducts = [
     incoming: 980000,
     outgoing: 620000,
     active: true,
+    arrivalDate: "2024-03-01",
+    expirationDate: "2025-12-01",
   },
   {
     name: "Нурофен",
@@ -32,6 +36,8 @@ const initialProducts = [
     incoming: 250000,
     outgoing: 250000,
     active: false,
+    arrivalDate: "2023-09-10",
+    expirationDate: "2025-09-10",
   },
   {
     name: "Цитрамон",
@@ -41,6 +47,8 @@ const initialProducts = [
     incoming: 860000,
     outgoing: 420000,
     active: true,
+    arrivalDate: "2024-01-20",
+    expirationDate: "2026-01-20",
   },
 ];
 
@@ -101,10 +109,15 @@ const Products = () => {
               <th className="px-6 py-4 bg-gray-100">Остаток</th>
               <th className="px-6 py-4 bg-gray-100">Приход</th>
               <th className="px-6 py-4 bg-gray-100">Расход</th>
+              <th className="px-6 py-4 bg-gray-100">Дата прихода</th>
+              <th className="px-6 py-4 bg-gray-100">Срок годности</th>
               <th className="px-6 py-4 bg-gray-100">Статус</th>
-              <th className="px-6 py-4 bg-gray-100 text-center rounded-tr-xl">Действия</th>
+              <th className="px-6 py-4 bg-gray-100 text-center rounded-tr-xl">
+                Действия
+              </th>
             </tr>
           </thead>
+
           <tbody className="divide-y divide-gray-100">
             {products.map((item, i) => (
               <tr
@@ -120,6 +133,10 @@ const Products = () => {
                 </td>
                 <td className="px-6 py-4 text-red-500">
                   {item.outgoing.toLocaleString()} сум
+                </td>
+                <td className="px-6 py-4 text-gray-600">{item.arrivalDate}</td>
+                <td className="px-6 py-4 text-gray-600">
+                  {item.expirationDate}
                 </td>
                 <td className="px-6 py-4">
                   <span
@@ -174,3 +191,4 @@ const Products = () => {
 };
 
 export default Products;
+//data prixod srok godnosti

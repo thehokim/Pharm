@@ -22,7 +22,6 @@ const Home = () => {
     <div className="space-y-4 bg-gray-50">
       <div className="bg-white rounded-xl p-4">
         <h1 className="text-2xl font-semibold text-gray-800 flex items-center gap-4">
-          <PhoneIncomingIcon className="text-blue-500" />
           Панель управления — Оператор склада
         </h1>
       </div>

@@ -120,7 +120,7 @@ const Home = () => {
         <StatCard
           icon={Users}
           title="Менеджеры"
-          value={data.managers.length}
+          value={""}
           subtitle={`Активных заказов: ${data.activeOrders}`}
           managers={data.managers}
         />
