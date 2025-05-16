@@ -10,10 +10,11 @@ import Activities from "../pages/dashboard/admin/Activities";
 import Logs from "../pages/dashboard/admin/Logs";
 import Reports from "../pages/dashboard/admin/Reports";
 import Settings from "../pages/dashboard/admin/Settings";
-import Analytics from "../pages/dashboard/admin/Analytics";
 import Booking from "../pages/dashboard/admin/Booking";
 import Products from "../pages/dashboard/admin/Product/Products";
 import Users from "../pages/dashboard/admin/User/Users";
+import Notifications from "../pages/dashboard/admin/Home/Notifications";
+import Analytics from "../pages/dashboard/admin/Analytics";
 
 const AdminRoutes = () => {
   return (
@@ -24,6 +25,7 @@ const AdminRoutes = () => {
           <Route path="" element={<Home />} />
           <Route path="users" element={<Users />} />
           <Route path="products" element={<Products />} />
+          <Route path="analytics" element={<Analytics />} />
           <Route path="clients" element={<Clients />} />
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="orders" element={<Orders />} />
@@ -31,7 +33,7 @@ const AdminRoutes = () => {
           <Route path="logs" element={<Logs />} />
           <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
-          <Route path="analytics" element={<Analytics />} />
+          <Route path="notifications" element={<Notifications />} />
           <Route path="booking" element={<Booking />} />
         </Routes>
       </div>

@@ -9,18 +9,19 @@ import {
   Activity,
   FileText,
   Settings,
-  BarChart,
   FileSearch,
   UserCog,
   BookLockIcon,
   Circle,
+  BellDotIcon,
+  LucideAudioLines,
 } from "lucide-react";
 
 const menu = [
   { label: "Панель управления", icon: <LayoutDashboard size={18} />, to: "" },
-  { label: "Аналитика", icon: <BarChart size={18} />, to: "analytics" },
   { label: "Бронирование", icon: <BookLockIcon size={18} />, to: "booking" },
   { label: "Пользователи", icon: <Users size={18} />, to: "users" },
+  { label: "Аналитика", icon: <LucideAudioLines size={18} />, to: "analytics" },
   { label: "Товары", icon: <Package size={18} />, to: "products" },
   { label: "Клиенты", icon: <UserCog size={18} />, to: "clients" },
   { label: "Поставщики", icon: <ClipboardList size={18} />, to: "suppliers" },
@@ -29,13 +30,14 @@ const menu = [
   { label: "Журнал действий", icon: <FileSearch size={18} />, to: "logs" },
   { label: "Отчеты", icon: <FileText size={18} />, to: "reports" },
   { label: "Парсер FOM.UZ", icon: <FileSearch size={18} />, to: "parser" },
+  { label: "Уведомление", icon: <BellDotIcon size={18} />, to: "notifications" },
   { label: "Настройки", icon: <Settings size={18} />, to: "settings" },
 ];
 
 const Sidebar = () => {
   return (
-    <aside className="w-66 rounded-r-xl h-screen bg-white fixed top-0 left-0">
-      <div className="p-4 text-lg font-bold border-b border-dashed border-gray-100 flex items-center justify-center gap-2"><Circle/>CompanyName</div>
+    <aside className="w-66 rounded-r-xl h-screen bg-white fixed top-0 left-0 overflow-y-auto">
+      <div className="p-4 text-lg font-bold border-b border-dashed border-gray-100 flex items-center justify-center gap-2"><Circle/>Max Inter Trade</div>
       <nav className="flex flex-col gap-1 px-2 py-1">
         {menu.map((item, index) => (
           <NavLink

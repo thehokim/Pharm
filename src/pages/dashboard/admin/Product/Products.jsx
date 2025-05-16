@@ -107,9 +107,9 @@ const Products = () => {
               <th className="px-6 py-4 bg-gray-100">Категория</th>
               <th className="px-6 py-4 bg-gray-100">Цена</th>
               <th className="px-6 py-4 bg-gray-100">Остаток</th>
+              <th className="px-6 py-4 bg-gray-100">Дата прихода</th>
               <th className="px-6 py-4 bg-gray-100">Приход</th>
               <th className="px-6 py-4 bg-gray-100">Расход</th>
-              <th className="px-6 py-4 bg-gray-100">Дата прихода</th>
               <th className="px-6 py-4 bg-gray-100">Срок годности</th>
               <th className="px-6 py-4 bg-gray-100">Статус</th>
               <th className="px-6 py-4 bg-gray-100 text-center rounded-tr-xl">
@@ -128,13 +128,13 @@ const Products = () => {
                 <td className="px-6 py-4">{item.category}</td>
                 <td className="px-6 py-4">{item.price.toLocaleString()} сум</td>
                 <td className="px-6 py-4">{item.stock}</td>
+                <td className="px-6 py-4 text-gray-600">{item.arrivalDate}</td>
                 <td className="px-6 py-4 text-green-600">
                   {item.incoming.toLocaleString()} сум
                 </td>
                 <td className="px-6 py-4 text-red-500">
                   {item.outgoing.toLocaleString()} сум
                 </td>
-                <td className="px-6 py-4 text-gray-600">{item.arrivalDate}</td>
                 <td className="px-6 py-4 text-gray-600">
                   {item.expirationDate}
                 </td>

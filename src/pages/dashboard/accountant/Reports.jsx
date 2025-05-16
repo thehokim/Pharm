@@ -86,14 +86,13 @@ const Reports = () => {
         </div>
       </div>
       {/* Таблица */}
-      <div className="bg-white rounded-2xl p-4 overflow-x-auto">
-        <table className="min-w-full text-sm">
-          <thead className="text-xs text-gray-600 bg-gray-50">
+        <table className="min-w-full text-sm divide">
+          <thead className="text-xs text-gray-600 bg-gray-100">
             <tr>
-              <th className="px-6 py-4 text-left">Название</th>
+              <th className="px-6 py-4 text-left rounded-tl-xl">Название</th>
               <th className="px-6 py-4 text-left">Тип</th>
               <th className="px-6 py-4 text-left">Дата</th>
-              <th className="px-6 py-4 text-left">Статус</th>
+              <th className="px-6 py-4 text-left rounded-tr-xl">Статус</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -109,8 +108,8 @@ const Reports = () => {
                   key={i}
                   className="hover:bg-indigo-50 transition-colors duration-150"
                 >
-                  <td className="px-6 py-4 font-medium">{report.title}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 font-medium bg-white rounded-bl-xl">{report.title}</td>
+                  <td className="px-6 py-4 bg-white">
                     <span
                       className={`px-2 py-1 rounded-full text-xs font-medium ${
                         typeColors[report.type]
@@ -119,8 +118,8 @@ const Reports = () => {
                       {report.type}
                     </span>
                   </td>
-                  <td className="px-6 py-4">{report.date}</td>
-                  <td className="px-6 py-4">
+                  <td className="px-6 py-4 bg-white">{report.date}</td>
+                  <td className="px-6 py-4 bg-white rounded-br-xl">
                     <span
                       className={`px-3 py-1 rounded-full text-xs font-medium ${
                         statusColors[report.status]
@@ -135,7 +134,6 @@ const Reports = () => {
           </tbody>
         </table>
       </div>
-    </div>
   );
 };
 
