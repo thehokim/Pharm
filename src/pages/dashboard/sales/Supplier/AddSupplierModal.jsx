@@ -1,28 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { X } from "lucide-react";
 
-const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
+const AddSupplierModal = ({ isOpen, onClose, onSubmit }) => {
   const [form, setForm] = useState({
     name: "",
     contact_person: "",
     phone: "",
-    username: "",
+    email: "",
     address: "",
     debt: "",
   });
-
-  useEffect(() => {
-    if (client) {
-      setForm({
-        name: client.name || "",
-        contact_person: client.contact_person || "",
-        phone: client.phone || "",
-        username: client.username || "",
-        address: client.address || "",
-        debt: client.debt ?? 0,
-      });
-    }
-  }, [client]);
 
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
@@ -30,9 +17,20 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const payload = { ...form, debt: Number(form.debt) };
+    const payload = {
+      ...form,
+      debt: Number(form.debt),
+    };
     onSubmit(payload);
     onClose();
+    setForm({
+      name: "",
+      contact_person: "",
+      phone: "",
+      email: "",
+      address: "",
+      debt: "",
+    });
   };
 
   if (!isOpen) return null;
@@ -41,7 +39,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-6 w-full max-w-3xl">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Редактировать клиента</h2>
+          <h2 className="text-xl font-semibold">Добавить поставщика</h2>
           <button onClick={onClose} className="text-gray-600 hover:text-black">
             <X className="w-5 h-5" />
           </button>
@@ -50,7 +48,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <input
             name="name"
-            placeholder="Название клиента"
+            placeholder="Название компании"
             value={form.name}
             onChange={handleChange}
             required
@@ -71,11 +69,11 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
           />
           <input
-            name="username"
-            placeholder="Имя пользователя"
-            value={form.username}
+            name="email"
+            type="email"
+            placeholder="Email"
+            value={form.email}
             onChange={handleChange}
-            required
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
           />
           <input
@@ -83,7 +81,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
             placeholder="Адрес"
             value={form.address}
             onChange={handleChange}
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
+            className=" border border-gray-100 rounded-xl px-4 py-2 h-12"
           />
           <input
             name="debt"
@@ -97,7 +95,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
             type="submit"
             className="col-span-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700"
           >
-            Сохранить
+            Добавить
           </button>
         </form>
       </div>
@@ -105,4 +103,4 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
   );
 };
 
-export default EditClientModal;
+export default AddSupplierModal;

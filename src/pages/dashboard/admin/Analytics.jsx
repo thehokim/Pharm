@@ -1,31 +1,36 @@
 import React, { useEffect, useState } from "react";
 import { AudioLinesIcon, ChevronDown } from "lucide-react";
-
-const mockPopularProducts = [
-  { name: "Парацетамол", sales: 150 },
-  { name: "Нурофен", sales: 130 },
-  { name: "Аспирин", sales: 120 },
-];
-
-const mockRareProducts = [
-  { name: "Йодинол", sales: 2 },
-  { name: "Зеленка", sales: 1 },
-  { name: "Аминазин", sales: 4 },
-];
+import { BASE_URL } from "../../../utils/auth";
 
 const Analytics = () => {
   const [filter, setFilter] = useState("popular");
-  const [data, setData] = useState([]);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [popularProducts, setPopularProducts] = useState([]);
+  const [rareProducts, setRareProducts] = useState([]);
+  const token = localStorage.getItem("token");
 
   useEffect(() => {
-    setData(filter === "popular" ? mockPopularProducts : mockRareProducts);
-  }, [filter]);
+    fetch(`${BASE_URL}/api/analytics/products`, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+      .then((res) => res.json())
+      .then((data) => {
+        // Разделяем: больше 10 продаж = популярные
+        const popular = data.filter((p) => p.sales_count > 10);
+        const rare = data.filter((p) => p.sales_count <= 10);
+        setPopularProducts(popular);
+        setRareProducts(rare);
+      })
+      .catch((err) => {
+        console.error("Ошибка при загрузке аналитики товаров:", err);
+      });
+  }, []);
 
+  const data = filter === "popular" ? popularProducts : rareProducts;
   const filterLabel = filter === "popular" ? "Часто продаваемые" : "Редко продаваемые";
 
   return (
-    <div className="bg-gray-50 min-h-screen p-6 space-y-6">
+    <div className="bg-gray-50 min-h-screen p-2 space-y-6">
       {/* Заголовок */}
       <div className="bg-white flex items-center justify-between p-4 rounded-xl">
         <h2 className="text-2xl font-semibold text-gray-800 flex items-center gap-2">
@@ -80,14 +85,11 @@ const Analytics = () => {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {data.map((item, i) => (
-              <tr
-                key={i}
-                className="hover:bg-indigo-50 transition-colors duration-150"
-              >
+              <tr key={i} className="hover:bg-indigo-50 transition-colors duration-150">
                 <td className="px-6 py-4">{i + 1}</td>
                 <td className="px-6 py-4 font-medium">{item.name}</td>
                 <td className="px-6 py-4 font-semibold text-gray-800">
-                  {item.sales}
+                  {item.sales_count}
                 </td>
               </tr>
             ))}
@@ -98,7 +100,7 @@ const Analytics = () => {
                 Всего
               </td>
               <td className="px-6 py-4">
-                {data.reduce((acc, item) => acc + item.sales, 0)} продаж
+                {data.reduce((acc, item) => acc + item.sales_count, 0)} продаж
               </td>
             </tr>
           </tfoot>

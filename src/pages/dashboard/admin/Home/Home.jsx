@@ -16,59 +16,183 @@ import EditManagersModal from "./EditManagersModal";
 import MonthlyChart from "./MonthlyChart";
 import DebtList from "./DebtList";
 import PopupNotification from "../PopupNotification";
-
-const mockData = {
-  totalIncome: 45231890,
-  todayIncome: 1250000,
-  productCount: 1245,
-  totalProductIncoming: 3540000,
-  totalProductOutgoing: 2040000,
-  clientsCount: 342,
-  newClients: 18,
-  activeOrders: 57,
-  managers: [
-    { fullName: "Иванов И.И.", profit: 1250000 },
-    { fullName: "Петров П.П.", profit: 980000 },
-    { fullName: "Сидоров С.С.", profit: 730000 },
-  ],
-  chartData: [
-    { name: "Янв", amount: 32000000 },
-    { name: "Фев", amount: 45000000 },
-    { name: "Мар", amount: 39000000 },
-    { name: "Апр", amount: 28000000 },
-    { name: "Май", amount: 52000000 },
-    { name: "Июнь", amount: 26000000 },
-    { name: "Июль", amount: 27000000 },
-    { name: "Авг", amount: 26000000 },
-    { name: "Сен", amount: 41000000 },
-    { name: "Окт", amount: 23000000 },
-    { name: "Ноя", amount: 35000000 },
-    { name: "Дек", amount: 57000000 },
-  ],
-  debts: [
-    { name: "Аптека “Акме”", days: 8, sum: "1,999,000" },
-    { name: "МедиПлюс", days: 12, sum: "1,599,000" },
-    { name: "Медицинские Поставки", days: 5, sum: "2,499,000" },
-    { name: "Городская Клиника", days: 3, sum: "899,000" },
-    { name: "МедЭкспресс", days: 15, sum: "3,499,000" },
-    { name: "ЭкспрессАптека", days: 18, sum: "2,399,000" },
-    { name: "Арзон аптека", days: 20, sum: "1,199,000" },
-    { name: "Яхши Аптека", days: 21, sum: "5,699,000" },
-  ],
-};
+import { BASE_URL } from "../../../../utils/auth";
 
 const Home = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
-  const [data, setData] = useState(mockData);
-  const [managers, setManagers] = useState(data.managers);
+  const [managers, setManagers] = useState([]);
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
   const [popups, setPopups] = useState([]);
+  const [totalIncome, setTotalIncome] = useState(0);
+  const [todayIncome, setTodayIncome] = useState(0);
+  const [productStats, setProductStats] = useState({
+    count: 0,
+    totalIncoming: 0,
+    totalOutgoing: 0,
+  });
+  const [clientsCount, setClientsCount] = useState(0);
+  const [chartData, setChartData] = useState([]);
+  const [debts, setDebts] = useState([]);
+  const [activeOrders] = useState(); // пока мок, позже заменить на API
+
+  const token = localStorage.getItem("token");
+
+  useEffect(() => {
+    fetchIncome();
+    fetchProducts();
+    fetchClients();
+    fetchManagers();
+    fetchDebts();
+  }, []);
+
+  const fetchIncome = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/income/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const today = new Date().toISOString().slice(0, 10);
+      const monthlyMap = {};
+
+      let total = 0;
+      let todayTotal = 0;
+
+      for (const item of data) {
+        const date = new Date(item.timestamp);
+        const month = date.toLocaleString("ru-RU", { month: "short" });
+        total += item.amount;
+        if (item.timestamp.slice(0, 10) === today) todayTotal += item.amount;
+        monthlyMap[month] = (monthlyMap[month] || 0) + item.amount;
+      }
+
+      const chart = Object.entries(monthlyMap).map(([name, amount]) => ({
+        name,
+        amount,
+      }));
+
+      setTotalIncome(total);
+      setTodayIncome(todayTotal);
+      setChartData(chart);
+    } catch (err) {
+      console.error("Ошибка загрузки дохода:", err);
+    }
+  };
+
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/products/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const count = data.length;
+      const totalIncoming = data.reduce(
+        (sum, p) => sum + (p.purchase_price || 0),
+        0
+      );
+      const totalOutgoing = data.reduce(
+        (sum, p) => sum + (p.selling_price || 0),
+        0
+      );
+      setProductStats({ count, totalIncoming, totalOutgoing });
+    } catch (err) {
+      console.error("Ошибка загрузки товаров:", err);
+    }
+  };
+
+  const fetchClients = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/clients/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setClientsCount(data.length);
+    } catch (err) {
+      console.error("Ошибка загрузки клиентов:", err);
+    }
+  };
+
+  const fetchManagers = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/managers/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const formatted = data.map((m) => ({
+        id: m.id,
+        fullName: m.username,
+        profit: m.monthly_profit,
+      }));
+      setManagers(formatted);
+    } catch (err) {
+      console.error("Ошибка загрузки менеджеров:", err);
+    }
+  };
+
+  const fetchDebts = async () => {
+    try {
+      const res = await fetch(`${BASE_URL}/api/clients/`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      const debtsFiltered = data
+        .filter((c) => c.debt > 0)
+        .map((c) => ({
+          name: c.name,
+          days: Math.floor(Math.random() * 20) + 5,
+          sum: c.debt.toLocaleString(),
+        }));
+      setDebts(debtsFiltered);
+    } catch (err) {
+      console.error("Ошибка загрузки долгов:", err);
+    }
+  };
 
   useEffect(() => {
     const wasViewed = localStorage.getItem("notifications_read") === "true";
     setHasUnreadNotifications(!wasViewed);
+  }, []);
+
+  const showPopup = ({ title, message, type = "info" }) => {
+    const id = Date.now();
+    setPopups((prev) => [...prev, { id, title, message, type }]);
+
+    setTimeout(() => {
+      setPopups((prev) => prev.filter((p) => p.id !== id));
+    }, 5000);
+  };
+
+  useEffect(() => {
+    const fetchUnreadNotifications = async () => {
+      try {
+        const res = await fetch(
+          `${BASE_URL}/api/notifications/`,
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("token")}`,
+            },
+          }
+        );
+
+        const data = await res.json();
+
+        // Фильтруем только непрочитанные
+        const unread = data.filter((n) => !n.is_read);
+
+        unread.forEach((n) => {
+          showPopup({
+            title: n.title,
+            message: n.message,
+            type: n.type || "info", // default fallback
+          });
+        });
+      } catch (err) {
+        console.error("Ошибка загрузки уведомлений:", err);
+      }
+    };
+
+    fetchUnreadNotifications();
   }, []);
 
   const handleAddManager = (newManager) => {
@@ -79,46 +203,8 @@ const Home = () => {
     setManagers(updated);
   };
 
-  const showPopup = (message) => {
-    const id = Date.now();
-    setPopups((prev) => [...prev, { id, message }]);
-
-    // автоматическое закрытие через 10 сек
-    setTimeout(() => {
-      setPopups((prev) => prev.filter((p) => p.id !== id));
-    }, 10000);
-  };
-
-  useEffect(() => {
-    // 🔴 Бронирование без оплаты 5+ дней
-    const unpaidBookings = [{ id: 1, created_at: "2024-12-01" }];
-    if (unpaidBookings.length > 0) {
-      showPopup("Есть бронирования без оплаты более 5 дней!");
-    }
-
-    // 🟡 Товары не продаются 30+ дней
-    const unsoldProducts = [{ id: 2, name: "Анальгин" }];
-    if (unsoldProducts.length > 0) {
-      showPopup("Некоторые товары не продаются более 30 дней!");
-    }
-
-    // 🔵 Долги 10+ дней
-    const overdueDebts = [{ client: "Аптека Акме", days: 12 }];
-    if (overdueDebts.length > 0) {
-      showPopup("Есть просроченные долги более 10 дней!");
-    }
-
-    // 🟣 Истекает срок
-    const expiring = [{ id: 3, name: "Парацетамол", days_left: 5 }];
-    if (expiring.length > 0) {
-      showPopup("Есть товары с близким сроком годности!");
-      showPopup("Не закупайте товары с истекающим сроком!");
-    }
-  }, []);
-
   return (
     <div className="p-0 space-y-4 bg-gray-50">
-      {/* Шапка */}
       <div className="flex items-center justify-between bg-white p-4 rounded-xl">
         <div className="flex items-center gap-2">
           <BarChart3Icon />
@@ -150,9 +236,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Карточки */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {/* Общий доход */}
         <div className="bg-white rounded-2xl p-4 space-y-3 cursor-default">
           <div className="flex items-center gap-3">
             <div className="bg-blue-100 text-blue-600 p-2 rounded-full">
@@ -161,14 +245,13 @@ const Home = () => {
             <h3 className="text-sm font-medium text-gray-600">Общий доход</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
-            {data.totalIncome.toLocaleString()} сум
+            {totalIncome.toLocaleString()} сум
           </div>
           <div className="text-sm text-green-500">
-            Сегодня: +{data.todayIncome.toLocaleString()} сум
+            Сегодня: +{todayIncome.toLocaleString()} сум
           </div>
         </div>
 
-        {/* Товары */}
         <Link
           to="/admin/products"
           className="bg-white rounded-2xl p-4 space-y-3 cursor-pointer"
@@ -180,15 +263,16 @@ const Home = () => {
             <h3 className="text-sm font-medium text-gray-600">Товары</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
-            {data.productCount.toLocaleString()}
+            {productStats.count.toLocaleString()}
           </div>
           <div className="text-sm text-gray-500">
-            <div>Закуп: {data.totalProductIncoming.toLocaleString()} сум</div>
-            <div>Продажа: {data.totalProductOutgoing.toLocaleString()} сум</div>
+            <div>Закуп: {productStats.totalIncoming.toLocaleString()} сум</div>
+            <div>
+              Продажа: {productStats.totalOutgoing.toLocaleString()} сум
+            </div>
           </div>
         </Link>
 
-        {/* Клиенты */}
         <Link
           to="/admin/clients"
           className="bg-white rounded-2xl p-4 space-y-3 cursor-pointer"
@@ -200,14 +284,10 @@ const Home = () => {
             <h3 className="text-sm font-medium text-gray-600">Клиенты</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
-            {data.clientsCount.toLocaleString()}
-          </div>
-          <div className="text-sm text-gray-500">
-            +{data.newClients} новых клиентов
+            {clientsCount.toLocaleString()}
           </div>
         </Link>
 
-        {/* Менеджеры */}
         <div className="relative bg-white rounded-2xl p-4 space-y-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
@@ -231,7 +311,7 @@ const Home = () => {
                   setShowAddModal(true);
                   setMenuOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left hover:text-blue-500 transition-colors duration-200 hover:bg-blue-50 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left hover:text-blue-500 hover:bg-blue-50 flex items-center gap-2"
               >
                 <UserPlus2 className="w-5 h-5" />
                 Добавить менеджера
@@ -241,7 +321,7 @@ const Home = () => {
                   setShowEditModal(true);
                   setMenuOpen(false);
                 }}
-                className="w-full px-4 py-2 text-left hover:bg-blue-50 hover:text-blue-500 transition-colors duration-200 flex items-center gap-2"
+                className="w-full px-4 py-2 text-left hover:text-blue-500 hover:bg-blue-50 flex items-center gap-2"
               >
                 <PencilIcon className="w-5 h-5" />
                 Редактировать
@@ -259,9 +339,6 @@ const Home = () => {
               </li>
             ))}
           </ul>
-          <div className="text-xs text-gray-500">
-            Активных заказов: {data.activeOrders}
-          </div>
 
           {showAddModal && (
             <AddManagerModal
@@ -279,16 +356,17 @@ const Home = () => {
         </div>
       </div>
 
-      {/* Графики и долги */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <MonthlyChart data={data.chartData} />
-        <DebtList debts={data.debts} />
+        <MonthlyChart data={chartData} />
+        <DebtList debts={debts} />
       </div>
 
       {popups.map((popup) => (
         <PopupNotification
           key={popup.id}
+          title={popup.title}
           message={popup.message}
+          type={popup.type}
           onClose={() =>
             setPopups((prev) => prev.filter((p) => p.id !== popup.id))
           }

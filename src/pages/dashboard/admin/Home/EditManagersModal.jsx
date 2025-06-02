@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { BASE_URL } from "../../../../utils/auth";
 
 const EditManagersModal = ({ managers = [], onClose, onSave }) => {
   const [editedManagers, setEditedManagers] = useState(managers);
+  const token = localStorage.getItem("token");
 
   const handleChange = (index, value) => {
     const updated = [...editedManagers];
@@ -10,16 +12,42 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
     setEditedManagers(updated);
   };
 
-  const handleDelete = (index) => {
-    const updated = [...editedManagers];
-    updated.splice(index, 1);
-    setEditedManagers(updated);
+  const handleDelete = async (index) => {
+    const manager = editedManagers[index];
+    try {
+      const res = await fetch(`${BASE_URL}/api/users/${manager.id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      if (!res.ok) throw new Error("Ошибка удаления");
+
+      const updated = [...editedManagers];
+      updated.splice(index, 1);
+      setEditedManagers(updated);
+    } catch (err) {
+      alert("Ошибка удаления: " + err.message);
+    }
   };
 
-  const handleSave = () => {
-    console.log("Сохранённые менеджеры:", editedManagers);
-    if (onSave) onSave(editedManagers);
-    onClose();
+  const handleSave = async () => {
+    try {
+      for (const manager of editedManagers) {
+        await fetch(`${BASE_URL}/api/users/${manager.id}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({ full_name: manager.fullName }),
+        });
+      }
+
+      if (onSave) onSave(editedManagers);
+      onClose();
+    } catch (err) {
+      alert("Ошибка сохранения: " + err.message);
+    }
   };
 
   return (
@@ -29,15 +57,12 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
 
         <div className="max-h-[60vh] overflow-y-auto">
           {editedManagers.map((manager, index) => (
-            <div
-              key={index}
-              className="flex items-center gap-2 rounded px-2 py-2"
-            >
+            <div key={index} className="flex items-center gap-2 rounded px-2 py-2">
               <input
                 type="text"
                 value={manager.fullName}
                 onChange={(e) => handleChange(index, e.target.value)}
-                placeholder="Имя Фамилия Отчество"
+                placeholder="Имя Фамилия"
                 className="w-full px-4 py-3 border border-gray-100 rounded-xl"
               />
               <button

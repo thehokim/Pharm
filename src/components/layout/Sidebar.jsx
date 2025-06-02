@@ -26,7 +26,6 @@ const menu = [
   { label: "Клиенты", icon: <UserCog size={18} />, to: "clients" },
   { label: "Поставщики", icon: <ClipboardList size={18} />, to: "suppliers" },
   { label: "Заказы", icon: <ShoppingCart size={18} />, to: "orders" },
-  { label: "Активность пользователей", icon: <Activity size={18} />, to: "activities" },
   { label: "Журнал действий", icon: <FileSearch size={18} />, to: "logs" },
   { label: "Отчеты", icon: <FileText size={18} />, to: "reports" },
   { label: "Парсер FOM.UZ", icon: <FileSearch size={18} />, to: "parser" },

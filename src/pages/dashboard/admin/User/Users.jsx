@@ -1,83 +1,131 @@
-import React, { useState } from "react";
-import { Search, Plus, MoreVertical, UsersIcon } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { Search, Plus, UsersIcon } from "lucide-react";
 import AddUserModal from "./AddUserModal";
-import ActionMenu from "../../../../components/layout/ActionMenu";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
+import ActionMenu from "../../../../components/layout/ActionMenu";
+import { BASE_URL } from "../../../../utils/auth";
 
-// Компонент переключателя
-const ToggleSwitch = ({ checked, onChange }) => {
-  return (
-    <button
-      onClick={onChange}
-      className={`w-12 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-        checked ? "bg-blue-500" : "bg-gray-300"
+const ToggleSwitch = ({ checked, onChange }) => (
+  <button
+    onClick={onChange}
+    className={`w-12 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
+      checked ? "bg-blue-500" : "bg-gray-300"
+    }`}
+  >
+    <div
+      className={`bg-white w-5 h-5 rounded-full transform transition-transform duration-300 ${
+        checked ? "translate-x-5" : ""
       }`}
-    >
-      <div
-        className={`bg-white w-5 h-5 rounded-full transform transition-transform duration-300 ${
-          checked ? "translate-x-5" : ""
-        }`}
-      />
-    </button>
-  );
-};
-
-const initialUsers = [
-  {
-    name: "Джон Доу",
-    email: "john.doe@example.com",
-    role: "Администратор",
-    isActive: true,
-    lastActive: "Только что",
-  },
-  {
-    name: "Джейн Смит",
-    email: "jane.smith@example.com",
-    role: "Менеджер по продажам",
-    isActive: true,
-    lastActive: "5 минут назад",
-  },
-  {
-    name: "Роберт Джонсон",
-    email: "robert.johnson@example.com",
-    role: "Бухгалтер",
-    isActive: false,
-    lastActive: "2 часа назад",
-  },
-  {
-    name: "Сара Уильямс",
-    email: "sarah.williams@example.com",
-    role: "Оператор склада",
-    isActive: true,
-    lastActive: "10 минут назад",
-  },
-  {
-    name: "Майкл Браун",
-    email: "michael.brown@example.com",
-    role: "Менеджер по продажам",
-    isActive: false,
-    lastActive: "1 день назад",
-  },
-];
+    />
+  </button>
+);
 
 const Users = () => {
-  const [users, setUsers] = useState(initialUsers);
+  const [users, setUsers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [deletingUser, setDeletingUser] = useState(null);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
 
+  const token = localStorage.getItem("token");
+
+  const fetchUsers = () => {
+    fetch(`${BASE_URL}/api/users`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => res.json())
+      .then((data) =>
+        setUsers(
+          data.map((user) => ({
+            id: user.id,
+            name: user.full_name,
+            email: user.username,
+            role: user.role,
+            isActive: user.is_active,
+            lastActive: new Date(user.created_at).toLocaleString(),
+          }))
+        )
+      )
+      .catch((err) => console.error("Ошибка загрузки пользователей:", err));
+  };
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const handleAddUser = (form) => {
+    fetch(`${BASE_URL}/api/users`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        username: form.username,
+        full_name: form.full_name,
+        role: form.role,
+        password: form.password,
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Ошибка при добавлении пользователя");
+        return res.json();
+      })
+      .then(() => fetchUsers())
+      .catch((err) => alert(err.message));
+  };
+
+  const handleEditSubmit = (form) => {
+    if (!editingUser) return;
+    fetch(`${BASE_URL}/api/users/${editingUser.id}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        username: form.username,
+        full_name: form.full_name,
+        role: form.role,
+        ...(form.password && { password: form.password }),
+      }),
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Ошибка при обновлении");
+        return res.json();
+      })
+      .then(() => fetchUsers())
+      .catch((err) => alert(err.message));
+  };
+
+  const handleConfirmDelete = () => {
+    if (!deletingUser) return;
+    fetch(`${BASE_URL}/api/users/${deletingUser.id}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        if (!res.ok) throw new Error("Ошибка при удалении пользователя");
+        return res.json();
+      })
+      .then(() => {
+        fetchUsers();
+        setIsDeleteOpen(false);
+      })
+      .catch((err) => alert(err.message));
+  };
+
   const toggleUserStatus = (index) => {
+    // Только для UI — не сохраняется на сервере
     const updated = [...users];
     updated[index].isActive = !updated[index].isActive;
     setUsers(updated);
-  };
-
-  const handleAddUser = (newUser) => {
-    console.log("Добавлен пользователь:", newUser);
-    // Здесь можно отправить данные на сервер или добавить в локальный список
   };
 
   const handleEdit = (user) => {
@@ -85,20 +133,9 @@ const Users = () => {
     setIsEditOpen(true);
   };
 
-  const handleEditSubmit = (data) => {
-    console.log("Изменён пользователь:", data);
-    // обнови пользователя в списке или отправь PATCH на сервер
-  };
-
   const handleDelete = (user) => {
     setDeletingUser(user);
     setIsDeleteOpen(true);
-  };
-
-  const handleConfirmDelete = () => {
-    console.log("Удалён пользователь:", deletingUser);
-    // здесь можешь удалить пользователя из списка или отправить DELETE-запрос
-    setIsDeleteOpen(false);
   };
 
   return (
@@ -139,25 +176,16 @@ const Users = () => {
           </thead>
           <tbody className="divide-y divide-gray-100">
             {users.map((user, i) => (
-              <tr
-                key={i}
-                className="hover:bg-indigo-50 transition-colors duration-150"
-              >
+              <tr key={user.id} className="hover:bg-indigo-50 transition-colors duration-150">
                 <td className="px-6 py-4 font-medium">{user.name}</td>
                 <td className="px-6 py-4">{user.email}</td>
                 <td className="px-6 py-4">{user.role}</td>
                 <td className="px-6 py-4">
-                  <ToggleSwitch
-                    checked={user.isActive}
-                    onChange={() => toggleUserStatus(i)}
-                  />
+                  <ToggleSwitch checked={user.isActive} onChange={() => toggleUserStatus(i)} />
                 </td>
                 <td className="px-6 py-4">{user.lastActive}</td>
                 <td className="px-6 py-4 flex justify-center mt-2">
-                  <ActionMenu
-                    onEdit={() => handleEdit(user)}
-                    onDelete={() => handleDelete(user)}
-                  />
+                  <ActionMenu onEdit={() => handleEdit(user)} onDelete={() => handleDelete(user)} />
                 </td>
               </tr>
             ))}
@@ -165,25 +193,9 @@ const Users = () => {
         </table>
       </div>
 
-      <EditUserModal
-        isOpen={isEditOpen}
-        onClose={() => setIsEditOpen(false)}
-        userData={editingUser}
-        onSubmit={handleEditSubmit}
-      />
-
-      <DeleteUserModal
-        isOpen={isDeleteOpen}
-        onClose={() => setIsDeleteOpen(false)}
-        onConfirm={handleConfirmDelete}
-        user={deletingUser}
-      />
-
-      <AddUserModal
-        isOpen={isModalOpen}
-        onClose={() => setIsModalOpen(false)}
-        onSubmit={handleAddUser}
-      />
+      <AddUserModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} onSubmit={handleAddUser} />
+      <EditUserModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} userData={editingUser} onSubmit={handleEditSubmit} />
+      <DeleteUserModal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} onConfirm={handleConfirmDelete} user={deletingUser} />
     </div>
   );
 };

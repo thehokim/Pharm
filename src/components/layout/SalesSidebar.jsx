@@ -8,16 +8,26 @@ import {
   CalendarCheck,
   BarChart,
   Circle,
+  ClipboardList,
+  BellDotIcon,
+  Settings,
 } from "lucide-react";
 
 const menu = [
   { label: "Панель управления", icon: <LayoutDashboard size={18} />, to: "" },
   { label: "Аналитика", icon: <BarChart size={18} />, to: "analytics" },
   { label: "Бронирование", icon: <CalendarCheck size={18} />, to: "booking" },
+  { label: "Поставщики", icon: <ClipboardList size={18} />, to: "suppliers" },
   { label: "Товары", icon: <Package size={18} />, to: "products" },
   { label: "Клиенты", icon: <Users size={18} />, to: "clients" },
   { label: "Заказы", icon: <ShoppingCart size={18} />, to: "orders" },
-];
+    {
+    label: "Уведомление",
+    icon: <BellDotIcon size={18} />,
+    to: "notifications",
+  },
+  { label: "Настройки", icon: <Settings size={18} />, to: "settings" },
+  ]
 
 const SalesSidebar = () => {
   return (

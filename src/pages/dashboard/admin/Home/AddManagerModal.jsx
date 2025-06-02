@@ -1,22 +1,43 @@
 import React, { useState } from "react";
+import { BASE_URL } from "../../../../utils/auth";
 
 const AddManagerModal = ({ onClose, onAdd }) => {
   const [fullName, setFullName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const token = localStorage.getItem("token");
 
-  const handleSave = () => {
-    if (!fullName.trim()) {
-      alert("Пожалуйста, введите имя и фамилию.");
+  const handleSave = async () => {
+    if (!fullName.trim() || !username.trim() || !password.trim()) {
+      alert("Пожалуйста, заполните все поля.");
       return;
     }
 
     const newManager = {
-      fullName,
-      profit: 0, // по умолчанию 0 или можно не указывать вовсе
+      full_name: fullName,
+      username,
+      role: "manager",
+      password,
     };
 
-    console.log("Новый менеджер:", newManager);
-    if (onAdd) onAdd(newManager);
-    onClose();
+    try {
+      const res = await fetch(`${BASE_URL}/api/users/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(newManager),
+      });
+
+      if (!res.ok) throw new Error("Ошибка при добавлении менеджера");
+
+      const data = await res.json();
+      if (onAdd) onAdd({ fullName: data.full_name, profit: 0 });
+      onClose();
+    } catch (err) {
+      alert("Ошибка: " + err.message);
+    }
   };
 
   return (
@@ -28,7 +49,21 @@ const AddManagerModal = ({ onClose, onAdd }) => {
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          placeholder="Имя и фамилия"
+          placeholder="ФИО"
+          className="w-full border border-gray-100 px-3 py-3 rounded-xl"
+        />
+        <input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Логин"
+          className="w-full border border-gray-100 px-3 py-3 rounded-xl"
+        />
+        <input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          placeholder="Пароль"
           className="w-full border border-gray-100 px-3 py-3 rounded-xl"
         />
 
