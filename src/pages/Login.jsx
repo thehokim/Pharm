@@ -1,29 +1,47 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { setUserRole } from "../utils/auth";
 import { LogIn } from "lucide-react";
+import { setUserRole, setToken, BASE_URL } from "../utils/auth";
 
 const Login = () => {
   const [login, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
 
-    const roleMap = {
-      admin: "admin",
-      sales: "sales",
-      accountant: "accountant",
-      warehouse: "warehouse",
-    };
+    try {
+      const response = await fetch(`${BASE_URL}/auth/token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ login, password }),
+      });
 
-    const role = roleMap[login.trim().toLowerCase()];
-    if (role) {
+      if (!response.ok) {
+        throw new Error("Неверный логин или пароль");
+      }
+
+      const data = await response.json();
+      const { access_token, role } = data;
+
+      setToken(access_token);
       setUserRole(role);
-      navigate(`/${role}`);
-    } else {
-      alert("Неверный логин. Введите: admin, sales, accountant или warehouse");
+
+      switch (role) {
+        case "admin":
+        case "sales":
+        case "accountant":
+        case "warehouse":
+          navigate(`/${role}`);
+          break;
+        default:
+          alert("Неизвестная роль");
+      }
+    } catch (error) {
+      alert(error.message || "Ошибка входа");
     }
   };
 
@@ -40,7 +58,7 @@ const Login = () => {
 
         <input
           type="text"
-          placeholder="Логин (например: admin)"
+          placeholder="Логин"
           value={login}
           onChange={(e) => setLogin(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -60,9 +78,6 @@ const Login = () => {
         >
           Войти
         </button>
-        <p className="text-xs text-gray-500 text-center mt-2">
-          Используйте логины: <b>admin</b>, <b>sales</b>, <b>accountant</b>, <b>warehouse</b>
-        </p>
       </form>
     </div>
   );
