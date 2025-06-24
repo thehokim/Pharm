@@ -4,7 +4,7 @@ import { LogIn } from "lucide-react";
 import { setUserRole, setToken, BASE_URL } from "../utils/auth";
 
 const Login = () => {
-  const [login, setLogin] = useState("");
+  const [username, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
@@ -12,12 +12,12 @@ const Login = () => {
     e.preventDefault();
 
     try {
-      const response = await fetch(`${BASE_URL}/auth/token`, {
+      const response = await fetch(`${BASE_URL}/api/auth/token`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ login, password }),
+        body: JSON.stringify({ username, password }),
       });
 
       if (!response.ok) {
@@ -59,7 +59,7 @@ const Login = () => {
         <input
           type="text"
           placeholder="Логин"
-          value={login}
+          value={username}
           onChange={(e) => setLogin(e.target.value)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
           required

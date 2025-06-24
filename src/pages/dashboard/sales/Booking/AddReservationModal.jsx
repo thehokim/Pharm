@@ -5,7 +5,7 @@ import { BASE_URL } from "../../../../utils/auth";
 const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
   const [form, setForm] = useState({
     client_id: "",
-    status: "Ожидает",
+    status: "pending",
     total_amount: "",
     notes: "",
     items: [{ product_id: "", quantity: 1, price: "" }],
@@ -96,9 +96,10 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
             onChange={handleChange}
             className="w-full border border-gray-200 rounded-xl px-4 py-2"
           >
-            <option value="Ожидает">Ожидает</option>
-            <option value="Подтвержден">Подтвержден</option>
-            <option value="Отменён">Отменён</option>
+            <option value="pending">Ожидает</option>
+            <option value="confirmed">Подтвержден</option>
+            <option value="cancelled">Отменён</option>
+            <option value="completed">Заверщен</option>
           </select>
 
           <input

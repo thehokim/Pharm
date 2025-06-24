@@ -5,7 +5,7 @@ import { BASE_URL } from "../../../../utils/auth";
 const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
   const [form, setForm] = useState({
     client_id: "",
-    status: "Ожидает",
+    status: "pending",
     total_amount: "",
     notes: "",
     items: [{ product_id: "", quantity: 1, price: "" }],
@@ -75,7 +75,10 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
   return (
     <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
       <div className="bg-white w-full max-w-3xl p-6 rounded-xl relative">
-        <button onClick={onClose} className="absolute top-4 right-4 text-gray-500 hover:text-black">
+        <button
+          onClick={onClose}
+          className="absolute top-4 right-4 text-gray-500 hover:text-black"
+        >
           <X />
         </button>
         <h2 className="text-xl font-semibold mb-4">Добавить бронирование</h2>
@@ -96,9 +99,10 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
             onChange={handleChange}
             className="w-full border border-gray-200 rounded-xl px-4 py-2"
           >
-            <option value="Ожидает">Ожидает</option>
-            <option value="Подтвержден">Подтвержден</option>
-            <option value="Отменён">Отменён</option>
+            <option value="pending">Ожидает</option>
+            <option value="confirmed">Подтвержден</option>
+            <option value="cancelled">Отменён</option>
+            <option value="completed">Заверщен</option>
           </select>
 
           <input
@@ -127,7 +131,9 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
                   type="number"
                   placeholder="Product ID"
                   value={item.product_id}
-                  onChange={(e) => handleItemChange(index, "product_id", e.target.value)}
+                  onChange={(e) =>
+                    handleItemChange(index, "product_id", e.target.value)
+                  }
                   className="border border-gray-200 rounded-xl px-3 py-2"
                   required
                 />
@@ -135,7 +141,9 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
                   type="number"
                   placeholder="Количество"
                   value={item.quantity}
-                  onChange={(e) => handleItemChange(index, "quantity", e.target.value)}
+                  onChange={(e) =>
+                    handleItemChange(index, "quantity", e.target.value)
+                  }
                   className="border border-gray-200 rounded-xl px-3 py-2"
                   required
                 />
@@ -143,7 +151,9 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
                   type="number"
                   placeholder="Цена"
                   value={item.price}
-                  onChange={(e) => handleItemChange(index, "price", e.target.value)}
+                  onChange={(e) =>
+                    handleItemChange(index, "price", e.target.value)
+                  }
                   className="border border-gray-200 rounded-xl px-3 py-2"
                   required
                 />
@@ -169,7 +179,10 @@ const AddReservationModal = ({ isOpen, onClose, onAdd }) => {
             </button>
           </div>
 
-          <button type="submit" className="w-full bg-blue-600 text-white py-2 rounded-xl">
+          <button
+            type="submit"
+            className="w-full bg-blue-600 text-white py-2 rounded-xl"
+          >
             Сохранить
           </button>
         </form>

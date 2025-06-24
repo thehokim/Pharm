@@ -16,7 +16,7 @@ const AddManagerModal = ({ onClose, onAdd }) => {
     const newManager = {
       full_name: fullName,
       username,
-      role: "manager",
+      role: "sales",
       password,
     };
 

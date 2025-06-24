@@ -83,10 +83,12 @@ const Booking = () => {
                 <td className="px-6 py-4">
                   <span
                     className={`px-3 py-1 text-xs font-medium rounded-full ${
-                      item.status === "Подтвержден"
-                        ? "bg-green-100 text-green-700"
-                        : item.status === "Ожидает"
+                      item.status === "confirmed"
+                        ? "bg-blue-100 text-blue-700"
+                        : item.status === "pending"
                         ? "bg-yellow-100 text-yellow-700"
+                        : item.status === "completed"
+                        ? "bg-green-100 text-green-700"
                         : "bg-red-100 text-red-700"
                     }`}
                   >
