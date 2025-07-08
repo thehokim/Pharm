@@ -1,9 +1,11 @@
 import { BarChart3Icon, Bell } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 
 const DashboardHeader = () => {
   const [hasUnreadNotifications, setHasUnreadNotifications] = useState(false);
+  const { t } = useTranslation("sales_home");
 
   useEffect(() => {
     const wasViewed = localStorage.getItem("notifications_read") === "true";
@@ -15,7 +17,7 @@ const DashboardHeader = () => {
       <div className="flex items-center gap-2">
         <BarChart3Icon />
         <h2 className="text-2xl font-semibold text-gray-800">
-          Управление фармацевтикой
+          {t("dashboard_title")}
         </h2>
       </div>
       <div className="flex items-center gap-2">

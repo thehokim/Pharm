@@ -1,0 +1,50 @@
+{
+  "addManagerModal": {
+    "title": "Добавить менеджера",
+    "fullName": "ФИО",
+    "username": "Логин",
+    "password": "Пароль",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "fillAll": "Пожалуйста, заполните все поля.",
+    "error": "Ошибка при добавлении менеджера"
+  },
+  "debtList": {
+    "title": "Задолженности",
+    "overdue": "Просрочено: {{days}} дней",
+    "showMore": "Показать ещё",
+    "showLess": "Скрыть"
+  },
+  "editManagers": {
+    "title": "Редактировать менеджеров",
+    "placeholder": "Имя Фамилия",
+    "delete": "Удалить",
+    "cancel": "Отмена",
+    "save": "Сохранить",
+    "deleteError": "Ошибка удаления: {{message}}",
+    "saveError": "Ошибка сохранения: {{message}}"
+  },
+  "home": {
+    "title": "Управление фармацевтикой",
+    "totalIncome": "Общий доход",
+    "soum": "сум",
+    "today": "Сегодня",
+    "products": "Товары",
+    "purchase": "Закуп",
+    "sales": "Продажа",
+    "clients": "Клиенты",
+    "managers": "Менеджеры",
+    "addManager": "Добавить менеджера",
+    "editManagers": "Редактировать"
+  },
+  "monthly": {
+    "title": "Ежемесячный доход",
+    "income": "Доход"
+  },
+  "notifications": {
+    "title": "Уведомления",
+    "loading": "Загрузка уведомлений...",
+    "empty": "Нет уведомлений",
+    "loadError": "Ошибка загрузки уведомлений"
+  }
+}

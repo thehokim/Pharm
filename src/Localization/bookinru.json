@@ -1,0 +1,71 @@
+{
+  "reservation": {
+    "add": "Добавить бронирование",
+    "client_full_name": "Имя клиента",
+    "status": "Статус",
+    "total": "Общая сумма",
+    "notes": "Заметки",
+    "products": "Товары",
+    "productId": "ID товара",
+    "quantity": "Количество",
+    "price": "Цена",
+    "delete": "Удалить",
+    "addProduct": "+ Добавить товар",
+    "save": "Сохранить",
+    "selectProduct": "Товар",
+    "statuses": {
+      "pending": "Ожидает",
+      "confirmed": "Подтвержден",
+      "cancelled": "Отменён",
+      "completed": "Завершен"
+    }
+  },
+  "booking": {
+    "title": "Бронирование",
+    "search": "Поиск по статусу, клиенту, дате, сумме...",
+    "add": "Добавить бронирование",
+    "client_full_name": "Клиент",
+    "date": "Дата",
+    "status": "Статус",
+    "sum": "Сумма",
+    "actions": "Действия",
+    "totalSum": "Общая сумма",
+    "noData": "Нет данных",
+    "statuses": {
+      "pending": "Ожидает",
+      "confirmed": "Подтвержден",
+      "completed": "Завершен",
+      "cancelled": "Отменён"
+    }
+  },
+  "deleteReservation": {
+    "title": "Удалить бронирование",
+    "confirm": "Вы уверены, что хотите удалить бронирование клиента <1>{{client_full_name}}</1>?",
+    "cancel": "Отмена",
+    "delete": "Удалить",
+    "error": "Ошибка при удалении бронирования"
+  },
+  "dropdownMenu": {
+    "edit": "Редактировать",
+    "delete": "Удалить"
+  },
+  "editReservation": {
+    "title": "Редактировать бронирование",
+    "client_full_name": "Имя клиента",
+    "status": "Статус",
+    "statuses": {
+      "pending": "Ожидает",
+      "confirmed": "Подтвержден",
+      "cancelled": "Отменён"
+    },
+    "sum": "Сумма",
+    "notes": "Заметки",
+    "productId": "Product ID",
+    "quantity": "Количество",
+    "price": "Цена",
+    "save": "Сохранить",
+    "error": "Ошибка при обновлении бронирования"
+  },
+  "delete_sum":"сум"
+}
+

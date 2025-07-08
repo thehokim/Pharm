@@ -7,18 +7,21 @@ import {
   ChartCandlestick,
   MoreVertical,
   PencilIcon,
+  Settings,
   User,
   UserPlus2,
   Users,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import AddManagerModal from "./AddManagerModal";
 import EditManagersModal from "./EditManagersModal";
 import MonthlyChart from "./MonthlyChart";
 import DebtList from "./DebtList";
-import PopupNotification from "../PopupNotification";
+import PopupNotification from "../Notif/PopupNotification";
 import { BASE_URL } from "../../../../utils/auth";
 
 const Home = () => {
+  const { t } = useTranslation("home");
   const [menuOpen, setMenuOpen] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
@@ -35,9 +38,11 @@ const Home = () => {
   const [clientsCount, setClientsCount] = useState(0);
   const [chartData, setChartData] = useState([]);
   const [debts, setDebts] = useState([]);
-  const [activeOrders] = useState(); // пока мок, позже заменить на API
+  const [activeOrders] = useState();
 
   const token = localStorage.getItem("token");
+
+  
 
   useEffect(() => {
     fetchIncome();
@@ -45,6 +50,7 @@ const Home = () => {
     fetchClients();
     fetchManagers();
     fetchDebts();
+    // eslint-disable-next-line
   }, []);
 
   const fetchIncome = async () => {
@@ -80,38 +86,46 @@ const Home = () => {
     }
   };
 
-  const fetchProducts = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/products/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      const count = data.length;
-      const totalIncoming = data.reduce(
-        (sum, p) => sum + (p.purchase_price || 0),
-        0
-      );
-      const totalOutgoing = data.reduce(
-        (sum, p) => sum + (p.selling_price || 0),
-        0
-      );
-      setProductStats({ count, totalIncoming, totalOutgoing });
-    } catch (err) {
-      console.error("Ошибка загрузки товаров:", err);
-    }
-  };
+const fetchProducts = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/products/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const data = await res.json();
+    const arr = data.data || []; // <-- Правильно!
 
-  const fetchClients = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/clients/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      setClientsCount(data.length);
-    } catch (err) {
-      console.error("Ошибка загрузки клиентов:", err);
-    }
-  };
+    // Оставляем только is_medicine: true
+    const medicines = arr.filter((p) => p.is_medicine === true);
+
+    const count = medicines.length;
+    const totalIncoming = medicines.reduce(
+      (sum, p) => sum + (p.purchase_price || 0),
+      0
+    );
+    const totalOutgoing = medicines.reduce(
+      (sum, p) => sum + (p.selling_price || 0),
+      0
+    );
+    setProductStats({ count, totalIncoming, totalOutgoing });
+  } catch (err) {
+    console.error("Ошибка загрузки товаров:", err);
+  }
+};
+
+
+
+const fetchClients = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/clients/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await res.json();
+    setClientsCount((result.data || []).length);
+  } catch (err) {
+    console.error("Ошибка загрузки клиентов:", err);
+  }
+};
+
 
   const fetchManagers = async () => {
     try {
@@ -130,24 +144,26 @@ const Home = () => {
     }
   };
 
-  const fetchDebts = async () => {
-    try {
-      const res = await fetch(`${BASE_URL}/api/clients/`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
-      const debtsFiltered = data
-        .filter((c) => c.debt > 0)
-        .map((c) => ({
-          name: c.name,
-          days: Math.floor(Math.random() * 20) + 5,
-          sum: c.debt.toLocaleString(),
-        }));
-      setDebts(debtsFiltered);
-    } catch (err) {
-      console.error("Ошибка загрузки долгов:", err);
-    }
-  };
+const fetchDebts = async () => {
+  try {
+    const res = await fetch(`${BASE_URL}/api/clients/`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    const result = await res.json();
+    const arr = result.data || []; // <-- вот так
+    const debtsFiltered = arr
+      .filter((c) => c.debt > 0)
+      .map((c) => ({
+        name: c.name,
+        days: Math.floor(Math.random() * 20) + 5,
+        sum: c.debt.toLocaleString(),
+      }));
+    setDebts(debtsFiltered);
+  } catch (err) {
+    console.error("Ошибка загрузки долгов:", err);
+  }
+};
+
 
   useEffect(() => {
     const wasViewed = localStorage.getItem("notifications_read") === "true";
@@ -184,7 +200,7 @@ const Home = () => {
           showPopup({
             title: n.title,
             message: n.message,
-            type: n.type || "info", // default fallback
+            type: n.type || "info",
           });
         });
       } catch (err) {
@@ -207,9 +223,11 @@ const Home = () => {
     <div className="p-0 space-y-4 bg-gray-50">
       <div className="flex items-center justify-between bg-white p-4 rounded-xl">
         <div className="flex items-center gap-2">
-          <BarChart3Icon />
+          <div className="p-2 rounded-full bg-indigo-100">
+          <BarChart3Icon className="text-indigo-700"/>
+          </div>
           <h2 className="text-2xl font-semibold text-gray-800">
-            Управление фармацевтикой
+            {t("home.title")}
           </h2>
         </div>
         <div className="flex items-center gap-2">
@@ -230,7 +248,7 @@ const Home = () => {
           </Link>
           <Link to="/admin/settings">
             <div className="bg-blue-100 rounded-full w-10 h-10 flex items-center text-blue-600 justify-center">
-              AD
+              <Settings/>
             </div>
           </Link>
         </div>
@@ -242,13 +260,13 @@ const Home = () => {
             <div className="bg-blue-100 text-blue-600 p-2 rounded-full">
               <BarChart2 className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-medium text-gray-600">Общий доход</h3>
+            <h3 className="text-sm font-medium text-gray-600">{t("home.totalIncome")}</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
-            {totalIncome.toLocaleString()} сум
+            {totalIncome.toLocaleString()} {t("home.soum")}
           </div>
           <div className="text-sm text-green-500">
-            Сегодня: +{todayIncome.toLocaleString()} сум
+            {t("home.today")}: +{todayIncome.toLocaleString()} {t("home.soum")}
           </div>
         </div>
 
@@ -260,15 +278,15 @@ const Home = () => {
             <div className="bg-blue-100 text-blue-600 p-2 rounded-full">
               <ChartCandlestick className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-medium text-gray-600">Товары</h3>
+            <h3 className="text-sm font-medium text-gray-600">{t("home.products")}</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
             {productStats.count.toLocaleString()}
           </div>
           <div className="text-sm text-gray-500">
-            <div>Закуп: {productStats.totalIncoming.toLocaleString()} сум</div>
+            <div>{t("home.purchase")}: {productStats.totalIncoming.toLocaleString()} {t("home.soum")}</div>
             <div>
-              Продажа: {productStats.totalOutgoing.toLocaleString()} сум
+              {t("home.sales")}: {productStats.totalOutgoing.toLocaleString()} {t("home.soum")}
             </div>
           </div>
         </Link>
@@ -281,7 +299,7 @@ const Home = () => {
             <div className="bg-blue-100 text-blue-600 p-2 rounded-full">
               <User className="w-5 h-5" />
             </div>
-            <h3 className="text-sm font-medium text-gray-600">Клиенты</h3>
+            <h3 className="text-sm font-medium text-gray-600">{t("home.clients")}</h3>
           </div>
           <div className="text-2xl font-bold text-gray-800">
             {clientsCount.toLocaleString()}
@@ -294,7 +312,7 @@ const Home = () => {
               <div className="bg-blue-100 text-blue-600 p-2 rounded-full">
                 <Users className="w-5 h-5" />
               </div>
-              <h3 className="text-sm font-medium text-gray-600">Менеджеры</h3>
+              <h3 className="text-sm font-medium text-gray-600">{t("home.managers")}</h3>
             </div>
             <button
               className="bg-blue-500 w-6 h-6 text-white rounded-full flex items-center justify-center"
@@ -314,7 +332,7 @@ const Home = () => {
                 className="w-full px-4 py-2 text-left hover:text-blue-500 hover:bg-blue-50 flex items-center gap-2"
               >
                 <UserPlus2 className="w-5 h-5" />
-                Добавить менеджера
+                {t("home.addManager")}
               </button>
               <button
                 onClick={() => {
@@ -324,7 +342,7 @@ const Home = () => {
                 className="w-full px-4 py-2 text-left hover:text-blue-500 hover:bg-blue-50 flex items-center gap-2"
               >
                 <PencilIcon className="w-5 h-5" />
-                Редактировать
+                {t("home.editManagers")}
               </button>
             </div>
           )}
@@ -334,7 +352,7 @@ const Home = () => {
               <li key={i} className="flex justify-between text-gray-700">
                 <span>{m.fullName}</span>
                 <span className="text-green-600 font-medium">
-                  +{m.profit.toLocaleString()} сум
+                  +{m.profit.toLocaleString()} {t("home.soum")}
                 </span>
               </li>
             ))}

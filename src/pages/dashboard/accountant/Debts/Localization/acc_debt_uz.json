@@ -1,0 +1,17 @@
+{
+  "title": "Mijozlarning qarzlari",
+  "search_placeholder": "Mijoz yoki summa bo‘yicha qidirish",
+  "no_data": "Qarzlar haqida maʼlumot yoʻq",
+  "currency": "so'm",
+  "total_debt": "Umumiy qarzdorlik",
+  "total_debted_clients": "Umumiy qarzdorlar",
+  "center_debt":"O'rtacha qarzdorliklar",
+  "high":"Yuqori xavf",
+  "total":"Umumiy",
+  "normal_risk":"O'rtacha xavf",
+  "low_risk":"Xavfsiz",
+  "soum":"Summa",
+  "client":"Mijoz",
+  "contact":"Aloqa",
+  "details":"Tafsilotlar"
+}

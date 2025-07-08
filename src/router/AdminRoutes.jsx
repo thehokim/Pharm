@@ -6,14 +6,13 @@ import Home from "../pages/dashboard/admin/Home/Home";
 import Clients from "../pages/dashboard/admin/Client/Clients";
 import Suppliers from "../pages/dashboard/admin/Supplier/Suppliers";
 import Orders from "../pages/dashboard/admin/Order/Orders";
-import Logs from "../pages/dashboard/admin/Logs";
-import Reports from "../pages/dashboard/admin/Reports";
-import Settings from "../pages/dashboard/admin/Settings";
+import Logs from "../pages/dashboard/admin/Logs/Logs";
+import Settings from "../pages/dashboard/admin/Settings/Settings";
 import Booking from "../pages/dashboard/admin/Booking/Booking";
 import Products from "../pages/dashboard/admin/Product/Products";
 import Users from "../pages/dashboard/admin/User/Users";
 import Notifications from "../pages/dashboard/admin/Home/Notifications";
-import Analytics from "../pages/dashboard/admin/Analytics";
+import Analytics from "../pages/dashboard/admin/Analytics/Analytics";
 
 const AdminRoutes = () => {
   return (
@@ -29,7 +28,6 @@ const AdminRoutes = () => {
           <Route path="suppliers" element={<Suppliers />} />
           <Route path="orders" element={<Orders />} />
           <Route path="logs" element={<Logs />} />
-          <Route path="reports" element={<Reports />} />
           <Route path="settings" element={<Settings />} />
           <Route path="notifications" element={<Notifications />} />
           <Route path="booking" element={<Booking />} />

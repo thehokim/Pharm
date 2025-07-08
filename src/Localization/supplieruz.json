@@ -1,0 +1,21 @@
+{
+  "suppliers": "Yetkazib beruvchilar",
+  "add_supplier": "Yetkazib beruvchi qoʻshish",
+  "edit_supplier": "Yetkazib beruvchini tahrirlash",
+  "delete_supplier": "Yetkazib beruvchini oʻchirish",
+  "delete_supplier_question": "Siz rostdan ham yetkazib beruvchi {{name}} ni oʻchirib tashlamoqchimisiz?",
+  "name": "Ismi",
+  "contact_person": "Aloqa shaxsi",
+  "phones": "Telefon",
+  "email": "Email",
+  "address": "Manzil",
+  "debt": "Qarzdorlik",
+  "actions": "Amallar",
+  "search_placeholder": "Barcha maydonlar boʻyicha qidiruv...",
+  "no_data": "Maʼlumot yoʻq",
+  "save": "Saqlash",
+  "cancel": "Bekor qilish",
+  "delete": "Oʻchirish",
+  "add": "Qoʻshish",
+  "soum":"so'm"
+}

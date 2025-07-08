@@ -3,14 +3,14 @@ import { Routes, Route } from "react-router-dom";
 import SalesSidebar from "../components/layout/SalesSidebar";
 
 import Clients from "../pages/dashboard/sales/Client/Clients";
-import Analytics from "../pages/dashboard/sales/Analytics";
+import Analytics from "../pages/dashboard/sales/Analytics/Analytics";
 import Home from "../pages/dashboard/sales/Home/Home";
 import Suppliers from "../pages/dashboard/sales/Supplier/Suppliers";
 import Products from "../pages/dashboard/sales/Product/Products";
 import Booking from "../pages/dashboard/sales/Booking/Booking";
 import Orders from "../pages/dashboard/sales/Order/Orders";
 import Notifications from "../pages/dashboard/sales/Home/Notifications";
-import Settings from "../pages/dashboard/sales/Settings";
+import Settings from "../pages/dashboard/sales/Settings/Settings";
 
 const SalesRoutes = () => {
   return (

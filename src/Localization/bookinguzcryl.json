@@ -1,0 +1,70 @@
+{
+  "reservation": {
+    "add": "Бандлов қўшиш",
+    "client_full_name": "Мижоз",
+    "status": "Ҳолати",
+    "total": "Умумий сумма",
+    "notes": "Изоҳлар",
+    "products": "Маҳсулотлар",
+    "productId": "Маҳсулот ID",
+    "quantity": "Миқдори",
+    "price": "Нархи",
+    "delete": "Ўчириш",
+    "addProduct": "+ Маҳсулот қўшиш",
+    "selectProduct": "Маҳсулот",
+    "save": "Сақлаш",
+    "statuses": {
+      "pending": "Кутилмоқда",
+      "confirmed": "Тасдиқланган",
+      "cancelled": "Бекор қилинган",
+      "completed": "Тугалланган"
+    }
+  },
+  "booking": {
+    "title": "Bandlovlar",
+    "search": "Status, mijoz, sana, summa bo'yicha qidiruv...",
+    "add": "Bandlov qo‘shish",
+    "client_full_name": "Mijoz",
+    "date": "Sana",
+    "status": "Holat",
+    "sum": "Summasi",
+    "actions": "Amallar",
+    "totalSum": "Umumiy summa",
+    "noData": "Ma'lumot yo‘q",
+    "statuses": {
+      "pending": "Kutilmoqda",
+      "confirmed": "Tasdiqlangan",
+      "completed": "Tugallangan",
+      "cancelled": "Bekor qilingan"
+    }
+  },
+  "deleteReservation": {
+    "title": "Бандловни ўчириш",
+    "confirm": "Мижознинг <1>{{client_full_name}}</1> бандловини ўчиришга ишончингиз комилми?",
+    "cancel": "Бекор қилиш",
+    "delete": "Ўчириш",
+    "error": "Бандловни ўчиришда хатолик"
+  },
+  "dropdownMenu": {
+    "edit": "Таҳрирлаш",
+    "delete": "Ўчириш"
+  },
+  "editReservation": {
+    "title": "Бандловни таҳрирлаш",
+    "client_full_name": "Мижоз",
+    "status": "Ҳолати",
+    "statuses": {
+      "pending": "Кутилмоқда",
+      "confirmed": "Тасдиқланган",
+      "cancelled": "Бекор қилинган"
+    },
+    "sum": "Сумма",
+    "notes": "Изоҳ",
+    "productId": "Маҳсулот ID",
+    "quantity": "Миқдори",
+    "price": "Нархи",
+    "save": "Сақлаш",
+    "error": "Бандловни янгилашда хатолик"
+  },
+  "delete_sum":"сўм"
+}

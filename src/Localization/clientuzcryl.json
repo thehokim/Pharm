@@ -1,0 +1,44 @@
+{
+  "addClientModal": {
+    "title": "Мижоз қўшиш",
+    "name": "Мижоз номи",
+    "contactPerson": "Алоқа учун шахс",
+    "phone": "Телефон",
+    "username": "Фойдаланувчи номи",
+    "address": "Манзил",
+    "debt": "Қарздорлик",
+    "submit": "Қўшиш"
+  },
+  "clients": {
+    "title": "Мижозлар рўйхати",
+    "addClient": "Мижоз қўшиш",
+    "search": "Барча майдонлар бўйича қидириш...",
+    "table": {
+      "name": "Исми",
+      "phone": "Телефон",
+      "address": "Манзил",
+      "contactPerson": "Алоқа учун шахс",
+      "debt": "Қарздорлик",
+      "actions": "Амаллар"
+    },
+    "noData": "Маълумот йўқ"
+  },
+  "deleteClientModal": {
+    "title": "Мижозни ўчириш",
+    "question": "Ҳақиқатан ҳам мижозни ўчирмоқчимисиз: {{name}}?",
+    "cancel": "Бекор қилиш",
+    "delete": "Ўчириш",
+    "noName": "Номсиз"
+  },
+  "editClientModal": {
+    "title": "Мижозни таҳрирлаш",
+    "name": "Мижоз номи",
+    "contactPerson": "Алоқа шахси",
+    "phones": "Телефон",
+    "username": "Фойдаланувчи номи",
+    "address": "Манзил",
+    "debt": "Қарздорлик",
+    "save": "Сақлаш",
+    "delete_sum":"сўм"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "title": "Mahsulotlar analitikasi",
+  "popular": "Koʻp sotiladiganlar",
+  "rare": "Kam sotiladiganlar",
+  "product": "Mahsulot",
+  "sales": "Sotuvlar",
+  "noData": "Maʼlumot yoʻq",
+  "total": "Jami",
+  "totalSales": "{{count}} ta sotuv"
+}

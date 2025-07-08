@@ -1,0 +1,15 @@
+{
+  "companyName": "Max Inter Trade",
+  "dashboard": "Панель управления",
+  "booking": "Бронирование",
+  "users": "Пользователи",
+  "analytics": "Аналитика",
+  "products": "Товары",
+  "clients": "Клиенты",
+  "suppliers": "Поставщики",
+  "orders": "Заказы",
+  "logs": "Журнал действий",
+  "parser": "Парсер FOM.UZ",
+  "notifications": "Уведомления",
+  "settings": "Настройки"
+}

@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { BASE_URL } from "../../../../utils/auth";
+import { useTranslation } from "react-i18next";
 
 const AddManagerModal = ({ onClose, onAdd }) => {
+  const { t } = useTranslation("home");
   const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -9,7 +11,7 @@ const AddManagerModal = ({ onClose, onAdd }) => {
 
   const handleSave = async () => {
     if (!fullName.trim() || !username.trim() || !password.trim()) {
-      alert("Пожалуйста, заполните все поля.");
+      alert(t("addManagerModal.fillAll"));
       return;
     }
 
@@ -30,40 +32,40 @@ const AddManagerModal = ({ onClose, onAdd }) => {
         body: JSON.stringify(newManager),
       });
 
-      if (!res.ok) throw new Error("Ошибка при добавлении менеджера");
+      if (!res.ok) throw new Error(t("addManagerModal.error"));
 
       const data = await res.json();
       if (onAdd) onAdd({ fullName: data.full_name, profit: 0 });
       onClose();
     } catch (err) {
-      alert("Ошибка: " + err.message);
+      alert(t("addManagerModal.error") + ": " + err.message);
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-4 w-full max-w-md space-y-4">
-        <h2 className="text-lg font-semibold">Добавить менеджера</h2>
+        <h2 className="text-lg font-semibold">{t("addManagerModal.title")}</h2>
 
         <input
           type="text"
           value={fullName}
           onChange={(e) => setFullName(e.target.value)}
-          placeholder="ФИО"
+          placeholder={t("addManagerModal.fullName")}
           className="w-full border border-gray-100 px-3 py-3 rounded-xl"
         />
         <input
           type="text"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
-          placeholder="Логин"
+          placeholder={t("addManagerModal.username")}
           className="w-full border border-gray-100 px-3 py-3 rounded-xl"
         />
         <input
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Пароль"
+          placeholder={t("addManagerModal.password")}
           className="w-full border border-gray-100 px-3 py-3 rounded-xl"
         />
 
@@ -72,13 +74,13 @@ const AddManagerModal = ({ onClose, onAdd }) => {
             onClick={onClose}
             className="text-gray-500 bg-gray-50 border border-gray-100 hover:bg-gray-100 px-4 py-3 rounded-xl w-full"
           >
-            Отмена
+            {t("addManagerModal.cancel")}
           </button>
           <button
             onClick={handleSave}
             className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-xl w-full"
           >
-            Сохранить
+            {t("addManagerModal.save")}
           </button>
         </div>
       </div>

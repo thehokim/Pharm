@@ -1,0 +1,24 @@
+{
+  "reports_title": "Hisobotlar",
+  "download_report": "Hisobotni yuklab olish",
+  "search_placeholder": "Hisobotlar bo'yicha qidirish...",
+  "choose_report": "Hisobotni tanlang",
+  "choose_start_date": "Boshlanish sanasini kiriting",
+  "format": "Format",
+  "report": "Hisobot",
+  "period_from": "Davr boshidan",
+  "period_to": "gacha",
+  "download_btn": "Yuklab olish",
+  "user_id": "Foydalanuvchi",
+  "role": "Rol",
+  "action": "Harakat",
+  "timestamp": "Sana va vaqt",
+  "no_reports": "Kiritilgan parametrlar bo'yicha hisobotlar yo'q",
+  "download_error": "Hisobotni yuklab bo'lmadi",
+
+  "sales_overview": "Sotuvlar sharhi",
+  "top_products": "Eng ko'p sotilgan mahsulotlar",
+  "client_debts": "Mijozlar qarzi",
+  "stock_alerts": "Ombordagi qoldiq va kritik zahira",
+  "user_activity": "Foydalanuvchi faolligi"
+}

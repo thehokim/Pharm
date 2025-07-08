@@ -1,0 +1,17 @@
+{
+  "tax_obligations": "Soliq majburiyatlari",
+  "search_placeholder": "Turi, summa yoki holati bo‘yicha qidiruv",
+  "add_btn": "Qo'shish",
+  "type": "Soliq turi",
+  "percentage": "Foiz (%)",
+  "amount": "Summasi",
+  "due_date": "To'lash muddati",
+  "status": "Holati",
+  "urgent": "Zudlik bilan",
+  "days_left": "{{days}} kun qoldi",
+  "not_found": "Hech narsa topilmadi",
+  "modal_title": "Yangi soliq",
+  "choose_type": "— Turini tanlang —",
+  "save": "Saqlash"
+}
+

@@ -1,0 +1,27 @@
+{
+  "dashboard_title": "Buxgalteriya boshqaruv paneli",
+  "revenue": "Umumiy daromad",
+  "statements": "Bajarilmagan chiqimlar",
+  "debt": "Qarzdorliklar",
+  "tax": "Yaqin soliq",
+  "days_left": "kundan so‘ng",
+  "load_error": "Maʼlumotlarni yuklashda xatolik",
+  "sum": "so‘m",
+  "no_data": "-",
+  "month_growth": "{{value}}% oy davomida",
+  "from_yesterday": "{{value}} kecha bilan solishtirganda",
+  "months": {
+    "yanvar": "Yanvar",
+    "fevral": "Fevral",
+    "mart": "Mart",
+    "aprel": "Aprel",
+    "may": "May",
+    "iyun": "Iyun",
+    "iyul": "Iyul",
+    "avgust": "Avgust",
+    "sentabr": "Sentabr",
+    "oktabr": "Oktabr",
+    "noyabr": "Noyabr",
+    "dekabr": "Dekabr"
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "reports_title": "Отчёты",
+  "download_report": "Скачать отчёт",
+  "search_placeholder": "Поиск по отчётам...",
+  "choose_report": "Выберите отчёт",
+  "choose_start_date": "Укажите дату начала",
+  "format": "Формат",
+  "report": "Отчёт",
+  "period_from": "Период с",
+  "period_to": "по",
+  "download_btn": "Скачать",
+  "user_id": "Пользователь",
+  "role": "Роль",
+  "action": "Действие",
+  "timestamp": "Дата и время",
+  "no_reports": "Нет отчётов по заданным условиям",
+  "download_error": "Не удалось скачать отчёт",
+
+  "sales_overview": "Обзор продаж",
+  "top_products": "Топ продаваемых товаров",
+  "client_debts": "Задолженности клиентов",
+  "stock_alerts": "Остатки и критический запас",
+  "user_activity": "Активность пользователей"
+}

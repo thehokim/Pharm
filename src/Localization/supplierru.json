@@ -1,0 +1,21 @@
+{
+  "suppliers": "Поставщики",
+  "add_supplier": "Добавить поставщика",
+  "edit_supplier": "Редактировать поставщика",
+  "delete_supplier": "Удалить поставщика",
+  "delete_supplier_question": "Вы уверены, что хотите удалить поставщика {{name}}?",
+  "name": "Имя",
+  "contact_person": "Контактное лицо",
+  "phones": "Телефон",
+  "email": "Email",
+  "address": "Адрес",
+  "debt": "Задолженность",
+  "actions": "Действия",
+  "search_placeholder": "Поиск по всем полям...",
+  "no_data": "Нет данных",
+  "save": "Сохранить",
+  "cancel": "Отмена",
+  "delete": "Удалить",
+  "add": "Добавить",
+  "soum":"сум"
+}

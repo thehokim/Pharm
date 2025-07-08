@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { X } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
+  const { t } = useTranslation("client");
   const [form, setForm] = useState({
     name: "",
     contact_person: "",
-    phone: "",
+    phones: "",
     username: "",
     address: "",
     debt: "",
@@ -16,7 +18,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
       setForm({
         name: client.name || "",
         contact_person: client.contact_person || "",
-        phone: client.phone || "",
+        phones: client.phones || "",
         username: client.username || "",
         address: client.address || "",
         debt: client.debt ?? 0,
@@ -39,9 +41,9 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-3xl">
+      <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
         <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">Редактировать клиента</h2>
+          <h2 className="text-xl font-semibold">{t("editClientModal.title")}</h2>
           <button onClick={onClose} className="text-gray-600 hover:text-black">
             <X className="w-5 h-5" />
           </button>
@@ -50,7 +52,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
         <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
           <input
             name="name"
-            placeholder="Название клиента"
+            placeholder={t("editClientModal.name")}
             value={form.name}
             onChange={handleChange}
             required
@@ -58,21 +60,21 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
           />
           <input
             name="contact_person"
-            placeholder="Контактное лицо"
+            placeholder={t("editClientModal.contactPerson")}
             value={form.contact_person}
             onChange={handleChange}
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
           />
           <input
-            name="phone"
-            placeholder="Телефон"
-            value={form.phone}
+            name="phones"
+            placeholder={t("editClientModal.phones")}
+            value={form.phones}
             onChange={handleChange}
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
           />
           <input
             name="username"
-            placeholder="Имя пользователя"
+            placeholder={t("editClientModal.username")}
             value={form.username}
             onChange={handleChange}
             required
@@ -80,7 +82,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
           />
           <input
             name="address"
-            placeholder="Адрес"
+            placeholder={t("editClientModal.address")}
             value={form.address}
             onChange={handleChange}
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
@@ -88,7 +90,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
           <input
             name="debt"
             type="number"
-            placeholder="Задолженность"
+            placeholder={t("editClientModal.debt")}
             value={form.debt}
             onChange={handleChange}
             className="border border-gray-100 rounded-xl px-4 py-2 h-12"
@@ -97,7 +99,7 @@ const EditClientModal = ({ isOpen, onClose, client, onSubmit }) => {
             type="submit"
             className="col-span-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700"
           >
-            Сохранить
+            {t("editClientModal.save")}
           </button>
         </form>
       </div>

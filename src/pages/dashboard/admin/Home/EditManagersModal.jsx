@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import { Trash2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { BASE_URL } from "../../../../utils/auth";
 
 const EditManagersModal = ({ managers = [], onClose, onSave }) => {
+  const { t } = useTranslation("home");
   const [editedManagers, setEditedManagers] = useState(managers);
   const token = localStorage.getItem("token");
 
@@ -20,13 +22,13 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
         headers: { Authorization: `Bearer ${token}` },
       });
 
-      if (!res.ok) throw new Error("Ошибка удаления");
+      if (!res.ok) throw new Error("delete");
 
       const updated = [...editedManagers];
       updated.splice(index, 1);
       setEditedManagers(updated);
     } catch (err) {
-      alert("Ошибка удаления: " + err.message);
+      alert(t("editManagers.deleteError", { message: err.message }));
     }
   };
 
@@ -46,14 +48,14 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
       if (onSave) onSave(editedManagers);
       onClose();
     } catch (err) {
-      alert("Ошибка сохранения: " + err.message);
+      alert(t("editManagers.saveError", { message: err.message }));
     }
   };
 
   return (
     <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50">
       <div className="bg-white rounded-xl p-4 w-full max-w-lg space-y-2">
-        <h2 className="text-lg font-semibold">Редактировать менеджеров</h2>
+        <h2 className="text-lg font-semibold">{t("editManagers.title")}</h2>
 
         <div className="max-h-[60vh] overflow-y-auto">
           {editedManagers.map((manager, index) => (
@@ -62,13 +64,13 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
                 type="text"
                 value={manager.fullName}
                 onChange={(e) => handleChange(index, e.target.value)}
-                placeholder="Имя Фамилия"
+                placeholder={t("editManagers.placeholder")}
                 className="w-full px-4 py-3 border border-gray-100 rounded-xl"
               />
               <button
                 onClick={() => handleDelete(index)}
                 className="text-red-500 hover:text-red-700"
-                title="Удалить"
+                title={t("editManagers.delete")}
               >
                 <Trash2 className="w-5 h-5" />
               </button>
@@ -81,13 +83,13 @@ const EditManagersModal = ({ managers = [], onClose, onSave }) => {
             onClick={onClose}
             className="text-gray-500 px-4 py-3 border border-gray-100 bg-gray-50 hover:bg-gray-100 rounded-xl w-full"
           >
-            Отмена
+            {t("editManagers.cancel")}
           </button>
           <button
             onClick={handleSave}
             className="text-white px-4 py-3 bg-blue-500 hover:bg-blue-600 rounded-xl w-full"
           >
-            Сохранить
+            {t("editManagers.save")}
           </button>
         </div>
       </div>

@@ -4,9 +4,10 @@ import AccountantSidebar from "../components/layout/AccountantSidebar";
 
 import Home from "../pages/dashboard/accountant/Home/Home";
 import Transactions from "../pages/dashboard/accountant/Transactions";
-import Debts from "../pages/dashboard/accountant/Debts";
-import Taxes from "../pages/dashboard/accountant/Taxes";
-import Reports from "../pages/dashboard/accountant/Reports";
+import Debts from "../pages/dashboard/accountant/Debts/Debts";
+import Taxes from "../pages/dashboard/accountant/Taxes/Taxes";
+import Reports from "../pages/dashboard/accountant/Reports/Reports";
+import Settings from "../pages/dashboard/accountant/Settings/Settings";
 
 const AccountantRoutes = () => {
   return (
@@ -19,6 +20,7 @@ const AccountantRoutes = () => {
           <Route path="debts" element={<Debts />} />
           <Route path="taxes" element={<Taxes />} />
           <Route path="reports" element={<Reports />} />
+          <Route path="settings" element={<Settings />} />
         </Routes>
       </div>
     </div>

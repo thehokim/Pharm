@@ -12,28 +12,27 @@ import {
   BellDotIcon,
   Settings,
 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const menu = [
-  { label: "Панель управления", icon: <LayoutDashboard size={18} />, to: "" },
-  { label: "Аналитика", icon: <BarChart size={18} />, to: "analytics" },
-  { label: "Бронирование", icon: <CalendarCheck size={18} />, to: "booking" },
-  { label: "Поставщики", icon: <ClipboardList size={18} />, to: "suppliers" },
-  { label: "Товары", icon: <Package size={18} />, to: "products" },
-  { label: "Клиенты", icon: <Users size={18} />, to: "clients" },
-  { label: "Заказы", icon: <ShoppingCart size={18} />, to: "orders" },
-    {
-    label: "Уведомление",
-    icon: <BellDotIcon size={18} />,
-    to: "notifications",
-  },
-  { label: "Настройки", icon: <Settings size={18} />, to: "settings" },
-  ]
+  { labelKey: "dashboard", icon: <LayoutDashboard size={18} />, to: "" },
+  { labelKey: "analytics", icon: <BarChart size={18} />, to: "analytics" },
+  { labelKey: "booking", icon: <CalendarCheck size={18} />, to: "booking" },
+  { labelKey: "suppliers", icon: <ClipboardList size={18} />, to: "suppliers" },
+  { labelKey: "products", icon: <Package size={18} />, to: "products" },
+  { labelKey: "clients", icon: <Users size={18} />, to: "clients" },
+  { labelKey: "orders", icon: <ShoppingCart size={18} />, to: "orders" },
+  { labelKey: "notifications", icon: <BellDotIcon size={18} />, to: "notifications" },
+  { labelKey: "settings", icon: <Settings size={18} />, to: "settings" },
+];
 
 const SalesSidebar = () => {
+  const { t } = useTranslation("sidebar");
+
   return (
     <aside className="w-66 rounded-r-xl h-screen bg-white fixed top-0 left-0">
       <div className="p-4 text-lg font-bold border-b border-dashed border-gray-100 flex items-center justify-center gap-2">
-        <Circle /> Фармацевтика
+        <Circle /> {t("companyName")}
       </div>
       <nav className="flex flex-col gap-1 px-2 py-1">
         {menu.map((item, index) => (
@@ -50,7 +49,7 @@ const SalesSidebar = () => {
             end={item.to === ""}
           >
             {item.icon}
-            <span>{item.label}</span>
+            <span>{t(item.labelKey)}</span>
           </NavLink>
         ))}
       </nav>

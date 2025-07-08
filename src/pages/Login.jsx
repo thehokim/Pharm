@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { LogIn } from "lucide-react";
 import { setUserRole, setToken, BASE_URL } from "../utils/auth";
 
-const Login = () => {
+const Login = ({ onLogin }) => {
   const [username, setLogin] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
@@ -29,6 +29,8 @@ const Login = () => {
 
       setToken(access_token);
       setUserRole(role);
+
+      if (onLogin) onLogin(); // уведомляем App об изменении роли
 
       switch (role) {
         case "admin":

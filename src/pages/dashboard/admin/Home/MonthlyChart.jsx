@@ -9,16 +9,18 @@ import {
   LabelList,
   Cell,
 } from "recharts";
-import { Calendar1Icon, ChartColumnStacked } from "lucide-react";
+import { Calendar1Icon } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 // Кастомный тултип
 const CustomTooltip = ({ active, payload, label }) => {
+  const { t } = useTranslation();
   if (active && payload?.length) {
     return (
       <div className="bg-white border border-gray-200 rounded-lg p-2 text-sm">
         <p className="text-gray-700 font-semibold">{label}</p>
         <p className="text-indigo-600 font-medium">
-          Доход: {payload[0].value.toLocaleString()} сум
+          {t("monthly.income")}: {payload[0].value.toLocaleString()} {t("home.soum")}
         </p>
       </div>
     );
@@ -34,16 +36,21 @@ const getBarColor = (value, min, max) => {
 };
 
 const MonthlyChart = ({ data }) => {
+  const { t } = useTranslation("home");
   const amounts = data.map((item) => item.amount);
-  const max = Math.max(...amounts);
-  const min = Math.min(...amounts);
+  const max = Math.max(...amounts, 0);
+  const min = Math.min(...amounts, 0);
 
   return (
     <div className="bg-white rounded-2xl p-6 col-span-2">
-      <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
-        <Calendar1Icon className="w-5 h-5" />
-        Ежемесячный доход
-      </h2>
+      <div className="flex items-center  gap-3">
+          <div className="bg-indigo-100 rounded-full p-2">
+          <Calendar1Icon className="text-indigo-700" />
+          </div>
+          <span className="text-lg font-semibold text-gray-800">
+            {t("monthly.title")}
+          </span>
+        </div>
 
       <ResponsiveContainer width="100%" height={380}>
         <BarChart
@@ -66,7 +73,7 @@ const MonthlyChart = ({ data }) => {
             axisLine={false}
             tickLine={false}
             width={90}
-            interval={0} // ← Показывает все месяца
+            interval={0}
           />
           <Tooltip content={<CustomTooltip />} />
           <Bar
@@ -84,7 +91,7 @@ const MonthlyChart = ({ data }) => {
             <LabelList
               dataKey="amount"
               position="insideRight"
-              formatter={(val) => `${val.toLocaleString()} сум`}
+              formatter={(val) => `${val.toLocaleString()} ${t("home.soum")}`}
               fill="#fff"
               fontSize={12}
               style={{ fontWeight: 600 }}

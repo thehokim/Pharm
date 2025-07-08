@@ -1,0 +1,70 @@
+{
+  "reservation": {
+    "add": "Bandlov qo‘shish",
+    "client_full_name": "Mijoz",
+    "status": "Holati",
+    "total": "Umumiy summa",
+    "notes": "Izohlar",
+    "products": "Mahsulotlar",
+    "productId": "Mahsulot ID",
+    "quantity": "Miqdori",
+    "price": "Narxi",
+    "selectProduct": "Mahsulot",
+    "delete": "O‘chirish",
+    "addProduct": "+ Mahsulot qo‘shish",
+    "save": "Saqlash",
+    "statuses": {
+      "pending": "Kutilmoqda",
+      "confirmed": "Tasdiqlangan",
+      "cancelled": "Bekor qilingan",
+      "completed": "Tugallangan"
+    }
+  },
+  "booking": {
+    "title": "Bandlovlar",
+    "search": "Status, mijoz, sana, summa bo'yicha qidiruv...",
+    "add": "Bandlov qo‘shish",
+    "client_full_name": "Mijoz",
+    "date": "Sana",
+    "status": "Holat",
+    "sum": "Summasi",
+    "actions": "Amallar",
+    "totalSum": "Umumiy summa",
+    "noData": "Ma'lumot yo‘q",
+    "statuses": {
+      "pending": "Kutilmoqda",
+      "confirmed": "Tasdiqlangan",
+      "completed": "Tugallangan",
+      "cancelled": "Bekor qilingan"
+    }
+  },
+  "deleteReservation": {
+    "title": "Bandlovni o‘chirish",
+    "confirm": "<1>{{client_full_name}}</1> mijozning bandlovini o‘chirishga ishonchingiz komilmi?",
+    "cancel": "Bekor qilish",
+    "delete": "O‘chirish",
+    "error": "Bandlovni o‘chirishda xatolik"
+  },
+  "dropdownMenu": {
+    "edit": "Tahrirlash",
+    "delete": "O‘chirish"
+  },
+  "editReservation": {
+    "title": "Bandlovni tahrirlash",
+    "client_full_name": "Mijoz",
+    "status": "Holat",
+    "statuses": {
+      "pending": "Kutilmoqda",
+      "confirmed": "Tasdiqlangan",
+      "cancelled": "Bekor qilingan"
+    },
+    "sum": "Summa",
+    "notes": "Izoh",
+    "productId": "Mahsulot ID",
+    "quantity": "Miqdori",
+    "price": "Narxi",
+    "save": "Saqlash",
+    "error": "Bandlovni yangilashda xatolik"
+  },
+  "delete_sum":"so'm"
+}

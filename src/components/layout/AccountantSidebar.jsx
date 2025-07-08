@@ -7,6 +7,7 @@ import {
   Wallet,
   BarChart3,
   Circle,
+  Settings,
 } from "lucide-react";
 
 const menu = [
@@ -15,6 +16,7 @@ const menu = [
   { label: "Долги", icon: <CreditCard size={18} />, to: "debts" },
   { label: "Налоги", icon: <Wallet size={18} />, to: "taxes" },
   { label: "Отчёты", icon: <BarChart3 size={18} />, to: "reports" },
+  { label: "Настройки", icon: <Settings size={18} />, to: "settings" },
 ];
 
 const AccountantSidebar = () => {

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { CheckCircle, Info, AlertTriangle, XCircle, Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 import { BASE_URL } from "../../../../utils/auth";
 
 const Notifications = () => {
   const [notifications, setNotifications] = useState([]);
   const [loading, setLoading] = useState(true);
   const token = localStorage.getItem("token");
+  const { t } = useTranslation("sales_home");
 
   useEffect(() => {
     fetch(`${BASE_URL}/api/notifications/`, {
@@ -41,22 +43,24 @@ const Notifications = () => {
 
   return (
     <div className="bg-gray-50 min-h-screen p-6">
-      <div className="bg-white p-6 rounded-xl shadow-sm">
-        <h2 className="text-2xl font-semibold text-gray-800 mb-4">Уведомления</h2>
+      <div className="bg-white p-6 rounded-xl">
+        <h2 className="text-2xl font-semibold text-gray-800 mb-4">
+          {t("notifications")}
+        </h2>
 
         {loading ? (
           <div className="flex items-center gap-2 text-gray-500 text-sm">
             <Loader2 className="w-4 h-4 animate-spin" />
-            Загрузка уведомлений...
+            {t("loading_notifications")}
           </div>
         ) : notifications.length === 0 ? (
-          <p className="text-gray-500">Нет уведомлений</p>
+          <p className="text-gray-500">{t("no_notifications")}</p>
         ) : (
           <ul className="space-y-3">
             {notifications.map((n) => (
               <li
                 key={n.id}
-                className={`flex items-start gap-3 border rounded-lg px-4 py-3 transition shadow-sm ${
+                className={`flex items-start gap-3 border rounded-lg px-4 py-3 transition ${
                   n.is_read
                     ? "bg-gray-50 border-gray-200"
                     : "bg-blue-50 border-blue-200"

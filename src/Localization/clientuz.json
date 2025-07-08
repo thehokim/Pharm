@@ -1,0 +1,44 @@
+{
+  "addClientModal": {
+    "title": "Mijoz qo'shish",
+    "name": "Mijoz nomi",
+    "contactPerson": "Aloqa uchun shaxs",
+    "phone": "Telefon",
+    "username": "Foydalanuvchi nomi",
+    "address": "Manzil",
+    "debt": "Qarzdorlik",
+    "submit": "Qo'shish"
+  },
+  "clients": {
+    "title": "Mijozlar ro'yxati",
+    "addClient": "Mijoz qo'shish",
+    "search": "Barcha maydonlar bo'yicha qidirish...",
+    "table": {
+      "name": "Ismi",
+      "phone": "Telefon",
+      "address": "Manzil",
+      "contactPerson": "Aloqa uchun shaxs",
+      "debt": "Qarzdorlik",
+      "actions": "Amallar"
+    },
+    "noData": "Ma'lumot yo'q"
+  },
+  "deleteClientModal": {
+    "title": "Mijozni o'chirish",
+    "question": "Haqiqatan ham mijozni o'chirmoqchimisiz: {{name}}?",
+    "cancel": "Bekor qilish",
+    "delete": "O'chirish",
+    "noName": "Nomsiz"
+  },
+  "editClientModal": {
+    "title": "Mijozni tahrirlash",
+    "name": "Mijoz nomi",
+    "contactPerson": "Aloqa shaxsi",
+    "phones": "Telefon",
+    "username": "Foydalanuvchi nomi",
+    "address": "Manzil",
+    "debt": "Qarzdorlik",
+    "save": "Saqlash",
+    "delete_sum":"so'm"
+  }
+}

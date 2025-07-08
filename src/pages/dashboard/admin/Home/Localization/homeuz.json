@@ -1,0 +1,50 @@
+{
+  "addManagerModal": {
+    "title": "Menejer qo'shish",
+    "fullName": "To'liq ism",
+    "username": "Foydalanuvchi nomi",
+    "password": "Parol",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "fillAll": "Iltimos, barcha maydonlarni to'ldiring.",
+    "error": "Menejer qo'shishda xatolik"
+  },
+  "debtList": {
+    "title": "Qarzdorliklar",
+    "overdue": "Kechiktirilgan: {{days}} kun",
+    "showMore": "Yana ko'rsatish",
+    "showLess": "Yopish"
+  },
+  "editManagers": {
+    "title": "Menejerlarni tahrirlash",
+    "placeholder": "Ism Familiya",
+    "delete": "O'chirish",
+    "cancel": "Bekor qilish",
+    "save": "Saqlash",
+    "deleteError": "O'chirishda xatolik: {{message}}",
+    "saveError": "Saqlashda xatolik: {{message}}"
+  },
+  "home": {
+    "title": "Farmatsevtika boshqaruvi",
+    "totalIncome": "Umumiy daromad",
+    "soum": "so'm",
+    "today": "Bugun",
+    "products": "Mahsulotlar",
+    "purchase": "Sotib olish",
+    "sales": "Sotish",
+    "clients": "Mijozlar",
+    "managers": "Menejerlar",
+    "addManager": "Menejer qo'shish",
+    "editManagers": "Tahrirlash"
+  },
+  "monthly": {
+    "title": "Oylik daromad",
+    "income": "Daromad"
+  },
+  "notifications": {
+    "title": "Bildirishnomalar",
+    "loading": "Bildirishnomalar yuklanmoqda...",
+    "empty": "Bildirishnoma yo‘q",
+    "loadError": "Bildirishnomani yuklashda xato"
+  }
+}
