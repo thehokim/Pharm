@@ -56,9 +56,9 @@ import analyticsuz from "./Localization/analyticsuz.json";
 import analyticsuzcryl from "./Localization/analyticsuzcryl.json";
 
 // LOGS
-import logsru from "./pages/dashboard/admin/Logs/Localization/logsru.json";
-import logsuz from "./pages/dashboard/admin/Logs/Localization/logsuz.json";
-import logsuzcryl from "./pages/dashboard/admin/Logs/Localization/logsuzcryl.json";
+import logsru from "./pages/dashboard/admin/LogsAdmin/Localization/logsru.json";
+import logsuz from "./pages/dashboard/admin/LogsAdmin/Localization/logsuz.json";
+import logsuzcryl from "./pages/dashboard/admin/LogsAdmin/Localization/logsuzcryl.json";
 
 // NOTIF
 import notifru from "./pages/dashboard/admin/Notif/Localization/notifru.json";

@@ -6,7 +6,7 @@ import Home from "../pages/dashboard/admin/Home/Home";
 import Clients from "../pages/dashboard/admin/Client/Clients";
 import Suppliers from "../pages/dashboard/admin/Supplier/Suppliers";
 import Orders from "../pages/dashboard/admin/Order/Orders";
-import Logs from "../pages/dashboard/admin/Logs/Logs";
+import Logs from "../pages/dashboard/admin/LogsAdmin/Logs";
 import Settings from "../pages/dashboard/admin/Settings/Settings";
 import Booking from "../pages/dashboard/admin/Booking/Booking";
 import Products from "../pages/dashboard/admin/Product/Products";
