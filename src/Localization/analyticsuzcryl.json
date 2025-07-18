@@ -6,5 +6,10 @@
   "sales": "Сотувлар",
   "noData": "Маълумот йўқ",
   "total": "Жами",
-  "totalSales": "{{count}} та сотув"
+  "totalSales": "{{count}} та сотув",
+  "pharma_sales_analysis": "Фармацевтика савдоси таҳлили",
+  "total_products": "Жами препаратлар",
+  "total_sales": "Умумий сотувлар",
+  "avg_sales": "Ўртача сотувлар",
+  "error_loading_data": "Маълумотларни юклашда хатолик:"
 }

@@ -7,5 +7,10 @@
   "date": "Sana",
   "noMatches": "Mos keladigan natijalar yoʻq",
   "page": "Sahifa",
-  "of": "dan"
+  "of": "dan",
+  "logbook_desc": "Foydalanuvchi harakatlari jurnali",
+  "error_loading_logs": "Jurnallarni yuklashda xatolik:",
+  "role_colon": "Roli:",
+  "action_colon": "Harakat:",
+  "date_colon": "Sana:"
 }

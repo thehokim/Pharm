@@ -44,11 +44,17 @@ const Home = () => {
     const fetchWithAuth = (url) =>
       fetch(url, { headers: { Authorization: `Bearer ${token}` } }).then((r) => r.json());
 
+    // Получаем последний месяц для налогов
+    const now = new Date();
+    const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+    const lastMonthYear = lastMonth.getFullYear();
+    const lastMonthNumber = (lastMonth.getMonth() + 1).toString().padStart(2, '');
+
     Promise.all([
       fetchWithAuth(`${BASE_URL}/api/income/`),
       fetchWithAuth(`${BASE_URL}/api/transactions?status=pending`),
       fetchWithAuth(`${BASE_URL}/api/reports/client-debts`),
-      fetchWithAuth(`${BASE_URL}/api/tax-total`),
+      fetchWithAuth(`${BASE_URL}/api/tax-total?year=${lastMonthYear}&month=${lastMonthNumber}`),
     ])
       .then(([income, transactions, clientDebts, taxTotal]) => {
         setRevenue(income?.total || 0);
@@ -58,11 +64,14 @@ const Home = () => {
         setDebt(clientDebts?.total_debt || 0);
         setDebtDelta(clientDebts?.delta || "-");
 
-        const current = Array.isArray(taxTotal) ? taxTotal[0] : null;
-        setTax(current?.amount || 0);
-        setTaxDelta(current ? `15 ${t("days_left")}` : "");
-        setTaxMonth(getMonthName(current?.month, t));
-        setTaxTotalAmount(current?.total_amount || null);
+        // Обрабатываем налоги за последний месяц
+        const lastMonthTaxes = Array.isArray(taxTotal) ? taxTotal : [];
+        const totalTaxAmount = lastMonthTaxes.reduce((sum, tax) => sum + (tax.total_amount || 0), 0);
+        
+        setTax(totalTaxAmount);
+        setTaxDelta(t("last_month"));
+        setTaxMonth(getMonthName(lastMonthNumber, t));
+        setTaxTotalAmount(totalTaxAmount);
 
         setLoading(false);
       })
@@ -132,14 +141,7 @@ const Home = () => {
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <FinanceChart />
-        <FinanceSummary
-          revenue={revenue}
-          expenses={21456.78}
-          profit={revenue - 21456.78}
-          profitGrowth={revenueDelta}
-          clientDebt={debt}
-          taxObligation={tax}
-        />
+        <FinanceSummary />
       </div>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
         <RecentStatements />

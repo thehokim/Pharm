@@ -1,0 +1,21 @@
+{
+  "title": "Media uchun mavjud mahsulotlar",
+  "no_products": "Mavjud mahsulotlar yo'q",
+  "category": "Kategoriya",
+  "barcode": "Shtrixkod",
+  "price": "Narxi",
+  "details": "Batafsil",
+  "close": "Yopish",
+  "loading": "Yuklanmoqda...",
+  "error": "Yuklashda xatolik",
+  "back": "Ro'yxatga qaytish",
+  "manufacturer": "Ishlab chiqaruvchi",
+  "description": "Tavsif",
+  "stock_quantity": "Ombordagi qoldiq",
+  "purchase_price": "Xarid narxi",
+  "selling_price": "Sotuv narxi",
+  "arrival_date": "Kelib tushgan sana",
+  "expiration_date": "Yaroqlilik muddati",
+  "created_at": "Yaratilgan",
+  "updated_at": "Yangilangan"
+} 

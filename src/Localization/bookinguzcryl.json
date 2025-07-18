@@ -66,5 +66,22 @@
     "save": "Сақлаш",
     "error": "Бандловни янгилашда хатолик"
   },
-  "delete_sum":"сўм"
+  "delete_sum":"сўм",
+  "patient_records_management": "Беморларнинг ёзувларini бошқариш",
+  "new_patient_record": "Янги бемор ёзуви",
+  "select_patient": "Беморни танланг",
+  "no_clients": "Мавжуд беморлар йўқ",
+  "enter_amount": "Суммани киритинг",
+  "error_creating_reservation": "Бандлов яратишда хатолик",
+  "error_deleting": "Ўчиришда хатолик",
+  "editing_patient_record": "Бемор ёзувини таҳрирлаш",
+  "select_client": "Мижозни танланг",
+  "critical_system_action": "Тизимнинг критик ҳаракати",
+  "patient_record": "Бемор ёзуви",
+  "attention_irreversible_action": "Диққат! Қайтариб бўлмайдиган ҳаракат",
+  "deleting": "Ўчирилмоқда...",
+  "data_will_be_deleted": "Маълумотлар тиббий тизимдан қайтарилмасдан ўчирилади",
+  "error_loading_reservations": "Бандловларни юклашда хатолик:",
+  "error_loading_clients": "Мижозларни юклашда хатолик:",
+  "error_loading_products": "Маҳсулотларни юклашда хатолик:"
 }

@@ -1,42 +1,35 @@
 import React, { useEffect, useState } from "react";
 import { AlarmClock, Search } from "lucide-react";
 import { BASE_URL } from "../../../utils/auth";
+import { useTranslation } from "react-i18next";
 
 const getUrgencyColor = (daysLeft) => {
   if (daysLeft <= 0) {
-    // Уже истёк
     return "bg-gray-800 text-gray-100";
   }
   if (daysLeft <= 15) {
-    // Критический — очень скоро
     return "bg-red-200 text-red-800";
   }
   if (daysLeft <= 30) {
-    // Высокая срочность
     return "bg-red-100 text-red-700";
   }
   if (daysLeft <= 60) {
-    // Предупреждение
     return "bg-orange-100 text-orange-700";
   }
   if (daysLeft <= 90) {
-    // Осторожно
     return "bg-yellow-100 text-yellow-700";
   }
   if (daysLeft <= 120) {
-    // Низкий риск
     return "bg-lime-100 text-lime-700";
   }
   if (daysLeft <= 180) {
-    // В пределах 6 месяцев
     return "bg-green-100 text-green-700";
   }
-  // Более чем 6 месяцев
   return "bg-gray-100 text-gray-700";
 };
 
-
 const ExpiringItems = () => {
+  const { t } = useTranslation("warehouse");
   const [search, setSearch] = useState("");
   const [items, setItems] = useState([]);
   const token = localStorage.getItem("token");
@@ -54,7 +47,8 @@ const ExpiringItems = () => {
         return res.json();
       })
       .then((products) => {
-        const expiring = products
+        const prods = products.data || [];
+        const expiring = prods
           .map((p) => {
             const expDateObj = new Date(p.expiration_date);
             const diffMs = expDateObj - today;
@@ -89,13 +83,13 @@ const ExpiringItems = () => {
       {/* Header */}
       <div className="bg-white flex items-center justify-between p-4 rounded-xl">
         <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
-          <AlarmClock /> Истекающие товары
+          <AlarmClock /> {t("expiring_items")}
         </h2>
         <div className="relative w-full max-w-xs">
           <Search className="absolute left-3 top-3 text-gray-400" size={18} />
           <input
             type="text"
-            placeholder="Поиск по названию или коду..."
+            placeholder={t("search_expiring_placeholder")}
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="pl-10 pr-4 py-2 border border-gray-300 rounded-full w-full focus:outline-none transition"
@@ -108,13 +102,11 @@ const ExpiringItems = () => {
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-semibold uppercase tracking-wide text-gray-600">
             <tr>
-              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">Название</th>
-              <th className="px-6 py-4 bg-gray-100">Код</th>
-              <th className="px-6 py-4 bg-gray-100">Остаток</th>
-              <th className="px-6 py-4 bg-gray-100">Срок годности</th>
-              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl">
-                Осталось дней
-              </th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">{t("name")}</th>
+              <th className="px-6 py-4 bg-gray-100">{t("code")}</th>
+              <th className="px-6 py-4 bg-gray-100">{t("quantity")}</th>
+              <th className="px-6 py-4 bg-gray-100">{t("expiration_date")}</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl">{t("days_left")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -125,7 +117,7 @@ const ExpiringItems = () => {
               >
                 <td className="px-6 py-4 font-medium">{item.name}</td>
                 <td className="px-6 py-4">{item.code}</td>
-                <td className="px-6 py-4">{item.quantity} шт</td>
+                <td className="px-6 py-4">{item.quantity} {t("items", "шт")}</td>
                 <td className="px-6 py-4">{item.expDate}</td>
                 <td className="px-6 py-4">
                   <span
@@ -133,7 +125,7 @@ const ExpiringItems = () => {
                       item.daysLeft
                     )}`}
                   >
-                    {item.daysLeft} дней
+                    {item.daysLeft} {t("days_left")}
                   </span>
                 </td>
               </tr>
@@ -141,7 +133,7 @@ const ExpiringItems = () => {
             {filtered.length === 0 && (
               <tr>
                 <td colSpan={5} className="px-6 py-4 text-center text-gray-500">
-                  Нет товаров, срок годности которых истекает в ближайшие 6 месяцев
+                  {t("no_expiring")}
                 </td>
               </tr>
             )}

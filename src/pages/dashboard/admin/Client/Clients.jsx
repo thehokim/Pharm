@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, UserPlus2 } from "lucide-react";
+import { Plus, Search, UserPlus2, User, Phone, MapPin, Contact, DollarSign, Users } from "lucide-react";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddClientModal from "./AddClientModal";
 import EditClientModal from "./EditClientModal";
@@ -33,11 +33,13 @@ const Clients = () => {
       .then((result) => {
         setClients(Array.isArray(result.data) ? result.data : []);
         setMeta({
-          page: (result.meta?.page ?? 0) + 1,
+          page: result.meta?.page || 1,
+          pageSize: result.meta?.pageSize || PAGE_SIZE,
+          total: result.meta?.total || 0,
           totalPages: result.meta?.totalPages || 1,
         });
       })
-      .catch((err) => console.error("Ошибка загрузки клиентов:", err));
+      .catch((err) => console.error(t("error_loading_clients"), err));
   };
 
   useEffect(() => {
@@ -64,7 +66,7 @@ const Clients = () => {
       body: JSON.stringify(form),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Ошибка добавления клиента");
+        if (!res.ok) throw new Error(t("error_adding_client"));
         return res.json();
       })
       .then(() => fetchClients(page, PAGE_SIZE))
@@ -82,7 +84,7 @@ const Clients = () => {
       body: JSON.stringify(form),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Ошибка при редактировании");
+        if (!res.ok) throw new Error(t("error_updating_client"));
         return res.json();
       })
       .then(() => fetchClients(page, PAGE_SIZE))
@@ -98,7 +100,7 @@ const Clients = () => {
       },
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Ошибка удаления клиента");
+        if (!res.ok) throw new Error(t("error_deleting_client"));
         return res.json();
       })
       .then(() => {
@@ -109,102 +111,301 @@ const Clients = () => {
   };
 
   return (
-    <div className="space-y-4 bg-gray-50 p-4 min-h-screen">
-      <div className="bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-gray-200">
-        <div className="flex items-center justify-center gap-3">
-          <div className="rounded-full bg-indigo-100 p-3">
-          <UserPlus2 className="text-indigo-700" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
+      {/* Декоративные неоновые элементы */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/5 rounded-full blur-3xl"></div>
+
+      {/* Header */}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 overflow-hidden"
+           style={{ boxShadow: '0 0 50px rgba(6, 182, 212, 0.2)' }}>
+        
+        {/* Неоновое свечение заголовка */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-transparent to-emerald-400/10"></div>
+        
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-cyan-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-cyan-400 p-4 rounded-2xl">
+                <div className="flex items-center gap-2">
+                  <Users className="text-cyan-400 w-7 h-7" 
+                         style={{ filter: 'drop-shadow(0 0 10px #06b6d4)' }} />
+                  <UserPlus2 className="text-emerald-400 w-5 h-5" 
+                             style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white"
+                  style={{ textShadow: '0 0 20px rgba(6, 182, 212, 0.5)' }}>
+                {t("clients.title")}
+              </h1>
+              <p className="text-cyan-400 text-sm mt-1">
+                {t("client_base_management")}
+              </p>
+            </div>
           </div>
-          <span className="text-2xl font-bold text-gray-800">
-            {t("clients.title")}
-          </span>
-        </div>
-        <div className="flex gap-3 items-center w-full md:w-auto">
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="w-11 h-11 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 text-2xl font-bold hover:bg-indigo-100 hover:text-indigo-800 transition-colors focus:outline-none"
-            title={t("clients.addClient")}
-          >
-            <Plus size={20} />
-          </button>
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder={t("clients.search")}
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full bg-gray-50 focus:outline-none focus:border-indigo-500 transition"
-            />
+          
+          <div className="flex items-center gap-4">
+            {/* Кнопка добавления */}
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="relative bg-gradient-to-r from-cyan-500 to-emerald-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              style={{ 
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+                filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
+              }}
+              title={t("clients.addClient")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Plus className="w-6 h-6 text-white relative z-10" />
+            </button>
+            
+            {/* Поиск */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search className="text-cyan-400 w-5 h-5" 
+                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+              </div>
+              <input
+                type="text"
+                placeholder={t("clients.search")}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: search ? '0 0 20px rgba(6, 182, 212, 0.2)' : 'none'
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 ">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold">{t("clients.table.name")}</th>
-              <th className="px-6 py-4 font-semibold">{t("clients.table.phones")}</th>
-              <th className="px-6 py-4 font-semibold">{t("clients.table.address")}</th>
-              <th className="px-6 py-4 font-semibold">{t("clients.table.contactPerson")}</th>
-              <th className="px-6 py-4 font-semibold">{t("clients.table.debt")}</th>
-              <th className="px-6 py-4 font-semibold text-center">{t("clients.table.actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((client) => (
-                <tr
-                  key={client.id}
-                  className="hover:bg-indigo-50 border-b border-gray-100 transition-colors"
-                >
-                  <td className="px-6 py-4 font-medium">{client.name}</td>
-                  <td className="px-6 py-4">{client.phones}</td>
-                  <td className="px-6 py-4">{client.address}</td>
-                  <td className="px-6 py-4">{client.contact_person}</td>
-                  <td className={`px-6 py-4 font-semibold
-                    ${Number(client.debt) > 0 ? "text-[#ff0000]" : "text-gray-400"}`}>
-                    {(client.debt ?? 0).toLocaleString()} {t("editClientModal.delete_sum")}
-                  </td>
-                  <td className="px-6 py-4 flex justify-center">
-                    <ActionMenu
-                      onEdit={() => {
-                        setEditingClient(client);
-                        setIsEditOpen(true);
-                      }}
-                      onDelete={() => {
-                        setDeletingClient(client);
-                        setIsDeleteOpen(true);
-                      }}
-                    />
+      {/* Desktop Table */}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
+           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
+        
+        <div className="">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-800/50 border-b border-gray-700/50">
+              <tr>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-cyan-400" 
+                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    {t("clients.table.name")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-emerald-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    {t("clients.table.phone")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-purple-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    {t("clients.table.address")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Contact className="w-4 h-4 text-amber-400" 
+                             style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    {t("clients.table.contactPerson")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400" 
+                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    {t("clients.table.debt")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("clients.table.actions")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td
+                    className="text-center px-6 py-12"
+                    colSpan={6}
+                  >
+                    <div className="flex flex-col items-center gap-4">
+                      <Users className="w-12 h-12 text-gray-600" />
+                      <span className="text-gray-400 font-medium text-lg">
+                        {t("clients.noData")}
+                      </span>
+                    </div>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={6}
-                  className="text-center px-6 py-8 text-gray-400 font-medium"
-                >
-                  {t("clients.noData")}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((client) => (
+                  <tr
+                    key={client.id}
+                    className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all duration-300 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-cyan-400 rounded-full"
+                             style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
+                        <span className="font-medium text-white group-hover:text-cyan-400 transition-colors">
+                          {client.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-emerald-400 font-medium">
+                        {client.phones}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-purple-400">
+                        {client.address}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-amber-400">
+                        {client.contact_person}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className={`font-semibold ${
+                        Number(client.debt) > 0 
+                          ? "text-red-400" 
+                          : "text-gray-400"
+                      }`}>
+                        {(client.debt ?? 0).toLocaleString()} {t("editClientModal.delete_sum")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <ActionMenu
+                        onEdit={() => {
+                          setEditingClient(client);
+                          setIsEditOpen(true);
+                        }}
+                        onDelete={() => {
+                          setDeletingClient(client);
+                          setIsDeleteOpen(true);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <Pagination
-        page={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-      />
+      {/* Mobile Cards */}
+      <div className="block md:hidden">
+        {filtered.length === 0 ? (
+          <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl py-12 text-center">
+            <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <span className="text-gray-400 font-medium">{t("clients.noData")}</span>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map((client) => (
+              <div
+                key={client.id}
+                className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
+                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"
+                         style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
+                    <span className="text-lg font-semibold text-white">{client.name}</span>
+                  </div>
+                  <ActionMenu
+                    onEdit={() => {
+                      setEditingClient(client);
+                      setIsEditOpen(true);
+                    }}
+                    onDelete={() => {
+                      setDeletingClient(client);
+                      setIsDeleteOpen(true);
+                    }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-emerald-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <span className="text-gray-400">{t("phone_colon")}</span>
+                    <span className="text-emerald-400 font-medium">{client.phones}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-purple-400" 
+                            style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <span className="text-gray-400">{t("clients.table.address")}</span>
+                    <span className="text-purple-400">{client.address}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Contact className="w-4 h-4 text-amber-400" 
+                             style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    <span className="text-gray-400">{t("clients.table.contactPerson")}</span>
+                    <span className="text-amber-400">{client.contact_person}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400" 
+                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <span className="text-gray-400">{t("clients.table.debt")}</span>
+                    <span className={`font-semibold ${
+                      Number(client.debt) > 0 
+                        ? "text-red-400" 
+                        : "text-gray-400"
+                    }`}>
+                      {(client.debt ?? 0).toLocaleString()} {t("editClientModal.delete_sum")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Модалки */}
-      <AddClientModal isOpen={isAddOpen} onClose={() => setIsAddOpen(false)} onSubmit={handleAddClient} />
-      <EditClientModal isOpen={isEditOpen} onClose={() => setIsEditOpen(false)} client={editingClient} onSubmit={handleEditClient} />
-      <DeleteClientModal isOpen={isDeleteOpen} onClose={() => setIsDeleteOpen(false)} onConfirm={handleDeleteClient} client={deletingClient} />
+      {/* Pagination */}
+      <div className="flex justify-center">
+        <Pagination
+          page={meta.page}
+          pageSize={meta.pageSize}
+          total={meta.total}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      </div>
+
+      {/* Модальные окна */}
+      <AddClientModal 
+        isOpen={isAddOpen} 
+        onClose={() => setIsAddOpen(false)} 
+        onSubmit={handleAddClient} 
+      />
+      <EditClientModal 
+        isOpen={isEditOpen} 
+        onClose={() => setIsEditOpen(false)} 
+        client={editingClient} 
+        onSubmit={handleEditClient} 
+      />
+      <DeleteClientModal 
+        isOpen={isDeleteOpen} 
+        onClose={() => setIsDeleteOpen(false)} 
+        onConfirm={handleDeleteClient} 
+        client={deletingClient} 
+      />
     </div>
   );
 };

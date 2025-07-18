@@ -1,0 +1,21 @@
+{
+  "title": "Media учун мавжуд маҳсулотлар",
+  "no_products": "Мавжуд маҳсулотлар йўқ",
+  "category": "Категория",
+  "barcode": "Штрихкод",
+  "price": "Нархи",
+  "details": "Батафсил",
+  "close": "Ёпиш",
+  "loading": "Юкланмоқда...",
+  "error": "Юклашда хатолик",
+  "back": "Рўйхатга қайтиш",
+  "manufacturer": "Ишлаб чиқарувчи",
+  "description": "Тавсиф",
+  "stock_quantity": "Омбордаги қолдиқ",
+  "purchase_price": "Харид нархи",
+  "selling_price": "Сотув нархи",
+  "arrival_date": "Келиб тушган сана",
+  "expiration_date": "Яроқлилик муддати",
+  "created_at": "Яратилган",
+  "updated_at": "Янгиланган"
+} 

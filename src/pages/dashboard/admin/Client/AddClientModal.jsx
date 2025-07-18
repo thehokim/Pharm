@@ -1,9 +1,11 @@
-import React, { useState } from "react";
-import { X } from "lucide-react";
+import React, { useState, useEffect } from "react";
+import { X, UserPlus, User, Contact, Phone, MapPin, Hash, DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
 const AddClientModal = ({ isOpen, onClose, onSubmit }) => {
   const { t } = useTranslation("client");
+  const [isLoading, setIsLoading] = useState(false);
+  
   const [form, setForm] = useState({
     name: "",
     contact_person: "",
@@ -13,90 +15,265 @@ const AddClientModal = ({ isOpen, onClose, onSubmit }) => {
     debt: "",
   });
 
+  useEffect(() => {
+    if (!isOpen) {
+      setForm({
+        name: "",
+        contact_person: "",
+        phones: "",
+        username: "",
+        address: "",
+        debt: "",
+      });
+    }
+  }, [isOpen]);
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit({ ...form, debt: Number(form.debt) });
-    onClose();
-    setForm({
-      name: "",
-      contact_person: "",
-      phones: "",
-      username: "",
-      address: "",
-      debt: "",
-    });
+    setIsLoading(true);
+    try {
+      await onSubmit({ ...form, debt: Number(form.debt) });
+      onClose();
+      setForm({
+        name: "",
+        contact_person: "",
+        phones: "",
+        username: "",
+        address: "",
+        debt: "",
+      });
+    } catch (error) {
+      console.error(t("error_adding_client"), error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleBackdropClick = (e) => {
+    if (e.target === e.currentTarget) {
+      onClose();
+    }
   };
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl p-6 w-full max-w-2xl">
-        <div className="flex justify-between items-center mb-4">
-          <h2 className="text-xl font-semibold">{t("addClientModal.title")}</h2>
-          <button onClick={onClose} className="text-gray-600 hover:text-black">
-            <X className="w-5 h-5" />
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
+         onClick={handleBackdropClick}>
+      
+      <div className="relative bg-gray-900/95 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl w-full max-w-2xl overflow-hidden"
+           style={{ boxShadow: '0 0 50px rgba(6, 182, 212, 0.3)' }}>
+        
+        {/* Декоративные неоновые элементы */}
+        <div className="absolute top-0 right-0 w-32 h-32 bg-cyan-400/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
+        <div className="absolute bottom-0 left-0 w-24 h-24 bg-emerald-400/10 rounded-full blur-2xl translate-y-12 -translate-x-12"></div>
+        
+        {/* Заголовок */}
+        <div className="relative bg-gray-800/50 border-b border-gray-700/50 px-8 py-6 rounded-t-3xl">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <div className="relative">
+                <div className="absolute inset-0 bg-cyan-400 rounded-2xl blur-md opacity-50"></div>
+                <div className="relative bg-gray-800 border-2 border-cyan-400 p-3 rounded-2xl">
+                  <UserPlus className="text-cyan-400 w-6 h-6" 
+                           style={{ filter: 'drop-shadow(0 0 10px #06b6d4)' }} />
+                </div>
+              </div>
+              <div>
+                <h2 className="text-2xl font-bold text-white"
+                    style={{ textShadow: '0 0 15px rgba(6, 182, 212, 0.5)' }}>
+                  {t("addClientModal.title")}
+                </h2>
+                <p className="text-cyan-400 text-sm mt-1">
+                  {t("add_client_desc")}
+                </p>
+              </div>
+            </div>
+            
+            <button
+              onClick={onClose}
+              className="bg-gray-800 border border-red-400/50 p-3 rounded-2xl transition-all duration-300 hover:border-red-400 hover:scale-110 group"
+              style={{ boxShadow: '0 0 15px rgba(239, 68, 68, 0.2)' }}
+            >
+              <X className="w-6 h-6 text-red-400 group-hover:rotate-90 transition-transform duration-300" 
+                 style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+            </button>
+          </div>
+        </div>
+        
+        {/* Содержимое формы */}
+        <div className="px-8 py-6 relative z-10">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
+            {/* Название клиента */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <User className="inline w-4 h-4 mr-2 text-cyan-400" 
+                      style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                {t("addClientModal.name")} <span className="text-cyan-400">*</span>
+              </label>
+              <input
+                name="name"
+                placeholder={t("addClientModal.name")}
+                value={form.name}
+                onChange={handleChange}
+                required
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.name ? '0 0 15px rgba(6, 182, 212, 0.2)' : 'none'
+                }}
+              />
+            </div>
+
+            {/* Контактное лицо */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <Contact className="inline w-4 h-4 mr-2 text-emerald-400" 
+                         style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                {t("addClientModal.contactPerson")}
+              </label>
+              <input
+                name="contact_person"
+                placeholder={t("addClientModal.contactPerson")}
+                value={form.contact_person}
+                onChange={handleChange}
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-emerald-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.contact_person ? '0 0 15px rgba(16, 185, 129, 0.2)' : 'none'
+                }}
+              />
+            </div>
+
+            {/* Телефоны */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <Phone className="inline w-4 h-4 mr-2 text-purple-400" 
+                       style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                {t("addClientModal.phone")}
+              </label>
+              <input
+                name="phones"
+                placeholder={t("addClientModal.phone")}
+                value={form.phones}
+                onChange={handleChange}
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-purple-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.phones ? '0 0 15px rgba(168, 85, 247, 0.2)' : 'none'
+                }}
+              />
+            </div>
+
+            {/* Логин */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <Hash className="inline w-4 h-4 mr-2 text-amber-400" 
+                      style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                {t("addClientModal.username")} <span className="text-cyan-400">*</span>
+              </label>
+              <input
+                name="username"
+                placeholder={t("addClientModal.username")}
+                value={form.username}
+                onChange={handleChange}
+                required
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-amber-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.username ? '0 0 15px rgba(245, 158, 11, 0.2)' : 'none'
+                }}
+              />
+            </div>
+
+            {/* Адрес */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <MapPin className="inline w-4 h-4 mr-2 text-indigo-400" 
+                        style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                {t("addClientModal.address")}
+              </label>
+              <input
+                name="address"
+                placeholder={t("addClientModal.address")}
+                value={form.address}
+                onChange={handleChange}
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-indigo-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.address ? '0 0 15px rgba(99, 102, 241, 0.2)' : 'none'
+                }}
+              />
+            </div>
+
+            {/* Задолженность */}
+            <div>
+              <label className="block text-gray-400 text-sm font-medium mb-3">
+                <DollarSign className="inline w-4 h-4 mr-2 text-red-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                {t("addClientModal.debt")}
+              </label>
+              <input
+                name="debt"
+                type="number"
+                placeholder={t("addClientModal.debt")}
+                value={form.debt}
+                onChange={handleChange}
+                className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-red-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: form.debt ? '0 0 15px rgba(239, 68, 68, 0.2)' : 'none'
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Кнопка добавления */}
+          <button
+            onClick={handleSubmit}
+            disabled={isLoading}
+            className="w-full mt-8 relative bg-gradient-to-r from-cyan-500 to-emerald-500 text-white font-bold px-8 py-4 rounded-2xl transition-all duration-300 hover:from-cyan-600 hover:to-emerald-600 hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed overflow-hidden group"
+            style={{ 
+              boxShadow: '0 0 30px rgba(6, 182, 212, 0.3)',
+              filter: isLoading ? 'none' : 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
+            }}
+          >
+            {/* Анимированный фон */}
+            <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            
+            <div className="relative flex items-center justify-center gap-3">
+              {isLoading ? (
+                <>
+                  <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+                  <span>{t("adding")}</span>
+                </>
+              ) : (
+                <>
+                  <UserPlus className="w-5 h-5" />
+                  <span>{t("addClientModal.submit")}</span>
+                </>
+              )}
+            </div>
           </button>
         </div>
-
-        <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-4">
-          <input
-            name="name"
-            placeholder={t("addClientModal.name")}
-            value={form.name}
-            onChange={handleChange}
-            required
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <input
-            name="contact_person"
-            placeholder={t("addClientModal.contactPerson")}
-            value={form.contact_person}
-            onChange={handleChange}
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <input
-            name="phones"
-            placeholder={t("addClientModal.phones")}
-            value={form.phones}
-            onChange={handleChange}
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <input
-            name="username"
-            placeholder={t("addClientModal.username")}
-            value={form.username}
-            onChange={handleChange}
-            required
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <input
-            name="address"
-            placeholder={t("addClientModal.address")}
-            value={form.address}
-            onChange={handleChange}
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <input
-            name="debt"
-            type="number"
-            placeholder={t("addClientModal.debt")}
-            value={form.debt}
-            onChange={handleChange}
-            className="border border-gray-100 rounded-xl px-4 py-2 h-12"
-          />
-          <button
-            type="submit"
-            className="col-span-2 bg-blue-600 text-white px-4 py-3 rounded-xl hover:bg-blue-700"
-          >
-            {t("addClientModal.submit")}
-          </button>
-        </form>
       </div>
+
+      <style dangerouslySetInnerHTML={{
+        __html: `
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(-10px) scale(0.95);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0) scale(1);
+            }
+          }
+          .animate-fadeIn {
+            animation: fadeIn 0.2s ease-out;
+          }
+        `
+      }} />
     </div>
   );
 };

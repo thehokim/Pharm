@@ -6,5 +6,10 @@
   "sales": "Sotuvlar",
   "noData": "Maʼlumot yoʻq",
   "total": "Jami",
-  "totalSales": "{{count}} ta sotuv"
+  "totalSales": "{{count}} ta sotuv",
+  "pharma_sales_analysis": "Farmatsevtika savdosi tahlili",
+  "total_products": "Jami preparatlar",
+  "total_sales": "Umumiy sotuvlar",
+  "avg_sales": "O'rtacha sotuvlar",
+  "error_loading_data": "Ma'lumotlarni yuklashda xatolik:"
 }

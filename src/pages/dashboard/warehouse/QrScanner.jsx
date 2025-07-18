@@ -1,7 +1,9 @@
 import React, { useState } from "react";
 import { QrReader } from "react-qr-reader"; // ✅ правильный импорт
+import { useTranslation } from "react-i18next";
 
 const QrScanner = () => {
+  const { t } = useTranslation("warehouse");
   const [scanResult, setScanResult] = useState(null);
   const [error, setError] = useState(null);
 
@@ -13,13 +15,13 @@ const QrScanner = () => {
 
   const handleError = (err) => {
     console.error(err);
-    setError("Ошибка при доступе к камере");
+    setError(t("scan_error"));
   };
 
   return (
     <div className="p-6 space-y-4">
-      <h2 className="text-2xl font-bold">QR сканер</h2>
-      <p className="text-gray-600">Сканируйте QR-код для отображения информации о товаре.</p>
+      <h2 className="text-2xl font-bold">{t("qr_scanner")}</h2>
+      <p className="text-gray-600">{t("scan_info")}</p>
 
       <div className="w-full max-w-md">
         <QrReader
@@ -32,7 +34,7 @@ const QrScanner = () => {
 
       {scanResult && (
         <div className="bg-white shadow p-4 rounded-xl">
-          <h3 className="font-semibold mb-2">Результат сканирования:</h3>
+          <h3 className="font-semibold mb-2">{t("scan_result")}</h3>
           <pre className="text-sm text-gray-800 whitespace-pre-wrap">{scanResult}</pre>
         </div>
       )}

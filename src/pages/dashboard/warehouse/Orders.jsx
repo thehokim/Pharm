@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Search, ShoppingCart } from "lucide-react";
 import { BASE_URL } from "../../../utils/auth";
+import Pagination from "../../../components/layout/Pagination";
+import { useTranslation } from "react-i18next";
 
 // маленький компонент для кастомного тултипа
 const Tooltip = ({ text, children }) => (
@@ -48,7 +50,10 @@ const getTotalItems = (items) =>
   Array.isArray(items) ? items.reduce((sum, it) => sum + (it.quantity || 0), 0) : 0;
 
 const Orders = () => {
+  const { t } = useTranslation("warehouse");
   const [orders, setOrders] = useState([]);
+  const [meta, setMeta] = useState({ page: 1, pageSize: 10, total: 0, totalPages: 1 });
+  const [page, setPage] = useState(1);
   const [clientsMap, setClientsMap] = useState({});
   const [productsMap, setProductsMap] = useState({});
   const [searchTerm, setSearchTerm] = useState("");
@@ -62,7 +67,7 @@ const Orders = () => {
       .then((r) => r.json())
       .then((prods) => {
         const m = {};
-        prods.forEach((p) => (m[p.id] = p.name));
+        (prods.data || []).forEach((p) => (m[p.id] = p.name));
         setProductsMap(m);
       })
       .catch(() => console.warn("Не удалось загрузить продукты"));
@@ -74,19 +79,29 @@ const Orders = () => {
       .then((r) => r.json())
       .then((cls) => {
         const m = {};
-        cls.forEach((c) => (m[c.id] = c.company_name || c.name));
+        (cls.data || []).forEach((c) => (m[c.id] = c.company_name || c.name));
         setClientsMap(m);
       })
       .catch(() => console.warn("Не удалось загрузить клиентов"));
+  }, [token]);
 
-    // 3) Подгружаем заказы
-    fetch(`${BASE_URL}/api/orders/`, {
+  useEffect(() => {
+    // 3) Подгружаем заказы с пагинацией
+    fetch(`${BASE_URL}/api/orders/?page=${page}&pageSize=${meta.pageSize}`, {
       headers: { Authorization: `Bearer ${token}` },
     })
       .then((r) => r.json())
-      .then(setOrders)
+      .then((res) => {
+        setOrders(res.data || []);
+        setMeta({
+          page: res.meta?.page || 1,
+          pageSize: res.meta?.pageSize || 10,
+          total: res.meta?.total || 0,
+          totalPages: res.meta?.totalPages || 1,
+        });
+      })
       .catch((e) => console.error("Не удалось загрузить заказы:", e));
-  }, [token]);
+  }, [token, page]);
 
   const filtered = orders.filter((o) => {
     const term = searchTerm.toLowerCase();
@@ -101,13 +116,13 @@ const Orders = () => {
       {/* Header */}
       <div className="bg-white flex items-center justify-between p-4 rounded-xl">
         <h2 className="text-3xl font-semibold text-gray-800 flex items-center gap-2">
-          <ShoppingCart /> Заказы
+          <ShoppingCart /> {t("orders")}
         </h2>
         <div className="relative w-full max-w-xs">
           <Search className="absolute left-3 top-3 text-gray-400" size={18} />
           <input
             type="text"
-            placeholder="Поиск по ID, клиенту или статусу..."
+            placeholder={t("search_order_placeholder")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10 pr-4 py-2 border border-gray-300 rounded-full w-full focus:outline-none transition"
@@ -120,11 +135,11 @@ const Orders = () => {
         <table className="min-w-full text-sm text-left text-gray-700">
           <thead className="text-xs font-semibold uppercase tracking-wide text-gray-600">
             <tr>
-              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">ID Заказа</th>
-              <th className="px-6 py-4 bg-gray-100">Клиент</th>
-              <th className="px-6 py-4 bg-gray-100">Дата</th>
-              <th className="px-6 py-4 bg-gray-100">Товары</th>
-              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl">Статус</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">ID</th>
+              <th className="px-6 py-4 bg-gray-100">{t("client")}</th>
+              <th className="px-6 py-4 bg-gray-100">{t("date")}</th>
+              <th className="px-6 py-4 bg-gray-100">{t("items")}</th>
+              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl">{t("status")}</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-gray-100">
@@ -141,7 +156,7 @@ const Orders = () => {
                   </td>
                   <td className="px-6 py-4">
                     <Tooltip text={tooltipTxt}>
-                      <span className="cursor-help">{totalItems} шт</span>
+                      <span className="cursor-help">{totalItems} {t("items", "шт")}</span>
                     </Tooltip>
                   </td>
                   <td className="px-6 py-4">
@@ -150,7 +165,7 @@ const Orders = () => {
                         order.status
                       )}`}
                     >
-                      {order.status}
+                      {t(order.status, order.status)}
                     </span>
                   </td>
                 </tr>
@@ -159,8 +174,14 @@ const Orders = () => {
           </tbody>
         </table>
       </div>
+      <Pagination
+        page={meta.page}
+        pageSize={meta.pageSize}
+        total={meta.total}
+        totalPages={meta.totalPages}
+        onPageChange={setPage}
+      />
     </div>
   );
 };
-
 export default Orders;

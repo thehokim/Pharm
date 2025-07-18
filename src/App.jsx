@@ -6,6 +6,7 @@ import AdminRoutes from "./router/AdminRoutes";
 import SalesRoutes from "./router/SalesRoutes";
 import AccountantRoutes from "./router/AccountantRoutes";
 import WarehouseRoutes from "./router/WarehouseRoutes";
+import MediaRoutes from "./router/MediaRoutes";
 import { useTranslation } from "react-i18next";
 import "./i18n";
 
@@ -53,6 +54,7 @@ export default function App() {
       {role === "sales" && <Route path="/sales/*" element={<SalesRoutes />} />}
       {role === "accountant" && <Route path="/accountant/*" element={<AccountantRoutes />} />}
       {role === "warehouse" && <Route path="/warehouse/*" element={<WarehouseRoutes />} />}
+      {role === "media" && <Route path="/media/*" element={<MediaRoutes />} />}
       {/* Если путь не найден — редирект на стартовую */}
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

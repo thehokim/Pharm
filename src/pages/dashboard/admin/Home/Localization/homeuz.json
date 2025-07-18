@@ -44,7 +44,31 @@
   "notifications": {
     "title": "Bildirishnomalar",
     "loading": "Bildirishnomalar yuklanmoqda...",
-    "empty": "Bildirishnoma yo‘q",
+    "empty": "Bildirishnoma yo'q",
     "loadError": "Bildirishnomani yuklashda xato"
-  }
+  },
+  "pharma_analytics": "Farmatsevtika tahlili",
+  "purchase_colon": "Sotib olish:",
+  "sales_colon": "Sotish:",
+  "new_specialist_registration": "Yangi mutaxassis ro'yxatdan o'tkazish",
+  "enter_full_name": "To'liq ismni kiriting",
+  "enter_username": "Foydalanuvchi nomini kiriting",
+  "enter_password": "Parolni kiriting",
+  "ensure_data_correct": "Ma'lumotlar to'g'ri kiritilganiga ishonch hosil qiling",
+  "saving": "Saqlanmoqda...",
+  "team_management": "Mutaxassislar jamoasini boshqarish",
+  "no_managers_to_edit": "Tahrirlash uchun menejerlar yo'q",
+  "changes_will_be_saved": "O'zgarishlar tasdiqlangandan so'ng saqlanadi",
+  "saving_edit": "Saqlanmoqda...",
+  "critical_debts": "Kritik qarzdorliklar",
+  "pharma_sales_dynamics": "Farmatsevtika sotuvlari dinamikasi",
+  "maximum": "Maksimum",
+  "normal": "Oddiy",
+  "minimum": "Minimum",
+  "total_income_period": "Davr bo'yicha umumiy daromad",
+  "notification_center": "Tizim bildirishnomalari markazi",
+  "critical": "Kritik",
+  "attention": "Diqqat",
+  "normal_level": "Oddiy",
+  "total_debts": "Jami qarzdorliklar"
 }

@@ -11,5 +11,8 @@
   "logs": "Harakatlar jurnali",
   "parser": "FOM.UZ parseri",
   "notifications": "Bildirishnomalar",
-  "settings": "Sozlamalar"
+  "settings": "Sozlamalar",
+  "images": "Rasmlar",
+  "videos": "Videolar",
+  "documents": "Hujjatlar"
 }

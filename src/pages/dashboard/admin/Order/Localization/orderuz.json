@@ -35,5 +35,18 @@
   "enumeration":"Bank orqali",
   "cash":"Naxt",
   "card":"Karta",
-  "payment_type": "To'lov turi"
+  "payment_type": "To'lov turi",
+  "orders_management": "Buyurtmalarni boshqarish",
+  "order_creation": "Yangi buyurtma yaratish",
+  "critical_action": "Tizimning muhim harakati",
+  "deleting_order": "O'chirilayotgan buyurtma",
+  "client_colon": "Mijoz:",
+  "sum_colon": "Summa:",
+  "date_colon": "Sana:",
+  "irreversible_action": "Diqqat! Qaytarib bo'lmaydigan harakat",
+  "delete_warning": "Buyurtmaning barcha ma'lumotlari, jumladan mahsulot tarkibi va o'zgarishlar tarixi, tiklab bo'lmaydigan tarzda o'chiriladi.",
+  "delete_final_warning": "Ma'lumotlar buyurtmalar bazasidan qaytarilmasdan o'chiriladi",
+  "deleting": "O'chirilmoqda...",
+  "order_editing": "Buyurtmani tahrirlash jarayoni",
+  "editing_order": "Tahrirlanayotgan buyurtma"
 }

@@ -1,0 +1,21 @@
+{
+  "title": "Доступные продукты для media",
+  "no_products": "Нет доступных продуктов",
+  "category": "Категория",
+  "barcode": "Штрихкод",
+  "price": "Цена",
+  "details": "Подробнее",
+  "close": "Закрыть",
+  "loading": "Загрузка...",
+  "error": "Ошибка загрузки",
+  "back": "Назад к списку",
+  "manufacturer": "Производитель",
+  "description": "Описание",
+  "stock_quantity": "Остаток на складе",
+  "purchase_price": "Закупочная цена",
+  "selling_price": "Цена продажи",
+  "arrival_date": "Дата поступления",
+  "expiration_date": "Срок годности",
+  "created_at": "Создано",
+  "updated_at": "Обновлено"
+} 

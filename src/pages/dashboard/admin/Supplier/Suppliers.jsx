@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, TruckElectric } from "lucide-react";
+import { Plus, Search, Truck, User, Phone, Mail, MapPin, DollarSign } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddSupplierModal from "./AddSupplierModal";
@@ -35,11 +35,13 @@ const Suppliers = () => {
       .then((result) => {
         setSuppliers(Array.isArray(result.data) ? result.data : []);
         setMeta({
-          page: (result.meta?.page ?? 0) + 1,
+          page: result.meta?.page || 1,
+          pageSize: result.meta?.pageSize || PAGE_SIZE,
+          total: result.meta?.total || 0,
           totalPages: result.meta?.totalPages || 1,
         });
       })
-      .catch((err) => console.error("Ошибка загрузки поставщиков:", err));
+      .catch((err) => console.error(t("error_loading_suppliers"), err));
   };
 
   useEffect(() => {
@@ -57,7 +59,7 @@ const Suppliers = () => {
       body: JSON.stringify(supplier),
     })
       .then((res) => {
-        if (!res.ok) throw new Error(t("add_error") || "Ошибка добавления");
+        if (!res.ok) throw new Error(t("error_adding_supplier"));
         return res.json();
       })
       .then(() => fetchSuppliers(page, PAGE_SIZE))
@@ -75,7 +77,7 @@ const Suppliers = () => {
       body: JSON.stringify(updated),
     })
       .then((res) => {
-        if (!res.ok) throw new Error(t("edit_error") || "Ошибка при редактировании");
+        if (!res.ok) throw new Error(t("error_updating_supplier"));
         return res.json();
       })
       .then(() => fetchSuppliers(page, PAGE_SIZE))
@@ -91,7 +93,7 @@ const Suppliers = () => {
       },
     })
       .then((res) => {
-        if (!res.ok) throw new Error(t("delete_error") || "Ошибка при удалении");
+        if (!res.ok) throw new Error(t("error_deleting_supplier"));
         return res.json();
       })
       .then(() => {
@@ -111,97 +113,295 @@ const Suppliers = () => {
   }, [suppliers, search]);
 
   return (
-    <div className="space-y-4 bg-gray-50 p-4 min-h-screen">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
+      {/* Декоративные неоновые элементы */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-orange-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl"></div>
+
       {/* Header */}
-      <div className="bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-gray-200">
-        <div className="flex items-center justify-center gap-3">
-          <div className="bg-indigo-100 rounded-full p-3">
-            <TruckElectric className="text-indigo-700" />
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-orange-400/30 rounded-3xl p-6 overflow-hidden"
+           style={{ boxShadow: '0 0 50px rgba(249, 115, 22, 0.2)' }}>
+        
+        {/* Неоновое свечение заголовка */}
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-transparent to-amber-400/10"></div>
+        
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-orange-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-orange-400 p-4 rounded-2xl">
+                <div className="flex items-center gap-2">
+                  <Truck className="text-orange-400 w-7 h-7" 
+                         style={{ filter: 'drop-shadow(0 0 10px #f97316)' }} />
+                  <Plus className="text-amber-400 w-5 h-5" 
+                        style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white"
+                  style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.5)' }}>
+                {t("suppliers")}
+              </h1>
+              <p className="text-orange-400 text-sm mt-1">
+                {t("supplier_management")}
+              </p>
+            </div>
           </div>
-          <span className="text-2xl font-bold text-gray-800">
-            {t("suppliers")}
-          </span>
-        </div>
-        <div className="flex gap-2 items-center w-full md:w-auto">
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="w-11 h-11 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 text-2xl font-bold hover:bg-indigo-100 hover:text-indigo-800 transition-colors focus:outline-none"
-            title={t("add_supplier")}
-          >
-            <Plus size={20} />
-          </button>
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder={t("search_placeholder")}
-              value={search}
-              onChange={e => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full bg-gray-50 focus:outline-none focus:border-indigo-500 transition"
-            />
+          
+          <div className="flex items-center gap-4">
+            {/* Кнопка добавления */}
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="relative bg-gradient-to-r from-orange-500 to-amber-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              style={{ 
+                boxShadow: '0 0 20px rgba(249, 115, 22, 0.3)',
+                filter: 'drop-shadow(0 0 15px rgba(249, 115, 22, 0.5))'
+              }}
+              title={t("add_supplier")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Plus className="w-6 h-6 text-white relative z-10" />
+            </button>
+            
+            {/* Поиск */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search className="text-orange-400 w-5 h-5" 
+                        style={{ filter: 'drop-shadow(0 0 8px #f97316)' }} />
+              </div>
+              <input
+                type="text"
+                placeholder={t("search_placeholder")}
+                value={search}
+                onChange={e => setSearch(e.target.value)}
+                className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-orange-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: search ? '0 0 20px rgba(249, 115, 22, 0.2)' : 'none'
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold">{t("name")}</th>
-              <th className="px-6 py-4 font-semibold">{t("contact_person")}</th>
-              <th className="px-6 py-4 font-semibold">{t("phones")}</th>
-              <th className="px-6 py-4 font-semibold">{t("email")}</th>
-              <th className="px-6 py-4 font-semibold">{t("address")}</th>
-              <th className="px-6 py-4 font-semibold">{t("debt")}</th>
-              <th className="px-6 py-4 font-semibold text-center">{t("actions")}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((s) => (
-                <tr key={s.id} className="hover:bg-indigo-50 border-b border-gray-100 transition-colors">
-                  <td className="px-6 py-4 font-medium">{s.name}</td>
-                  <td className="px-6 py-4">{s.contact_person}</td>
-                  <td className="px-6 py-4">{s.phones}</td>
-                  <td className="px-6 py-4">{s.email}</td>
-                  <td className="px-6 py-4">{s.address}</td>
-                  <td className="px-6 py-4 text-red-600 font-semibold">{Number(s.debt).toLocaleString()} {t("soum")}</td>
-                  <td className="px-6 py-4 flex justify-center">
-                    <ActionMenu
-                      onEdit={() => {
-                        setEditingSupplier(s);
-                        setIsEditOpen(true);
-                      }}
-                      onDelete={() => {
-                        setDeletingSupplier(s);
-                        setIsDeleteOpen(true);
-                      }}
-                    />
+      {/* Desktop Table */}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
+           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
+        
+        <div className="">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-800/50 border-b border-gray-700/50">
+              <tr>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Truck className="w-4 h-4 text-orange-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #f97316)' }} />
+                    {t("name")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-cyan-400" 
+                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    {t("contact_person")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-emerald-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    {t("phones")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-purple-400" 
+                          style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    {t("email")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-indigo-400" 
+                            style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    {t("address")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400" 
+                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    {t("debt")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("actions")}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length === 0 ? (
+                <tr>
+                  <td
+                    className="text-center px-6 py-12"
+                    colSpan={7}
+                  >
+                    <div className="flex flex-col items-center gap-4">
+                      <Truck className="w-12 h-12 text-gray-600" />
+                      <span className="text-gray-400 font-medium text-lg">
+                        {t("no_data")}
+                      </span>
+                    </div>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={7}
-                  className="text-center px-6 py-8 text-gray-400 font-medium"
-                >
-                  {t("no_data")}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              ) : (
+                filtered.map((s) => (
+                  <tr
+                    key={s.id}
+                    className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all duration-300 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-orange-400 rounded-full"
+                             style={{ boxShadow: '0 0 8px #f97316' }}></div>
+                        <span className="font-medium text-white group-hover:text-orange-400 transition-colors">
+                          {s.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-cyan-400 font-medium">
+                        {s.contact_person}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-emerald-400">
+                        {s.phones}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-purple-400">
+                        {s.email}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-indigo-400">
+                        {s.address}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-red-400 font-semibold">
+                        {Number(s.debt).toLocaleString()} {t("soum")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <ActionMenu
+                        onEdit={() => {
+                          setEditingSupplier(s);
+                          setIsEditOpen(true);
+                        }}
+                        onDelete={() => {
+                          setDeletingSupplier(s);
+                          setIsDeleteOpen(true);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
-      <Pagination
-        page={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-      />
+      {/* Mobile Cards */}
+      <div className="block md:hidden">
+        {filtered.length === 0 ? (
+          <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl py-12 text-center">
+            <Truck className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <span className="text-gray-400 font-medium">{t("no_data")}</span>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map((s) => (
+              <div
+                key={s.id}
+                className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
+                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-orange-400 rounded-full"
+                         style={{ boxShadow: '0 0 8px #f97316' }}></div>
+                    <span className="text-lg font-semibold text-white">{s.name}</span>
+                  </div>
+                  <ActionMenu
+                    onEdit={() => {
+                      setEditingSupplier(s);
+                      setIsEditOpen(true);
+                    }}
+                    onDelete={() => {
+                      setDeletingSupplier(s);
+                      setIsDeleteOpen(true);
+                    }}
+                  />
+                </div>
+                
+                <div className="grid grid-cols-1 gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-cyan-400" 
+                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <span className="text-gray-400">Контакт:</span>
+                    <span className="text-cyan-400 font-medium">{s.contact_person}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Phone className="w-4 h-4 text-emerald-400" 
+                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <span className="text-gray-400">Телефон:</span>
+                    <span className="text-emerald-400">{s.phones}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-purple-400" 
+                          style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <span className="text-gray-400">Email:</span>
+                    <span className="text-purple-400">{s.email}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-indigo-400" 
+                            style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    <span className="text-gray-400">Адрес:</span>
+                    <span className="text-indigo-400">{s.address}</span>
+                  </div>
+                  
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400" 
+                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <span className="text-gray-400">Задолженность:</span>
+                    <span className="text-red-400 font-semibold">
+                      {Number(s.debt).toLocaleString()} {t("soum")}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-      {/* Модалки */}
+      {/* Pagination */}
+      <div className="flex justify-center">
+        <Pagination
+          page={meta.page}
+          pageSize={meta.pageSize}
+          total={meta.total}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      </div>
+
+      {/* Модальные окна */}
       <AddSupplierModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}

@@ -2,9 +2,15 @@ import React, { useEffect, useState, useMemo } from "react";
 import {
   Search,
   CalendarDays,
-  CalendarCheck,
-  MoreHorizontal,
+  Calendar,
+  MoreVertical,
   Plus,
+  Activity,
+  Users,
+  Clock,
+  CheckCircle,
+  XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import AddReservationModal from "./AddReservationModal";
 import { DropdownMenu } from "./DropdownMenu";
@@ -14,7 +20,7 @@ import { BASE_URL } from "../../../../utils/auth";
 import { useTranslation } from "react-i18next";
 import Pagination from "../../../../components/layout/Pagination";
 
-// Функция для статусов
+// Функция для статусов с фармацевтической тематикой
 const STATUS_LABELS = (t) => ({
   pending: t("booking.statuses.pending"),
   confirmed: t("booking.statuses.confirmed"),
@@ -22,7 +28,39 @@ const STATUS_LABELS = (t) => ({
   cancelled: t("booking.statuses.cancelled"),
 });
 
-const PAGE_SIZE = 10; // можешь менять размер
+// Конфигурация статусов с неоновыми цветами
+const STATUS_CONFIG = {
+  pending: {
+    bg: "bg-amber-900/20",
+    text: "text-amber-400",
+    border: "border-amber-400/30",
+    icon: Clock,
+    glow: "#f59e0b"
+  },
+  confirmed: {
+    bg: "bg-cyan-900/20",
+    text: "text-cyan-400",
+    border: "border-cyan-400/30",
+    icon: CheckCircle,
+    glow: "#06b6d4"
+  },
+  completed: {
+    bg: "bg-emerald-900/20",
+    text: "text-emerald-400",
+    border: "border-emerald-400/30",
+    icon: CheckCircle,
+    glow: "#10b981"
+  },
+  cancelled: {
+    bg: "bg-red-900/20",
+    text: "text-red-400",
+    border: "border-red-400/30",
+    icon: XCircle,
+    glow: "#ef4444"
+  }
+};
+
+const PAGE_SIZE = 10;
 
 const Booking = () => {
   const { t } = useTranslation("booking");
@@ -58,11 +96,13 @@ const Booking = () => {
       .then((result) => {
         setReservations(result.data || []);
         setMeta({
-          page: (result.meta?.page || 0) + 1, // сервер с 0 или 1? Если с 1, убери +1!
+          page: result.meta?.page || 1,
+          pageSize: result.meta?.pageSize || PAGE_SIZE,
+          total: result.meta?.total || 0,
           totalPages: result.meta?.totalPages || 1,
         });
       })
-      .catch((err) => console.error("Ошибка загрузки бронирований:", err));
+      .catch((err) => console.error(t("error_loading_reservations"), err));
   };
 
   // Поиск по всем полям, включая ФИО клиента и статусы
@@ -87,7 +127,7 @@ const Booking = () => {
       (acc, item) => acc + (item.total_amount || 0),
       0
     );
-    return sum.toLocaleString() + " сум";
+    return sum.toLocaleString() + " " + (t("delete_sum"));
   };
 
   const handleDelete = async (reservation) => {
@@ -99,165 +139,245 @@ const Booking = () => {
       setDeleteModal({ isOpen: false, reservation: null });
       fetchReservations(page, PAGE_SIZE);
     } catch (err) {
-      alert("Ошибка при удалении");
+      alert(t("error_deleting"));
     }
   };
 
   const statusLabels = STATUS_LABELS(t);
 
   return (
-    <div className="space-y-6 bg-gray-50 min-h-screen p-4">
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
+      {/* Декоративные неоновые элементы */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl"></div>
+
       {/* Header */}
-      <div className="bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-gray-200">
-        <div className="flex items-center gap-3">
-          <div className="flex items-center justify-center w-12 h-12 rounded-full bg-indigo-100 text-indigo-700 text-3xl">
-            <CalendarCheck size={28} />
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl p-6 overflow-hidden"
+           style={{ boxShadow: '0 0 50px rgba(16, 185, 129, 0.2)' }}>
+        
+        {/* Неоновое свечение заголовка */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 via-transparent to-cyan-400/10"></div>
+        
+        <div className="relative flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
+                <div className="flex items-center gap-2">
+                  <Calendar className="text-emerald-400 w-7 h-7" 
+                           style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
+                  <Activity className="text-cyan-400 w-5 h-5" 
+                           style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white"
+                  style={{ textShadow: '0 0 20px rgba(16, 185, 129, 0.5)' }}>
+                {t("booking.title")}
+              </h1>
+              <p className="text-emerald-400 text-sm mt-1">
+                {t("patient_records_management")}
+              </p>
+            </div>
           </div>
-          <span className="text-2xl font-bold tracking-tight text-gray-800">
-            {t("booking.title")}
-          </span>
-        </div>
-        <div className="flex gap-3 items-center w-full md:w-auto">
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="w-11 h-11 flex items-center justify-center rounded-full  bg-indigo-50 text-indigo-600 text-3xl font-bold hover:bg-indigo-100 hover:text-indigo-800 transition-colors focus:outline-none"
-            title={t("booking.add")}
-          >
-            <Plus />
-          </button>
-          <div className="relative flex-1 max-w-xs">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={20}
-            />
-            <input
-              type="text"
-              placeholder={t("booking.search")}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full bg-gray-50 focus:outline-none focus:border-indigo-500 transition"
-              autoFocus
-            />
+          
+          <div className="flex gap-4 items-center">
+            {/* Кнопка добавления */}
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="relative bg-gradient-to-r from-emerald-500 to-cyan-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              style={{ 
+                boxShadow: '0 0 20px rgba(16, 185, 129, 0.3)',
+                filter: 'drop-shadow(0 0 15px rgba(16, 185, 129, 0.5))'
+              }}
+              title={t("booking.add")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Plus className="w-6 h-6 text-white relative z-10" />
+            </button>
+            
+            {/* Поиск */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search className="text-cyan-400 w-5 h-5" 
+                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+              </div>
+              <input
+                type="text"
+                placeholder={t("booking.search")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                style={{ 
+                  boxShadow: searchTerm ? '0 0 20px rgba(6, 182, 212, 0.2)' : 'none'
+                }}
+                autoFocus
+              />
+            </div>
           </div>
         </div>
       </div>
 
       {/* Table */}
-      <div className="bg-white rounded-2xl border border-gray-200">
-        <table className="min-w-full text-sm text-left text-gray-800 relative">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold">
-                {t("booking.client_full_name")}
-              </th>
-              <th className="px-6 py-4 font-semibold">{t("booking.date")}</th>
-              <th className="px-6 py-4 font-semibold">{t("booking.status")}</th>
-              <th className="px-6 py-4 font-semibold">{t("booking.sum")}</th>
-              <th className="px-6 py-4 text-right font-semibold">
-                {t("booking.actions")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((item) => (
-                <tr
-                  key={item.id}
-                  className="hover:bg-indigo-50 border-b border-gray-100 transition-colors relative"
-                >
-                  {/* Заменили client_id на client_full_name */}
-                  <td className="px-6 py-3 font-medium">
-                    {item.client_full_name}
-                  </td>
-                  <td className="px-6 py-3 flex items-center gap-2 text-gray-600">
-                    <CalendarDays size={16} className="text-indigo-400" />
-                    {item.created_at?.slice(0, 10)}
-                  </td>
-                  <td className="px-6 py-3">
-                    <span
-                      className={`px-3 py-1 text-xs font-semibold rounded-full border ${
-                        item.status === "confirmed"
-                          ? "bg-blue-50 text-blue-700 border-blue-200"
-                          : item.status === "pending"
-                          ? "bg-yellow-50 text-yellow-700 border-yellow-200"
-                          : item.status === "completed"
-                          ? "bg-green-50 text-green-700 border-green-200"
-                          : "bg-red-50 text-red-700 border-red-200"
-                      }`}
-                    >
-                      {statusLabels[item.status] || item.status}
-                    </span>
-                  </td>
-                  <td className="px-6 py-3 font-semibold text-gray-900">
-                    {item.total_amount?.toLocaleString()} {t("delete_sum")}
-                  </td>
-                  <td className="px-6 py-3 text-right relative">
-                    <button
-                      className="text-gray-400 hover:text-gray-700 transition relative z-10"
-                      title={t("booking.actions")}
-                      onClick={() =>
-                        setActiveMenuId(
-                          activeMenuId === item.id ? null : item.id
-                        )
-                      }
-                      tabIndex={0}
-                    >
-                      <MoreHorizontal />
-                    </button>
-                    {/* Dropdown меню */}
-                    {activeMenuId === item.id && (
-                      <DropdownMenu
-                        onEdit={() => {
-                          setEditModal({ isOpen: true, reservation: item });
-                          setActiveMenuId(null);
-                        }}
-                        onDelete={() => {
-                          setDeleteModal({ isOpen: true, reservation: item });
-                          setActiveMenuId(null);
-                        }}
-                        onClose={() => setActiveMenuId(null)}
-                      />
-                    )}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl "
+           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
+        
+        <div className="">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-800/50 border-b border-gray-700/50">
+              <tr>
+                <th className="px-6 py-5 font-semibold text-gray-300 flex items-center gap-2">
+                  <Users className="w-4 h-4 text-emerald-400" 
+                         style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                  {t("booking.client_full_name")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("booking.date")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("booking.status")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("booking.sum")}
+                </th>
+                <th className="px-6 py-5 text-right font-semibold text-gray-300">
+                  {t("booking.actions")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length > 0 ? (
+                filtered.map((item, index) => (
+                  <tr
+                    key={item.id}
+                    className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all duration-300 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-emerald-400 rounded-full"
+                             style={{ boxShadow: '0 0 8px #10b981' }}></div>
+                        <span className="font-medium text-white group-hover:text-emerald-400 transition-colors">
+                          {item.client_full_name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 text-gray-400">
+                        <CalendarDays className="w-4 h-4 text-cyan-400" 
+                                     style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                        <span>{item.created_at?.slice(0, 10)}</span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      {(() => {
+                        const config = STATUS_CONFIG[item.status] || STATUS_CONFIG.pending;
+                        const IconComponent = config.icon;
+                        return (
+                          <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.text} ${config.border}`}
+                               style={{ boxShadow: `0 0 15px ${config.glow}20` }}>
+                            <IconComponent className="w-4 h-4" 
+                                          style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }} />
+                            <span className="text-xs font-semibold">
+                              {statusLabels[item.status] || item.status}
+                            </span>
+                          </div>
+                        );
+                      })()}
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="font-bold text-emerald-400 text-lg"
+                            style={{ textShadow: '0 0 10px rgba(16, 185, 129, 0.5)' }}>
+                        {item.total_amount?.toLocaleString()} {t("delete_sum")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right relative">
+                      <button
+                        className="bg-gray-800 border border-gray-600/50 p-2 rounded-xl text-gray-400 hover:text-white hover:border-purple-400 transition-all duration-300 hover:scale-110 relative z-10"
+                        style={{ boxShadow: activeMenuId === item.id ? '0 0 15px #a855f7' : 'none' }}
+                        title={t("booking.actions")}
+                        onClick={() =>
+                          setActiveMenuId(
+                            activeMenuId === item.id ? null : item.id
+                          )
+                        }
+                      >
+                        <MoreVertical className="w-5 h-5" />
+                      </button>
+                      {/* Dropdown меню */}
+                      {activeMenuId === item.id && (
+                        <DropdownMenu
+                          onEdit={() => {
+                            setEditModal({ isOpen: true, reservation: item });
+                            setActiveMenuId(null);
+                          }}
+                          onDelete={() => {
+                            setDeleteModal({ isOpen: true, reservation: item });
+                            setActiveMenuId(null);
+                          }}
+                          onClose={() => setActiveMenuId(null)}
+                        />
+                      )}
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td
+                    colSpan={5}
+                    className="text-center px-6 py-12"
+                  >
+                    <div className="flex flex-col items-center gap-4">
+                      <Activity className="w-12 h-12 text-gray-600" />
+                      <span className="text-gray-400 font-medium text-lg">
+                        {t("booking.noData")}
+                      </span>
+                    </div>
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={5}
-                  className="text-center px-6 py-8 text-gray-400 font-medium"
-                >
-                  {t("booking.noData")}
-                </td>
-              </tr>
+              )}
+            </tbody>
+            {filtered.length > 0 && (
+              <tfoot>
+                <tr className="border-t-2 border-emerald-400/30 bg-gray-800/30">
+                  <td className="px-6 py-4 font-semibold text-white" colSpan={3}>
+                    <div className="flex items-center gap-2">
+                      <AlertTriangle className="w-5 h-5 text-emerald-400" 
+                                    style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                      {t("booking.totalSum")}
+                    </div>
+                  </td>
+                  <td className="px-6 py-4">
+                    <span className="font-bold text-emerald-400 text-xl"
+                          style={{ textShadow: '0 0 15px rgba(16, 185, 129, 0.5)' }}>
+                      {getTotalSum()}
+                    </span>
+                  </td>
+                  <td />
+                </tr>
+              </tfoot>
             )}
-          </tbody>
-          <tfoot>
-            <tr className="border-t border-gray-200 bg-white font-semibold text-gray-700">
-              <td className="px-6 py-4" colSpan={3}>
-                {t("booking.totalSum")}
-              </td>
-              <td className="px-6 py-4">{getTotalSum()}</td>
-              <td />
-            </tr>
-          </tfoot>
-        </table>
+          </table>
+        </div>
       </div>
 
-      {/* Pagination */}
-      <Pagination
-        page={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-      />
+      {/* Pagination - нужно будет стилизовать отдельно */}
+      <div className="flex justify-center">
+        <Pagination
+          page={meta.page}
+          pageSize={meta.pageSize}
+          total={meta.total}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      </div>
 
-      {/* Модалка добавления */}
+      {/* Модальные окна */}
       <AddReservationModal
         isOpen={isAddOpen}
         onClose={() => setIsAddOpen(false)}
         onAdd={() => fetchReservations(page, PAGE_SIZE)}
       />
-      {/* Модалка редактирования */}
       <EditReservationModal
         isOpen={editModal.isOpen}
         onClose={() => setEditModal({ isOpen: false, reservation: null })}
@@ -265,7 +385,6 @@ const Booking = () => {
         onSave={() => fetchReservations(page, PAGE_SIZE)}
         onUpdate={() => fetchReservations(page, PAGE_SIZE)}
       />
-      {/* Модалка удаления */}
       <DeleteReservationModal
         isOpen={deleteModal.isOpen}
         onClose={() => setDeleteModal({ isOpen: false, reservation: null })}

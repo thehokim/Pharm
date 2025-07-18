@@ -66,5 +66,22 @@
     "save": "Saqlash",
     "error": "Bandlovni yangilashda xatolik"
   },
-  "delete_sum":"so'm"
+  "delete_sum":"so'm",
+  "patient_records_management": "Bemorlarning yozuvlarini boshqarish",
+  "new_patient_record": "Yangi bemor yozuvi",
+  "select_patient": "Bemorni tanlang",
+  "no_clients": "Mavjud bemorlar yo'q",
+  "enter_amount": "Summani kiriting",
+  "error_creating_reservation": "Bandlov yaratishda xatolik",
+  "error_deleting": "O'chirishda xatolik",
+  "editing_patient_record": "Bemor yozuvini tahrirlash",
+  "select_client": "Mijozni tanlang",
+  "critical_system_action": "Tizimning kritik harakati",
+  "patient_record": "Bemor yozuvi",
+  "attention_irreversible_action": "Diqqat! Qaytarib bo'lmaydigan harakat",
+  "deleting": "O'chirilmoqda...",
+  "data_will_be_deleted": "Ma'lumotlar tibbiy tizimdan qaytarilmasdan o'chiriladi",
+  "error_loading_reservations": "Bandlovlarni yuklashda xatolik:",
+  "error_loading_clients": "Mijozlarni yuklashda xatolik:",
+  "error_loading_products": "Mahsulotlarni yuklashda xatolik:"
 }

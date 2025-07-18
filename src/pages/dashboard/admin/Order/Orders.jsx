@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, ShoppingCart } from "lucide-react";
+import { Plus, Search, ShoppingCart, Hash, User, Calendar, CheckCircle, DollarSign, CreditCard } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddOrderModal from "./AddOrderModal";
@@ -8,15 +8,15 @@ import DeleteOrderModal from "./DeleteOrderModal";
 import Pagination from "../../../../components/layout/Pagination";
 import { BASE_URL } from "../../../../utils/auth";
 
-// Цвета для статусов и оплат
+// Цвета для статусов и оплат (теперь с неоновыми эффектами)
 const STATUS_COLORS = {
-  done: "bg-gradient-to-r from-green-400 to-green-600 text-white shadow border-green-500",
-  in_progress: "bg-gradient-to-r from-yellow-300 to-orange-400 text-yellow-900 shadow border-yellow-400",
-  cancelled: "bg-gradient-to-r from-rose-400 to-red-500 text-white shadow border-red-500",
+  done: "bg-gradient-to-r from-green-400/20 to-green-600/20 text-green-400 border-green-400/50",
+  in_progress: "bg-gradient-to-r from-yellow-300/20 to-orange-400/20 text-yellow-400 border-yellow-400/50",
+  cancelled: "bg-gradient-to-r from-rose-400/20 to-red-500/20 text-red-400 border-red-400/50",
 };
 const PAYMENT_COLORS = {
-  paid: "bg-gradient-to-r from-emerald-400 to-emerald-600 text-white shadow border-emerald-500",
-  not_paid: "bg-gradient-to-r from-slate-300 to-slate-400 text-slate-800 shadow border-slate-400",
+  paid: "bg-gradient-to-r from-emerald-400/20 to-emerald-600/20 text-emerald-400 border-emerald-400/50",
+  not_paid: "bg-gradient-to-r from-slate-300/20 to-slate-400/20 text-slate-400 border-slate-400/50",
 };
 
 const PAGE_SIZE = 10;
@@ -68,7 +68,9 @@ const Orders = () => {
       .then((result) => {
         setOrders(Array.isArray(result.data) ? result.data : []);
         setMeta({
-          page: (result.meta?.page ?? 0) + 1,
+          page: result.meta?.page || 1,
+          pageSize: result.meta?.pageSize || PAGE_SIZE,
+          total: result.meta?.total || 0,
           totalPages: result.meta?.totalPages || 1,
         });
       })
@@ -142,141 +144,355 @@ const Orders = () => {
         .map((v) => (v ? String(v).toLowerCase() : ""))
         .some((val) => val.includes(q))
     );
-  }, [orders, search, t]);
+  }, [orders, search, STATUS_LABELS, PAYMENT_LABELS, PAYMENT_TYPE_LABELS]);
 
   return (
-    <div className="space-y-4 bg-gray-50 p-4 min-h-screen">
-      <div className="bg-white flex flex-col md:flex-row md:items-center justify-between gap-4 p-4 rounded-2xl border border-gray-200">
-        <div className="flex items-center justify-center gap-3">
-          <div className="bg-indigo-100 rounded-full p-3">
-            <ShoppingCart className="text-indigo-700" />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
+      {/* Декоративные неоновые элементы */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/5 rounded-full blur-3xl"></div>
+
+      {/* Header */}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 overflow-hidden"
+           style={{ boxShadow: '0 0 50px rgba(6, 182, 212, 0.2)' }}>
+        {/* Неоновое свечение заголовка */}
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-transparent to-emerald-400/10"></div>
+        
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-cyan-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-cyan-400 p-4 rounded-2xl">
+                <ShoppingCart className="text-cyan-400 w-7 h-7"
+                             style={{ filter: 'drop-shadow(0 0 10px #06b6d4)' }} />
+              </div>
+            </div>
+            <div>
+              <h1 className="text-3xl font-bold text-white"
+                  style={{ textShadow: '0 0 20px rgba(6, 182, 212, 0.5)' }}>
+                {t("orders")}
+              </h1>
+              <p className="text-cyan-400 text-sm mt-1">
+                {t("orders_management")}
+              </p>
+            </div>
           </div>
-          <span className="text-2xl font-bold text-gray-800">
-            {t("orders")}
-          </span>
-        </div>
-        <div className="flex gap-3 items-center w-full md:w-auto">
-          <button
-            onClick={() => setIsAddOpen(true)}
-            className="w-11 h-11 flex items-center justify-center rounded-full bg-indigo-50 text-indigo-600 text-2xl font-bold hover:bg-indigo-100 hover:text-indigo-800 transition-colors focus:outline-none"
-            title={t("add_order")}
-          >
-            <Plus size={20} />
-          </button>
-          <div className="relative flex-1 max-w-xs">
-            <Search
-              className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"
-              size={18}
-            />
-            <input
-              type="text"
-              placeholder={t("search_placeholder")}
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full bg-gray-50 focus:outline-none focus:border-indigo-500 transition"
-            />
+
+          <div className="flex items-center gap-4">
+            {/* Кнопка добавления */}
+            <button
+              onClick={() => setIsAddOpen(true)}
+              className="relative bg-gradient-to-r from-cyan-500 to-emerald-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              style={{
+                boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
+                filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
+              }}
+              title={t("add_order")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Plus className="w-6 h-6 text-white relative z-10" />
+            </button>
+
+            {/* Поиск */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search className="text-cyan-400 w-5 h-5"
+                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+              </div>
+              <input
+                type="text"
+                placeholder={t("search_placeholder")}
+                value={search}
+                onChange={(e) => setSearch(e.target.value)}
+                className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                style={{
+                  boxShadow: search ? '0 0 20px rgba(6, 182, 212, 0.2)' : 'none'
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="bg-gray-50 border-b border-gray-200">
-            <tr>
-              <th className="px-6 py-4 font-semibold">ID</th>
-              <th className="px-6 py-4 font-semibold">{t("client")}</th>
-              <th className="px-6 py-4 font-semibold">{t("date")}</th>
-              <th className="px-6 py-4 font-semibold">{t("status")}</th>
-              <th className="px-6 py-4 font-semibold">{t("payment_status")}</th>
-              <th className="px-6 py-4 font-semibold">{t("total_amount")}</th>
-              <th className="px-6 py-4 font-semibold text-center">
-                {t("payment_type")}
-              </th>
-              <th className="px-6 py-4 font-semibold text-center">
-                {t("actions")}
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((order) => (
-                <tr
-                  key={order.id}
-                  className="hover:bg-indigo-50 border-b border-gray-100 transition-colors"
-                >
-                  <td className="px-6 py-4 font-medium">#{order.id}</td>
-                  <td className="px-6 py-4">{order.client_full_name}</td>
-                  <td className="px-6 py-4">
-                    {order.created_at
-                      ? new Date(order.created_at).toLocaleDateString()
-                      : ""}
+      {/* Desktop Table */}
+      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl hidden lg:block"
+           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-800/50 border-b border-gray-700/50">
+              <tr>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Hash className="w-4 h-4 text-cyan-400"
+                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    ID
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-emerald-400"
+                          style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    {t("client")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-purple-400"
+                              style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    {t("date")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-amber-400"
+                                 style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    {t("status")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-blue-400"
+                                 style={{ filter: 'drop-shadow(0 0 8px #3b82f6)' }} />
+                    {t("payment_status")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400"
+                                style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    {t("total_amount")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-indigo-400"
+                                style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    {t("payment_type")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("actions")}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {filtered.length > 0 ? (
+                filtered.map((order) => (
+                  <tr
+                    key={order.id}
+                    className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all duration-300 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-2 h-2 bg-cyan-400 rounded-full"
+                             style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
+                        <span className="font-medium text-cyan-400 group-hover:text-cyan-300 transition-colors">
+                          #{order.id}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-emerald-400 font-medium">
+                        {order.client_full_name}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-purple-400">
+                        {order.created_at
+                          ? new Date(order.created_at).toLocaleDateString()
+                          : ""}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 text-xs font-semibold rounded-full border transition backdrop-blur-sm
+                          ${STATUS_COLORS[order.status] ||
+                          "bg-gray-200/20 text-gray-400 border-gray-400/50"}`}
+                        style={{ 
+                          boxShadow: order.status === 'done' ? '0 0 15px rgba(34, 197, 94, 0.3)' : 
+                                     order.status === 'in_progress' ? '0 0 15px rgba(251, 191, 36, 0.3)' :
+                                     order.status === 'cancelled' ? '0 0 15px rgba(239, 68, 68, 0.3)' : 'none'
+                        }}
+                      >
+                        {STATUS_LABELS[order.status] || order.status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span
+                        className={`px-3 py-1 text-xs font-semibold rounded-full border transition backdrop-blur-sm
+                          ${PAYMENT_COLORS[order.payment_status] ||
+                          "bg-gray-200/20 text-gray-400 border-gray-400/50"}`}
+                        style={{ 
+                          boxShadow: order.payment_status === 'paid' ? '0 0 15px rgba(16, 185, 129, 0.3)' : 'none'
+                        }}
+                      >
+                        {PAYMENT_LABELS[order.payment_status] ||
+                          order.payment_status}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="font-semibold text-red-400">
+                        {(order.total_amount ?? 0).toLocaleString()}{" "}
+                        {t("delete_sum")}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="px-3 py-1 text-xs font-semibold rounded-full border bg-indigo-400/20 text-indigo-400 border-indigo-400/50 backdrop-blur-sm"
+                            style={{ boxShadow: '0 0 10px rgba(99, 102, 241, 0.2)' }}>
+                        {PAYMENT_TYPE_LABELS[order.payment_type] ||
+                          order.payment_type}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <ActionMenu
+                        onEdit={() => {
+                          setEditingOrder(order);
+                          setIsEditOpen(true);
+                        }}
+                        onDelete={() => {
+                          setDeletingOrder(order);
+                          setIsDeleteOpen(true);
+                        }}
+                      />
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={8} className="text-center px-6 py-12">
+                    <div className="flex flex-col items-center gap-4">
+                      <ShoppingCart className="w-12 h-12 text-gray-600" />
+                      <span className="text-gray-400 font-medium text-lg">
+                        {t("no_data")}
+                      </span>
+                    </div>
                   </td>
-                  <td className="px-6 py-4">
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      {/* Mobile Cards */}
+      <div className="block lg:hidden">
+        {filtered.length === 0 ? (
+          <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl py-12 text-center">
+            <ShoppingCart className="w-12 h-12 text-gray-600 mx-auto mb-4" />
+            <span className="text-gray-400 font-medium">{t("no_data")}</span>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {filtered.map((order) => (
+              <div
+                key={order.id}
+                className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
+                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+              >
+                <div className="flex justify-between items-start">
+                  <div className="flex items-center gap-3">
+                    <div className="w-2 h-2 bg-cyan-400 rounded-full"
+                         style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
+                    <span className="text-lg font-semibold text-cyan-400">
+                      #{order.id}
+                    </span>
+                  </div>
+                  <ActionMenu
+                    onEdit={() => {
+                      setEditingOrder(order);
+                      setIsEditOpen(true);
+                    }}
+                    onDelete={() => {
+                      setDeletingOrder(order);
+                      setIsDeleteOpen(true);
+                    }}
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 gap-3 text-sm">
+                  <div className="flex items-center gap-2">
+                    <User className="w-4 h-4 text-emerald-400"
+                          style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <span className="text-gray-400">Клиент:</span>
+                    <span className="text-emerald-400 font-medium">
+                      {order.client_full_name}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <Calendar className="w-4 h-4 text-purple-400"
+                              style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <span className="text-gray-400">Дата:</span>
+                    <span className="text-purple-400">
+                      {order.created_at
+                        ? new Date(order.created_at).toLocaleDateString()
+                        : ""}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-amber-400"
+                                 style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    <span className="text-gray-400">Статус:</span>
                     <span
-                      className={`px-3 py-1 text-xs font-semibold rounded-full border transition shadow
-                        ${
-                          STATUS_COLORS[order.status] ||
-                          "bg-gray-200 text-gray-600 border-gray-300"
-                        }`}
+                      className={`px-2 py-1 text-xs font-semibold rounded-full border transition backdrop-blur-sm
+                        ${STATUS_COLORS[order.status] ||
+                        "bg-gray-200/20 text-gray-400 border-gray-400/50"}`}
                     >
                       {STATUS_LABELS[order.status] || order.status}
                     </span>
-                  </td>
-                  <td className="px-6 py-4">
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-blue-400"
+                                 style={{ filter: 'drop-shadow(0 0 8px #3b82f6)' }} />
+                    <span className="text-gray-400">Оплата:</span>
                     <span
-                      className={`px-3 py-1 text-xs font-semibold rounded-full border transition shadow
-                        ${
-                          PAYMENT_COLORS[order.payment_status] ||
-                          "bg-gray-200 text-gray-600 border-gray-300"
-                        }`}
+                      className={`px-2 py-1 text-xs font-semibold rounded-full border transition backdrop-blur-sm
+                        ${PAYMENT_COLORS[order.payment_status] ||
+                        "bg-gray-200/20 text-gray-400 border-gray-400/50"}`}
                     >
                       {PAYMENT_LABELS[order.payment_status] ||
                         order.payment_status}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 font-semibold text-gray-800">
-                    {(order.total_amount ?? 0).toLocaleString()}{" "}
-                    {t("delete_sum")}
-                  </td>
-                  <td className="px-6 py-4 text-center">
-                    <span className="px-3 py-1 text-xs font-semibold rounded-full border bg-indigo-50 text-indigo-700 border-indigo-200">
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <DollarSign className="w-4 h-4 text-red-400"
+                                style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <span className="text-gray-400">Сумма:</span>
+                    <span className="font-semibold text-red-400">
+                      {(order.total_amount ?? 0).toLocaleString()}{" "}
+                      {t("delete_sum")}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-indigo-400"
+                                style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    <span className="text-gray-400">Тип оплаты:</span>
+                    <span className="px-2 py-1 text-xs font-semibold rounded-full border bg-indigo-400/20 text-indigo-400 border-indigo-400/50 backdrop-blur-sm">
                       {PAYMENT_TYPE_LABELS[order.payment_type] ||
                         order.payment_type}
                     </span>
-                  </td>
-                  <td className="px-6 py-4 flex justify-center">
-                    <ActionMenu
-                      onEdit={() => {
-                        setEditingOrder(order);
-                        setIsEditOpen(true);
-                      }}
-                      onDelete={() => {
-                        setDeletingOrder(order);
-                        setIsDeleteOpen(true);
-                      }}
-                    />
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td
-                  colSpan={8}
-                  className="text-center px-6 py-8 text-gray-400 font-medium"
-                >
-                  {t("no_data")}
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      <Pagination
-        page={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-      />
+      {/* Pagination */}
+      <div className="flex justify-center">
+        <Pagination
+          page={meta.page}
+          pageSize={meta.pageSize}
+          total={meta.total}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      </div>
 
       {/* Модальные окна */}
       <AddOrderModal

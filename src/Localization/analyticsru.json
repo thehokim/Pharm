@@ -6,5 +6,10 @@
   "sales": "Продаж",
   "noData": "Нет данных",
   "total": "Всего",
-  "totalSales": "{{count}} продаж"
+  "totalSales": "{{count}} продаж",
+  "pharma_sales_analysis": "Анализ фармацевтических продаж",
+  "total_products": "Всего препаратов",
+  "total_sales": "Общие продажи",
+  "avg_sales": "Средние продажи",
+  "error_loading_data": "Ошибка при загрузке данных:"
 }

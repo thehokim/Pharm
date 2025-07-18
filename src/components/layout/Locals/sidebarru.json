@@ -11,5 +11,8 @@
   "logs": "Журнал действий",
   "parser": "Парсер FOM.UZ",
   "notifications": "Уведомления",
-  "settings": "Настройки"
+  "settings": "Настройки",
+  "images": "Изображения",
+  "videos": "Видео",
+  "documents": "Документы"
 }

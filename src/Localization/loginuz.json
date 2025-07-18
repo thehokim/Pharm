@@ -1,0 +1,20 @@
+{
+  "title": "Xush kelibsiz",
+  "subtitle": "Hisobingizga kiring",
+  "login": "Login",
+  "password": "Parol",
+  "submit": "Kirish",
+  "error": "Noto'g'ri login yoki parol",
+  "unknownRole": "Noma'lum rol",
+  "loginError": "Kirish xatosi",
+  "welcome": "Xush kelibsiz",
+  "showPassword": "Parolni ko'rsatish",
+  "hidePassword": "Parolni yashirish",
+  "system_online": "Tizim onlayn",
+  "protected": "Zamonaviy texnologiyalar bilan himoyalangan",
+  "erp_system": "ERP Tizimi",
+  "erp_slogan": "Bizning zamonaviy tizimimiz bilan biznesingizni samarali boshqaring",
+  "secure_auth": "Xavfsiz autentifikatsiya",
+  "multilang": "Ko'p tilli qo'llab-quvvatlash",
+  "intuitive": "Intuitiv interfeys"
+} 

@@ -82,6 +82,18 @@ import acc_tax_ru from "./pages/dashboard/accountant/Taxes/Localization/acc_tax_
 import acc_tax_uz from "./pages/dashboard/accountant/Taxes/Localization/acc_tax_uz.json";
 import acc_tax_uzcryl from "./pages/dashboard/accountant/Taxes/Localization/acc_tax_uzcryl.json"
 
+import mediaru from "./Localization/mediaru.json";
+import mediauz from "./Localization/mediauz.json";
+import mediauzcryl from "./Localization/mediauzcryl.json";
+
+import warehouseru from "./Localization/warehouseru.json";
+import warehouseuz from "./Localization/warehouseuz.json";
+import warehouseuzcryl from "./Localization/warehouseuzcryl.json";
+
+import loginru from "./Localization/loginru.json";
+import loginuz from "./Localization/loginuz.json";
+import loginuzcryl from "./Localization/loginuzcryl.json";
+
 // --- Добавляй новые разделы по аналогии выше ---
 
 i18n
@@ -105,7 +117,10 @@ i18n
         home_accountant: home_accountantru,
         acc_debt:acc_debt_ru,
         acc_rept: acc_rept_ru,
-        acc_tax: acc_tax_ru
+        acc_tax: acc_tax_ru,
+        media: mediaru,
+        warehouse: warehouseru,
+        login: loginru
       },
       uz: {
         user: useruz,
@@ -124,8 +139,10 @@ i18n
         home_accountant: home_accountantuz,
         acc_debt:acc_debt_uz,
         acc_rept: acc_rept_uz,
-        acc_tax: acc_tax_uz
-        
+        acc_tax: acc_tax_uz,
+        media: mediauz,
+        warehouse: warehouseuz,
+        login: loginuz
       },
       uzcryl: {
         user: useruzcryl,
@@ -144,7 +161,10 @@ i18n
         home_accountant: home_accountantuzcryl,
         acc_debt: acc_debt_uzcryl,
         acc_rept: acc_rept_uzcryl,
-        acc_tax: acc_tax_uzcryl
+        acc_tax: acc_tax_uzcryl,
+        media: mediauzcryl,
+        warehouse: warehouseuzcryl,
+        login: loginuzcryl
       }
     },
     lng: "ru",
@@ -166,7 +186,10 @@ i18n
       "home_accountant",
       "acc_debt",
       "acc_rept",
-      "acc_tax"
+      "acc_tax",
+      "media",
+      "warehouse",
+      "login"
       // добавляй сюда новые разделы при необходимости
     ],
     defaultNS: "user",

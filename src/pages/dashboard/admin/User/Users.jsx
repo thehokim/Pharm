@@ -1,30 +1,136 @@
 import React, { useState, useEffect } from "react";
-import { Search, Plus, Users as UsersIcon } from "lucide-react";
+import {
+  Search,
+  Plus,
+  Users as UsersIcon,
+  UserCheck,
+  Shield,
+  Activity,
+  Clock,
+  Edit3,
+  Trash2,
+} from "lucide-react";
 import AddUserModal from "./AddUserModal";
 import EditUserModal from "./EditUserModal";
 import DeleteUserModal from "./DeleteUserModal";
 import { BASE_URL } from "../../../../utils/auth";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import { useTranslation } from "react-i18next";
-import Pagination from "../../../../components/layout/Pagination"; 
+import Pagination from "../../../../components/layout/Pagination";
 
-const ToggleSwitch = ({ checked, onChange }) => (
+// Фармацевтический toggle switch с неоновыми эффектами
+const PharmaToggleSwitch = ({ checked, onChange }) => (
   <button
     onClick={onChange}
-    className={`w-12 h-7 flex items-center rounded-full p-1 transition-colors duration-300 ${
-      checked ? "bg-blue-500" : "bg-gray-300"
+    className={`relative w-14 h-8 flex items-center rounded-full p-1 transition-all duration-300 border-2 ${
+      checked
+        ? "bg-emerald-900/30 border-emerald-400/50"
+        : "bg-gray-800/50 border-gray-600/50"
     }`}
+    style={{
+      boxShadow: checked
+        ? "0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 20px rgba(16, 185, 129, 0.1)"
+        : "0 0 10px rgba(107, 114, 128, 0.2)",
+    }}
     tabIndex={0}
     aria-checked={checked}
     type="button"
   >
     <div
-      className={`bg-white w-5 h-5 rounded-full shadow transform transition-transform duration-300 ${
-        checked ? "translate-x-5" : ""
+      className={`relative w-6 h-6 rounded-full shadow-lg transform transition-all duration-300 ${
+        checked ? "translate-x-5.5 bg-emerald-400" : "translate-x-0 bg-gray-400"
       }`}
-    />
+      style={{
+        boxShadow: checked
+          ? "0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4)"
+          : "0 0 10px rgba(107, 114, 128, 0.5)",
+      }}
+    >
+      {checked && (
+        <div className="absolute inset-0 bg-emerald-400 rounded-full animate-pulse opacity-50"></div>
+      )}
+    </div>
+
+    {/* Индикатор активности */}
+    <div
+      className={`absolute right-2 transition-opacity duration-300 ${
+        checked ? "opacity-100" : "opacity-0"
+      }`}
+    >
+      <Activity
+        className="w-3 h-3 text-emerald-400"
+        style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+      />
+    </div>
   </button>
 );
+
+// Роль пользователя с цветовым кодированием
+const UserRoleBadge = ({ role }) => {
+  const getRoleConfig = (role) => {
+    switch (role?.toLowerCase()) {
+      case "admin":
+        return {
+          color: "text-red-400",
+          bg: "bg-red-900/20",
+          border: "border-red-400/30",
+          icon: Shield,
+          glow: "#ef4444",
+        };
+      case "warehouse":
+      case "warehouse":
+        return {
+          color: "text-orange-400",
+          bg: "bg-orange-900/20",
+          border: "border-orange-400/30",
+          icon: UserCheck,
+          glow: "#10b981",
+        };
+      case "accountant":
+      case "accountant":
+        return {
+          color: "text-emerald-400",
+          bg: "bg-emerald-900/20",
+          border: "border-emerald-400/30",
+          icon: UserCheck,
+          glow: "#10b981",
+        };
+      case "sales":
+      case "manager":
+        return {
+          color: "text-cyan-400",
+          bg: "bg-cyan-900/20",
+          border: "border-cyan-400/30",
+          icon: UsersIcon,
+          glow: "#06b6d4",
+        };
+      default:
+        return {
+          color: "text-gray-400",
+          bg: "bg-gray-900/20",
+          border: "border-gray-400/30",
+          icon: UsersIcon,
+          glow: "#6b7280",
+        };
+    }
+  };
+
+  const config = getRoleConfig(role);
+  const IconComponent = config.icon;
+
+  return (
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.border}`}
+      style={{ boxShadow: `0 0 15px ${config.glow}20` }}
+    >
+      <IconComponent
+        className={`w-4 h-4 ${config.color}`}
+        style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }}
+      />
+      <span className={`text-xs font-semibold ${config.color}`}>{role}</span>
+    </div>
+  );
+};
 
 const PAGE_SIZE = 10;
 
@@ -60,19 +166,19 @@ const Users = () => {
           }))
         );
         setMeta({
-          page: (result.meta?.page || 0) + 1, // если сервер отдаёт 0 для первой, добавляем +1
+          page: result.meta?.page || 1,
+          pageSize: result.meta?.pageSize || PAGE_SIZE,
+          total: result.meta?.total || 0,
           totalPages: result.meta?.totalPages || 1,
         });
       })
-      .catch((err) => console.error("Ошибка загрузки пользователей:", err));
+      .catch((err) => console.error(t("error_loading_users"), err));
   };
 
   useEffect(() => {
     fetchUsers(page, PAGE_SIZE);
     // eslint-disable-next-line
   }, [page]);
-
-  // ... остальной CRUD-код не меняется
 
   const handleAddUser = (form) => {
     fetch(`${BASE_URL}/api/users/`, {
@@ -89,7 +195,7 @@ const Users = () => {
       }),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Ошибка при добавлении пользователя");
+        if (!res.ok) throw new Error(t("error_adding_user"));
         return res.json();
       })
       .then(() => fetchUsers(page, PAGE_SIZE))
@@ -113,7 +219,7 @@ const Users = () => {
       }),
     })
       .then((res) => {
-        if (!res.ok) throw new Error("Ошибка при обновлении пользователя");
+        if (!res.ok) throw new Error(t("error_updating_user"));
         return res.json();
       })
       .then(() => {
@@ -167,6 +273,7 @@ const Users = () => {
     setEditingUser(user);
     setIsEditOpen(true);
   };
+
   const handleDelete = (user) => {
     setDeletingUser(user);
     setIsDeleteOpen(true);
@@ -179,79 +286,232 @@ const Users = () => {
   );
 
   return (
-    <div className="space-y-6 bg-gray-50 p-4 min-h-screen">
-      <div className="bg-white flex flex-col sm:flex-row items-center p-4 rounded-2xl border border-gray-200 justify-between gap-4">
-        <div className="flex items-center justify-center gap-3">
-        <div className="rounded-full p-3 bg-indigo-100">
-          <UsersIcon className="text-indigo-700"/>
-        </div>
-        <span className="text-2xl font-semibold text-gray-800">{t("title")}</span>
-        </div>
-        <div className="flex items-center gap-3 w-full sm:w-auto">
-          <button
-            onClick={() => setIsModalOpen(true)}
-            className="flex items-center justify-center w-11 h-11 rounded-full bg-indigo-50 text-indigo-600 hover:bg-indigo-100 transition text-2xl focus:outline-none"
-            title={t("addUser")}
-          >
-            <Plus size={24} />
-          </button>
-          <div className="relative flex-1 max-w-xs">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-            <input
-              type="text"
-              placeholder={t("searchPlaceholder")}
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-full bg-gray-50 focus:outline-none focus:border-indigo-500 transition"
-            />
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
+      {/* Декоративные неоновые элементы */}
+      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl"></div>
+
+      {/* Header */}
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl p-6 overflow-hidden"
+        style={{ boxShadow: "0 0 50px rgba(16, 185, 129, 0.2)" }}
+      >
+        {/* Неоновое свечение заголовка */}
+        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 via-transparent to-cyan-400/10"></div>
+
+        <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
+                <div className="flex items-center gap-2">
+                  <UsersIcon
+                    className="text-emerald-400 w-7 h-7"
+                    style={{ filter: "drop-shadow(0 0 10px #10b981)" }}
+                  />
+                  <Shield
+                    className="text-cyan-400 w-5 h-5"
+                    style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                  />
+                </div>
+              </div>
+            </div>
+            <div>
+              <h1
+                className="text-3xl font-bold text-white"
+                style={{ textShadow: "0 0 20px rgba(16, 185, 129, 0.5)" }}
+              >
+                {t("title")}
+              </h1>
+              <p className="text-emerald-400 text-sm mt-1">
+                {t("title_2")}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4">
+            {/* Кнопка добавления */}
+            <button
+              onClick={() => setIsModalOpen(true)}
+              className="relative bg-gradient-to-r from-emerald-500 to-cyan-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              style={{
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
+                filter: "drop-shadow(0 0 15px rgba(16, 185, 129, 0.5))",
+              }}
+              title={t("addUser")}
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <Plus className="w-6 h-6 text-white relative z-10" />
+            </button>
+
+            {/* Поиск */}
+            <div className="relative">
+              <div className="absolute left-4 top-1/2 -translate-y-1/2">
+                <Search
+                  className="text-cyan-400 w-5 h-5"
+                  style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                />
+              </div>
+              <input
+                type="text"
+                placeholder={t("searchPlaceholder")}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
+                style={{
+                  boxShadow: searchTerm
+                    ? "0 0 20px rgba(6, 182, 212, 0.2)"
+                    : "none",
+                }}
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl border border-gray-200 ">
-        <table className="min-w-full text-sm text-left text-gray-700">
-          <thead className="text-sm font-semibold uppercase tracking-wide text-gray-600">
-            <tr>
-              <th className="px-6 py-4 bg-gray-100 rounded-tl-xl">{t("name")}</th>
-              <th className="px-6 py-4 bg-gray-100">{t("username")}</th>
-              <th className="px-6 py-4 bg-gray-100">{t("role")}</th>
-              <th className="px-6 py-4 bg-gray-100">{t("active")}</th>
-              <th className="px-6 py-4 bg-gray-100">{t("created")}</th>
-              <th className="px-6 py-4 bg-gray-100 rounded-tr-xl text-center">{t("actions")}</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {filteredUsers.map((user) => (
-              <tr key={user.id} className="hover:bg-indigo-50 transition-colors duration-150">
-                <td className="px-6 py-4 font-medium">{user.name}</td>
-                <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4">{user.role}</td>
-                <td className="px-6 py-4">
-                  <ToggleSwitch
-                    checked={user.isActive}
-                    onChange={() => toggleUserStatus(user)}
+      {/* Table */}
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl overflow-hidden"
+        style={{ boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)" }}
+      >
+        <div className="overflow-x-auto">
+          <table className="w-full text-sm text-left">
+            <thead className="bg-gray-800/50 border-b border-gray-700/50">
+              <tr>
+                <th className="px-6 py-5 font-semibold text-gray-300 flex items-center gap-2">
+                  <UserCheck
+                    className="w-4 h-4 text-emerald-400"
+                    style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
                   />
-                </td>
-                <td className="px-6 py-4">{user.lastActive}</td>
-                <td className="px-6 py-4 flex justify-center">
-                  <ActionMenu
-                    onEdit={() => handleEdit(user)}
-                    onDelete={() => handleDelete(user)}
-                  />
-                </td>
+                  {t("name")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("username")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("role")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("active")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  <div className="flex items-center gap-2">
+                    <Clock
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
+                    {t("created")}
+                  </div>
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("actions")}
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredUsers.length > 0 ? (
+                filteredUsers.map((user) => (
+                  <tr
+                    key={user.id}
+                    className="border-b border-gray-800/50 hover:bg-gray-800/30 transition-all duration-300 group"
+                  >
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-3">
+                        <div
+                          className={`w-2 h-2 rounded-full ${
+                            user.isActive ? "bg-emerald-400" : "bg-gray-500"
+                          }`}
+                          style={{
+                            boxShadow: user.isActive
+                              ? "0 0 8px #10b981"
+                              : "none",
+                          }}
+                        ></div>
+                        <span className="font-medium text-white group-hover:text-emerald-400 transition-colors">
+                          {user.name}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-gray-400 font-mono text-sm">
+                        {user.email}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4">
+                      <UserRoleBadge role={user.role} />
+                    </td>
+                    <td className="px-6 py-4">
+                      <PharmaToggleSwitch
+                        checked={user.isActive}
+                        onChange={() => toggleUserStatus(user)}
+                      />
+                    </td>
+                    <td className="px-6 py-4">
+                      <span className="text-gray-400 text-sm">
+                        {user.lastActive}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-center">
+                      <div className="flex justify-center gap-2">
+                        <button
+                          onClick={() => handleEdit(user)}
+                          className="bg-gray-800 border border-emerald-400/30 p-2 rounded-xl text-emerald-400 hover:border-emerald-400 hover:scale-110 transition-all duration-300"
+                          style={{
+                            boxShadow: "0 0 10px rgba(16, 185, 129, 0.2)",
+                          }}
+                          title="Редактировать"
+                        >
+                          <Edit3
+                            className="w-4 h-4"
+                            style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                          />
+                        </button>
+                        <button
+                          onClick={() => handleDelete(user)}
+                          className="bg-gray-800 border border-red-400/30 p-2 rounded-xl text-red-400 hover:border-red-400 hover:scale-110 transition-all duration-300"
+                          style={{
+                            boxShadow: "0 0 10px rgba(239, 68, 68, 0.2)",
+                          }}
+                          title="Удалить"
+                        >
+                          <Trash2
+                            className="w-4 h-4"
+                            style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                          />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan={6} className="text-center px-6 py-12">
+                    <div className="flex flex-col items-center gap-4">
+                      <UsersIcon className="w-12 h-12 text-gray-600" />
+                      <span className="text-gray-400 font-medium text-lg">
+                        Пользователи не найдены
+                      </span>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Pagination */}
-      <Pagination
-        page={meta.page}
-        totalPages={meta.totalPages}
-        onPageChange={setPage}
-      />
+      <div className="flex justify-center">
+        <Pagination
+          page={meta.page}
+          pageSize={meta.pageSize}
+          total={meta.total}
+          totalPages={meta.totalPages}
+          onPageChange={setPage}
+        />
+      </div>
 
+      {/* Модальные окна */}
       <AddUserModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}

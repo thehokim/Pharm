@@ -106,7 +106,7 @@ function ThemeToggle({ value, onChange }) {
       type="button"
       aria-label="Переключить тему"
       onClick={() => onChange(!value)}
-      className="relative flex items-center w-[92px] h-[48px] rounded-full bg-[#E5E8EF] transition-colors duration-300"
+      className="relative z-0 flex items-center w-[92px] h-[48px] rounded-full bg-[#E5E8EF] transition-colors duration-300"
       style={{
         boxSizing: "border-box",
         padding: 0,

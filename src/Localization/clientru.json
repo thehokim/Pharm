@@ -40,5 +40,20 @@
     "debt": "Задолженность",
     "save": "Сохранить",
     "delete_sum":"cум"
-  }
+  },
+  "client_base_management": "Управление клиентской базой",
+  "add_client_desc": "Добавление нового клиента в базу данных",
+  "edit_client_desc": "Редактирование данных клиента",
+  "critical_system_action": "Критическое действие системы",
+  "deleting_client": "Удаляемый клиент",
+  "contact_colon": "Контакт:",
+  "phone_colon": "Телефон:",
+  "attention_irreversible_action": "Внимание! Необратимое действие",
+  "delete_warning": "Все данные клиента, включая историю заказов и задолженности, будут удалены без возможности восстановления.",
+  "deleting": "Удаление...",
+  "data_will_be_deleted": "Данные будут удалены безвозвратно из клиентской базы",
+  "error_loading_clients": "Ошибка загрузки клиентов:",
+  "error_adding_client": "Ошибка добавления клиента",
+  "error_updating_client": "Ошибка при редактировании",
+  "error_deleting_client": "Ошибка удаления клиента"
 }

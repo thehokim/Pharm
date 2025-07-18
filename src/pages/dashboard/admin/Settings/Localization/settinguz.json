@@ -30,5 +30,6 @@
   "dark": "Tungi mavzu",
   "2fa": "Ikki bosqichli tekshirish",
   "2faOn": "Faol",
-  "2faOff": "O‘chirilgan"
+  "2faOff": "O‘chirilgan",
+  "session_management": "Foydalanuvchi sessiyasini boshqarish"
 }

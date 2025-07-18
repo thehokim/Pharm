@@ -66,6 +66,23 @@
     "save": "Сохранить",
     "error": "Ошибка при обновлении бронирования"
   },
-  "delete_sum":"сум"
+  "delete_sum":"сум",
+  "patient_records_management": "Управление записями пациентов",
+  "new_patient_record": "Новая запись пациента",
+  "select_patient": "Выберите пациента",
+  "no_clients": "Нет доступных пациентов",
+  "enter_amount": "Введите сумму",
+  "error_creating_reservation": "Ошибка при создании бронирования",
+  "error_deleting": "Ошибка при удалении",
+  "editing_patient_record": "Редактирование записи пациента",
+  "select_client": "Выберите клиента",
+  "critical_system_action": "Критическое действие системы",
+  "patient_record": "Запись пациента",
+  "attention_irreversible_action": "Внимание! Необратимое действие",
+  "deleting": "Удаление...",
+  "data_will_be_deleted": "Данные будут удалены безвозвратно из медицинской системы",
+  "error_loading_reservations": "Ошибка загрузки бронирований:",
+  "error_loading_clients": "Ошибка загрузки клиентов:",
+  "error_loading_products": "Ошибка загрузки продуктов:"
 }
 

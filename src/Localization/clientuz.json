@@ -40,5 +40,20 @@
     "debt": "Qarzdorlik",
     "save": "Saqlash",
     "delete_sum":"so'm"
-  }
+  },
+  "client_base_management": "Mijozlar bazasini boshqarish",
+  "add_client_desc": "Yangi mijozni ma'lumotlar bazasiga qo'shish",
+  "edit_client_desc": "Mijoz ma'lumotlarini tahrirlash",
+  "critical_system_action": "Tizimning muhim harakati",
+  "deleting_client": "O'chirilayotgan mijoz",
+  "contact_colon": "Aloqa:",
+  "phone_colon": "Telefon:",
+  "attention_irreversible_action": "Diqqat! Qaytarib bo'lmaydigan harakat",
+  "delete_warning": "Mijozning barcha ma'lumotlari, jumladan buyurtmalar va qarzdorliklar tarixi, tiklab bo'lmaydigan tarzda o'chiriladi.",
+  "deleting": "O'chirilmoqda...",
+  "data_will_be_deleted": "Ma'lumotlar mijozlar bazasidan qaytarilmasdan o'chiriladi",
+  "error_loading_clients": "Mijozlarni yuklashda xatolik:",
+  "error_adding_client": "Mijozni qo'shishda xatolik",
+  "error_updating_client": "Mijozni tahrirlashda xatolik",
+  "error_deleting_client": "Mijozni o'chirishda xatolik"
 }
