@@ -56,5 +56,8 @@
   "data_will_be_deleted": "Маълумотлар фармацевтика тизимидан қайтарилмасдан ўчирилади",
   "error_updating_product": "Маҳсулотни янгилашда хатолик",
   "error_deleting_product": "Маҳсулотни ўчиришда хатолик",
-  "visibility": "Кўриниш"
+  "visibility": "Кўриниш",
+  "marketing_amount": "Маркетинг суммаси",
+  "product_percentage": "Маҳсулот фоизлари",
+  "delivery_fee": "Логистика нархлари"
 }

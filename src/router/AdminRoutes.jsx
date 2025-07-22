@@ -1,7 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Routes, Route } from "react-router-dom";
 import Sidebar from "../components/layout/Sidebar";
-
 import Home from "../pages/dashboard/admin/Home/Home";
 import Clients from "../pages/dashboard/admin/Client/Clients";
 import Suppliers from "../pages/dashboard/admin/Supplier/Suppliers";
@@ -15,10 +14,23 @@ import Notifications from "../pages/dashboard/admin/Home/Notifications";
 import Analytics from "../pages/dashboard/admin/Analytics/Analytics";
 
 const AdminRoutes = () => {
+  const [sidebarOpen, setSidebarOpen] = useState(true);
+
+  const toggleSidebar = () => {
+    setSidebarOpen(!sidebarOpen);
+  };
+
   return (
     <div className="flex">
-      <Sidebar />
-      <div className="ml-64 w-full min-h-screen">
+      {/* Sidebar с кнопкой переключения */}
+      <Sidebar isOpen={sidebarOpen} onToggle={toggleSidebar} />
+      
+      {/* Основной контент */}
+      <div
+        className={`w-full min-h-screen transition-all duration-300 ${
+          sidebarOpen ? "ml-64" : "ml-0"
+        }`}
+      >
         <Routes>
           <Route path="" element={<Home />} />
           <Route path="users" element={<Users />} />

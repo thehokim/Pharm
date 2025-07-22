@@ -16,6 +16,8 @@ import {
   Activity,
   Circle,
   Zap,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -30,12 +32,11 @@ const menu = [
   { labelKey: "suppliers", icon: ClipboardList, to: "suppliers", color: "#10b981" },
   { labelKey: "orders", icon: ShoppingCart, to: "orders", color: "#f59e0b" },
   { labelKey: "logs", icon: FileSearch, to: "logs", color: "#6b7280" },
-  { labelKey: "parser", icon: FileSearch, to: "parser", color: "#6b7280" },
   { labelKey: "notifications", icon: Bell, to: "notifications", color: "#ef4444" },
   { labelKey: "settings", icon: Settings, to: "settings", color: "#6b7280" },
 ];
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen = true, onToggle }) => {
   const { t } = useTranslation("sidebar");
   const location = useLocation();
 
@@ -48,162 +49,249 @@ const Sidebar = () => {
 
   return (
     <>
-      <aside 
-        className="w-66 h-screen bg-gray-900 border-r-2 border-emerald-400/20 fixed top-0 left-0 overflow-y-auto overflow-x-hidden shadow-2xl"
-        style={{ 
-          boxShadow: '0 0 50px rgba(16, 185, 129, 0.2), 4px 0 30px rgba(16, 185, 129, 0.15)',
-          background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))'
-        }}
-      >
-        
-        {/* Декоративные неоновые элементы */}
-        <div 
-          className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl"
+      {/* Основной контейнер сайдбара */}
+      <div className="relative">
+        <aside 
+          className={`h-screen bg-gray-900 border-r-2 border-emerald-400/20 fixed top-0 left-0 overflow-y-auto overflow-x-hidden shadow-2xl transition-all duration-300 ${
+            isOpen ? "w-64 translate-x-0" : "w-64 -translate-x-full"
+          }`}
           style={{ 
-            background: 'rgba(16, 185, 129, 0.1)',
-            transform: 'translate(4rem, -4rem)'
+            boxShadow: '0 0 50px rgba(16, 185, 129, 0.2), 4px 0 30px rgba(16, 185, 129, 0.15)',
+            background: 'linear-gradient(180deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))',
+            zIndex: 1000,
+            direction: 'rtl' // Изменяем направление для перемещения скроллбара влево
           }}
-        ></div>
-        <div 
-          className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl"
-          style={{ 
-            background: 'rgba(6, 182, 212, 0.1)',
-            transform: 'translate(-3rem, 3rem)'
-          }}
-        ></div>
-        
-        <div className="relative z-10">
-          {/* Заголовок компании */}
-          <div className="relative p-6 border-b border-gray-700/50 overflow-hidden">
-            {/* Неоновое свечение заголовка */}
-            <div 
-              className="absolute inset-0"
-              style={{ 
-                background: 'linear-gradient(to right, rgba(16, 185, 129, 0.1), transparent, rgba(6, 182, 212, 0.1))'
-              }}
-            ></div>
+        >
+          
+          {/* Внутренний контейнер для возврата правильного направления текста */}
+          <div style={{ direction: 'ltr', height: '100%' }}>
             
-            <div className="relative flex items-center justify-center gap-3">
-              <div className="relative">
-                <div 
-                  className="absolute inset-0 rounded-full blur-md"
-                  style={{ 
-                    background: '#10b981',
-                    opacity: 0.6
-                  }}
-                ></div>
-                <div className="relative bg-gray-800 border-2 border-emerald-400 p-3 rounded-full">
-                  <div className="flex items-center gap-1">
-                    <Heart 
-                      className="text-emerald-400 w-5 h-5" 
-                      style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} 
-                    />
-                    <Circle 
-                      className="text-cyan-400 w-4 h-4" 
-                      style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} 
-                    />
+            {/* Декоративные неоновые элементы */}
+            <div 
+              className="absolute top-0 right-0 w-32 h-32 rounded-full blur-3xl"
+              style={{ 
+                background: 'rgba(16, 185, 129, 0.1)',
+                transform: 'translate(4rem, -4rem)',
+                pointerEvents: 'none',
+                zIndex: 1
+              }}
+            />
+            <div 
+              className="absolute bottom-0 left-0 w-24 h-24 rounded-full blur-2xl"
+              style={{ 
+                background: 'rgba(6, 182, 212, 0.1)',
+                transform: 'translate(-3rem, 3rem)',
+                pointerEvents: 'none',
+                zIndex: 1
+              }}
+            />
+            
+            {/* Заголовок компании */}
+            <div className="relative p-6 border-b border-gray-700/50 overflow-hidden" style={{ zIndex: 100 }}>
+              <div 
+                className="absolute inset-0"
+                style={{ 
+                  background: 'linear-gradient(to right, rgba(16, 185, 129, 0.1), transparent, rgba(6, 182, 212, 0.1))',
+                  pointerEvents: 'none',
+                  zIndex: 1
+                }}
+              />
+              
+              <div className="relative flex items-center justify-center gap-3" style={{ zIndex: 2 }}>
+                <div className="relative">
+                  <div 
+                    className="absolute inset-0 rounded-full blur-md"
+                    style={{ 
+                      background: '#10b981',
+                      opacity: 0.6,
+                      pointerEvents: 'none'
+                    }}
+                  />
+                  <div className="relative bg-gray-800 border-2 border-emerald-400 p-3 rounded-full">
+                    <div className="flex items-center gap-1">
+                      <Heart 
+                        className="text-emerald-400 w-5 h-5" 
+                        style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} 
+                      />
+                      <Circle 
+                        className="text-cyan-400 w-4 h-4" 
+                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} 
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
-              
-              <div className="text-center">
-                <h1 
-                  className="text-xl font-bold text-white"
-                  style={{ textShadow: '0 0 15px rgba(16, 185, 129, 0.5)' }}
-                >
-                  {t("companyName")}
-                </h1>
-                <p className="text-emerald-400 text-xs mt-1 flex items-center justify-center gap-1">
-                  <Zap className="w-3 h-3" />
-                  <span>Pharma System</span>
-                </p>
+                
+                <div className="text-center">
+                  <h1 
+                    className="text-xl font-bold text-white"
+                    style={{ textShadow: '0 0 15px rgba(16, 185, 129, 0.5)' }}
+                  >
+                    {t("companyName")}
+                  </h1>
+                  <p className="text-emerald-400 text-xs mt-1 flex items-center justify-center gap-1">
+                    <Zap className="w-3 h-3" />
+                    <span>Pharma System</span>
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
 
-          {/* Навигационное меню */}
-          <nav className="flex flex-col gap-2 px-4 py-6">
-            {menu.map((item, index) => {
-              const IconComponent = item.icon;
-              const isActive = isActiveRoute(item.to);
-              
-              return (
-                <NavLink
-                  key={index}
-                  to={`/admin/${item.to}`}
-                  className={`relative flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 text-sm group overflow-hidden ${
-                    isActive
-                      ? "bg-gray-800/60 font-semibold text-white border border-gray-600/50"
-                      : "text-gray-400 hover:text-white hover:bg-gray-800/40"
-                  }`}
-                  style={{
-                    borderColor: isActive ? `${item.color}50` : 'transparent',
-                    boxShadow: isActive ? `0 0 20px ${item.color}20, inset 0 0 20px ${item.color}10` : 'none'
-                  }}
-                  end={item.to === ""}
-                >
-                  {/* Неоновая полоска активного элемента */}
-                  <div 
-                    className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl transition-all duration-300 group-hover:w-2"
-                    style={{ 
-                      backgroundColor: item.color,
-                      boxShadow: `0 0 10px ${item.color}`,
-                      opacity: isActive ? 1 : 0
+            {/* Навигационное меню */}
+            <nav className="flex flex-col gap-2 px-4 py-6" style={{ position: 'relative', zIndex: 200 }}>
+              {menu.map((item, index) => {
+                const IconComponent = item.icon;
+                const isActive = isActiveRoute(item.to);
+                
+                return (
+                  <NavLink
+                    key={index}
+                    to={`/admin/${item.to}`}
+                    className={`relative flex items-center gap-4 px-4 py-4 rounded-2xl transition-all duration-300 text-sm group overflow-hidden ${
+                      isActive
+                        ? "font-semibold text-white"
+                        : "text-gray-400 hover:text-white hover:bg-gray-800/40"
+                    }`}
+                    style={{
+                      background: isActive 
+                        ? `linear-gradient(135deg, rgba(31, 41, 55, 0.8), rgba(17, 24, 39, 0.9))` 
+                        : 'transparent',
+                      border: isActive ? `1px solid ${item.color}40` : '1px solid transparent',
+                      boxShadow: isActive 
+                        ? `0 0 25px ${item.color}25, inset 0 0 25px ${item.color}15, 0 0 50px ${item.color}10` 
+                        : 'none',
+                      position: 'relative',
+                      zIndex: 10,
+                      pointerEvents: 'auto',
+                      cursor: 'pointer'
                     }}
-                  ></div>
-                  
-                  {/* Фоновое свечение при hover */}
-                  <div 
-                    className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{ 
-                      background: `radial-gradient(circle at center, ${item.color}15, transparent 70%)` 
-                    }}
-                  ></div>
-                  
-                  <div className="relative flex items-center gap-4 w-full">
-                    {/* Иконка с неоновым эффектом */}
-                    <div className="relative">
+                    end={item.to === ""}
+                  >
+                    {/* Неоновая полоска активного элемента */}
+                    <div 
+                      className="absolute left-0 top-0 bottom-0 transition-all duration-300"
+                      style={{ 
+                        width: isActive ? '4px' : '0px',
+                        background: isActive 
+                          ? `linear-gradient(to bottom, ${item.color}, ${item.color}80, ${item.color})` 
+                          : 'transparent',
+                        borderRadius: '0 8px 8px 0',
+                        boxShadow: isActive 
+                          ? `0 0 15px ${item.color}, 0 0 30px ${item.color}50` 
+                          : 'none',
+                        pointerEvents: 'none'
+                      }}
+                    />
+                    
+                    {/* Дополнительное свечение края при активном состоянии */}
+                    {isActive && (
                       <div 
-                        className="absolute inset-0 blur-md opacity-0 group-hover:opacity-50 transition-opacity duration-300"
-                        style={{ backgroundColor: item.color }}
-                      ></div>
-                      <div 
-                        className="relative transition-all duration-300 group-hover:scale-110"
+                        className="absolute left-0 top-2 bottom-2 w-1 rounded-r-full opacity-60 animate-pulse"
                         style={{ 
-                          color: item.color,
-                          filter: `drop-shadow(0 0 8px ${item.color}50)`
+                          backgroundColor: item.color,
+                          boxShadow: `0 0 20px ${item.color}`,
+                          pointerEvents: 'none'
+                        }}
+                      />
+                    )}
+
+                    {/* Фоновое свечение при hover */}
+                    <div 
+                      className="absolute inset-0 rounded-2xl opacity-0 group-hover:opacity-100 transition-all duration-500"
+                      style={{ 
+                        background: isActive 
+                          ? 'transparent'
+                          : `radial-gradient(circle at 20% center, ${item.color}20, ${item.color}10, transparent 60%)`,
+                        pointerEvents: 'none'
+                      }}
+                    />
+                    
+                    <div className="flex items-center gap-4 w-full" style={{ position: 'relative', zIndex: 2 }}>
+                      {/* Иконка с неоновым эффектом */}
+                      <div className="relative flex-shrink-0">
+                        <div 
+                          className={`absolute inset-0 blur-md transition-opacity duration-300 ${
+                            isActive ? 'opacity-60' : 'opacity-0 group-hover:opacity-40'
+                          }`}
+                          style={{ 
+                            backgroundColor: item.color,
+                            pointerEvents: 'none'
+                          }}
+                        />
+                        <div 
+                          className="relative transition-all duration-300 group-hover:scale-110"
+                          style={{ 
+                            color: isActive ? '#ffffff' : item.color,
+                            filter: isActive 
+                              ? `drop-shadow(0 0 12px ${item.color}) drop-shadow(0 0 20px ${item.color}50)` 
+                              : `drop-shadow(0 0 8px ${item.color}50)`
+                          }}
+                        >
+                          <IconComponent size={18} />
+                        </div>
+                      </div>
+                      
+                      {/* Текст меню */}
+                      <span 
+                        className="font-medium transition-all duration-300 group-hover:tracking-wide whitespace-nowrap"
+                        style={{ 
+                          color: isActive ? '#ffffff' : 'inherit',
+                          textShadow: isActive 
+                            ? `0 0 12px ${item.color}60, 0 0 20px ${item.color}30` 
+                            : 'none',
+                          fontWeight: isActive ? '600' : '500'
                         }}
                       >
-                        <IconComponent size={18} />
-                      </div>
-                    </div>
-                    
-                    {/* Текст меню */}
-                    <span 
-                      className="font-medium transition-all duration-300 group-hover:tracking-wide"
-                      style={{ 
-                        textShadow: isActive ? `0 0 10px ${item.color}50` : 'none'
-                      }}
-                    >
-                      {t(item.labelKey)}
-                    </span>
+                        {t(item.labelKey)}
+                      </span>
 
-                    {/* Пульсирующий индикатор для уведомлений */}
-                    {item.labelKey === "notifications" && (
-                      <div className="ml-auto">
-                        <div 
-                          className="w-2 h-2 bg-red-400 rounded-full animate-pulse"
-                          style={{ boxShadow: '0 0 8px #ef4444' }}
-                        ></div>
-                      </div>
-                    )}
-                  </div>
-                </NavLink>
-              );
-            })}
-          </nav>
-        </div>
-      </aside>
+                      {/* Пульсирующий индикатор для уведомлений */}
+                      {item.labelKey === "notifications" && (
+                        <div className="ml-auto">
+                          <div 
+                            className="w-2 h-2 bg-red-400 rounded-full animate-pulse"
+                            style={{ 
+                              boxShadow: '0 0 8px #ef4444',
+                              pointerEvents: 'none'
+                            }}
+                          />
+                        </div>
+                      )}
+                    </div>
+                  </NavLink>
+                );
+              })}
+            </nav>
+            
+          </div>
+        </aside>
+
+        {/* Кнопка-стрелка для переключения (как в EXB) */}
+        <button
+          onClick={onToggle}
+          className={`fixed top-1/2 -translate-y-1/2 w-6 h-12 bg-gray-800 hover:bg-gray-700 border-2 border-emerald-400/30 hover:border-emerald-400/50 text-emerald-400 hover:text-emerald-300 transition-all duration-300 shadow-lg hover:shadow-emerald-400/20 z-50 flex items-center justify-center group ${
+            isOpen ? "left-64" : "left-0"
+          }`}
+          style={{
+            borderRadius: '0 8px 8px 0',
+            boxShadow: '0 0 15px rgba(16, 185, 129, 0.2)',
+          }}
+          title={isOpen ? "Скрыть панель" : "Показать панель"}
+        >
+          <div className="transition-transform duration-300 group-hover:scale-110">
+            {isOpen ? (
+              <ChevronLeft className="w-4 h-4" />
+            ) : (
+              <ChevronRight className="w-4 h-4" />
+            )}
+          </div>
+          
+          {/* Неоновый эффект при hover */}
+          <div 
+            className="absolute inset-0 bg-emerald-400/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            style={{ borderRadius: '0 6px 6px 0' }}
+          />
+        </button>
+      </div>
 
       {/* Кастомные стили для скроллбара */}
       <style dangerouslySetInnerHTML={{

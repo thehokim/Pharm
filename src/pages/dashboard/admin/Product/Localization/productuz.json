@@ -57,5 +57,8 @@
   "data_will_be_deleted": "Ma'lumotlar farmatsevtika tizimidan qaytarilmasdan o'chiriladi",
   "error_updating_product": "Mahsulotni yangilashda xatolik",
   "error_deleting_product": "Mahsulotni o'chirishda xatolik",
-  "visibility": "Ko'rinish"
+  "visibility": "Ko'rinish",
+  "marketing_amount": "Marketing summasi",
+  "product_percentage": "Mahsulot foizlari",
+  "delivery_fee": "Logistika narxlari"
 }

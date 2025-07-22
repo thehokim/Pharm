@@ -2,10 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
   Search,
   ClipboardList,
-  ChevronLeft,
-  ChevronRight,
-  ChevronsLeft,
-  ChevronsRight,
   User,
   Shield,
   Activity,
@@ -14,13 +10,19 @@ import {
 } from "lucide-react";
 import { BASE_URL } from "../../../../utils/auth";
 import { useTranslation } from "react-i18next";
+import Pagination from "../../../../components/layout/Pagination"; // Импортируем компонент Pagination
 
 const PAGE_SIZE = 12;
 
 const Logs = () => {
   const { t } = useTranslation("logs");
   const [logs, setLogs] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  const [meta, setMeta] = useState({ 
+    page: 1, 
+    totalPages: 1, 
+    total: 0, 
+    pageSize: PAGE_SIZE 
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [page, setPage] = useState(1);
   const token = localStorage.getItem("token");
@@ -35,10 +37,12 @@ const Logs = () => {
     })
       .then((res) => res.json())
       .then((result) => {
-        // Если сервер возвращает page с 0 — корректируем +1
+        // ИСПРАВЛЕНО: Убираем +1, используем данные из API как есть
         setMeta({
-          page: (result.meta?.page ?? 0) + 1,
+          page: result.meta?.page || 1,           // Убрали +1!
           totalPages: result.meta?.totalPages || 1,
+          total: result.meta?.total || 0,         // Добавили total
+          pageSize: result.meta?.pageSize || PAGE_SIZE // Добавили pageSize
         });
         setLogs(
           Array.isArray(result.data)
@@ -70,119 +74,9 @@ const Logs = () => {
     setPage(1);
   }, [searchTerm]);
 
-  // Неоновая пагинация
-  const renderPagination = () => {
-    if (meta.totalPages <= 1) return null;
-    const { page: currentPage, totalPages } = meta;
-
-    const range = [];
-    let dotsAdded = false;
-    for (let i = 1; i <= totalPages; i++) {
-      if (
-        i === 1 ||
-        i === totalPages ||
-        (i >= currentPage - 1 && i <= currentPage + 1)
-      ) {
-        range.push(i);
-        dotsAdded = false;
-      } else if (!dotsAdded) {
-        range.push("dots");
-        dotsAdded = true;
-      }
-    }
-
-    return (
-      <div className="flex justify-center">
-        <nav className="flex flex-wrap justify-center gap-2 mt-6 py-4 select-none bg-gray-800/30 backdrop-blur-xl border border-gray-700/50 rounded-2xl px-6"
-             style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}>
-          
-          {/* First Page */}
-          <button
-            className="p-3 rounded-xl bg-gray-800/50 border border-gray-600/50 text-gray-400 hover:border-cyan-400 hover:text-cyan-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
-            onClick={() => setPage(1)}
-            disabled={currentPage === 1}
-            title="Первая"
-            style={{ 
-              boxShadow: currentPage !== 1 ? '0 0 10px rgba(6, 182, 212, 0.2)' : 'none'
-            }}
-          >
-            <ChevronsLeft size={18} style={{ filter: 'drop-shadow(0 0 6px currentColor)' }} />
-          </button>
-          
-          {/* Previous Page */}
-          <button
-            className="p-3 rounded-xl bg-gray-800/50 border border-gray-600/50 text-gray-400 hover:border-cyan-400 hover:text-cyan-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
-            onClick={() => setPage(currentPage - 1)}
-            disabled={currentPage === 1}
-            title="Предыдущая"
-            style={{ 
-              boxShadow: currentPage !== 1 ? '0 0 10px rgba(6, 182, 212, 0.2)' : 'none'
-            }}
-          >
-            <ChevronLeft size={18} style={{ filter: 'drop-shadow(0 0 6px currentColor)' }} />
-          </button>
-
-          {/* Page Numbers */}
-          {range.map((p, i) =>
-            p === "dots" ? (
-              <span key={i} className="px-4 py-3 text-gray-500 select-none">…</span>
-            ) : (
-              <button
-                key={i}
-                className={`px-4 py-3 rounded-xl font-semibold transition-all duration-300 ${
-                  p === currentPage
-                    ? "bg-gradient-to-r from-cyan-500 to-emerald-500 text-white border-2 border-cyan-400/50 shadow-lg scale-110"
-                    : "bg-gray-800/50 border border-gray-600/50 text-gray-300 hover:border-cyan-400 hover:text-cyan-400 hover:scale-105"
-                }`}
-                onClick={() => setPage(p)}
-                disabled={p === currentPage}
-                style={{
-                  boxShadow: p === currentPage 
-                    ? '0 0 20px rgba(6, 182, 212, 0.5), inset 0 0 20px rgba(255, 255, 255, 0.1)' 
-                    : '0 0 10px rgba(6, 182, 212, 0.2)',
-                  textShadow: p === currentPage ? '0 0 10px rgba(255, 255, 255, 0.8)' : 'none'
-                }}
-              >
-                {p}
-              </button>
-            )
-          )}
-
-          {/* Next Page */}
-          <button
-            className="p-3 rounded-xl bg-gray-800/50 border border-gray-600/50 text-gray-400 hover:border-cyan-400 hover:text-cyan-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
-            onClick={() => setPage(currentPage + 1)}
-            disabled={currentPage === totalPages}
-            title="Следующая"
-            style={{ 
-              boxShadow: currentPage !== totalPages ? '0 0 10px rgba(6, 182, 212, 0.2)' : 'none'
-            }}
-          >
-            <ChevronRight size={18} style={{ filter: 'drop-shadow(0 0 6px currentColor)' }} />
-          </button>
-
-          {/* Last Page */}
-          <button
-            className="p-3 rounded-xl bg-gray-800/50 border border-gray-600/50 text-gray-400 hover:border-cyan-400 hover:text-cyan-400 disabled:opacity-30 disabled:cursor-not-allowed transition-all duration-300 hover:scale-110"
-            onClick={() => setPage(totalPages)}
-            disabled={currentPage === totalPages}
-            title="Последняя"
-            style={{ 
-              boxShadow: currentPage !== totalPages ? '0 0 10px rgba(6, 182, 212, 0.2)' : 'none'
-            }}
-          >
-            <ChevronsRight size={18} style={{ filter: 'drop-shadow(0 0 6px currentColor)' }} />
-          </button>
-
-          {/* Page Info */}
-          <div className="ml-4 flex items-center">
-            <span className="text-gray-400 text-sm select-none">
-              {t("page")} <span className="text-cyan-400 font-semibold">{currentPage}</span> {t("of")} <span className="text-cyan-400 font-semibold">{totalPages}</span>
-            </span>
-          </div>
-        </nav>
-      </div>
-    );
+  // Обработчик смены страницы
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
   };
 
   return (
@@ -377,8 +271,11 @@ const Logs = () => {
         )}
       </div>
 
-      {/* Pagination */}
-      {renderPagination()}
+      {/* Pagination - используем новый компонент */}
+      <Pagination 
+        meta={meta}
+        onPageChange={handlePageChange}
+      />
     </div>
   );
 };

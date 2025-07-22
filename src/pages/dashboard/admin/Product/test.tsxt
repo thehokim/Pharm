@@ -1,5 +1,5 @@
-import React, { useEffect, useRef, useState } from "react";
-import { X, ChevronDown, Loader, Edit3, Package, Pill, Hash, DollarSign, Calendar, User, Barcode, AlignLeft, TrendingUp, Truck, Calculator } from "lucide-react";
+import React, { useRef, useState, useEffect } from "react";
+import { X, ChevronDown, Loader, Plus, Package, Pill, Hash, DollarSign, Calendar, User, Barcode, AlignLeft, TrendingUp, Truck, Calculator } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { BASE_URL } from "../../../../utils/auth";
 import DatePicker from "./DatePicker";
@@ -10,8 +10,7 @@ const CATEGORY_OPTIONS = [
 ];
 
 
-
-const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
+const AddProductModal = ({ isOpen, onClose, onSubmit }) => {
   const { t } = useTranslation("product");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -27,7 +26,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
     expiration_date: "",
   });
 
-  // ДОБАВЛЕНО: состояние для админских полей
+  // ДОБАВЛЕНО: отдельное состояние для админских полей
   const [adminFields, setAdminFields] = useState({
     markup_1: "",
     delivery_fee: "",
@@ -37,7 +36,6 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
   const [suppliers, setSuppliers] = useState([]);
   const [suppliersLoading, setSuppliersLoading] = useState(false);
   const [suppliersError, setSuppliersError] = useState("");
-  const [adminFieldsLoading, setAdminFieldsLoading] = useState(false);
   const token = localStorage.getItem("token");
 
   const [supplierOpen, setSupplierOpen] = useState(false);
@@ -45,6 +43,31 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
   const supplierRef = useRef(null);
   const categoryRef = useRef(null);
 
+  useEffect(() => {
+    if (!isOpen) {
+      setForm({
+        name: "",
+        description: "",
+        barcode: "",
+        qr_code: "",
+        category: "",
+        supplier_id: "",
+        purchase_price: "",
+        stock_quantity: "",
+        expiration_date: "",
+      });
+      // ДОБАВЛЕНО: сброс админских полей
+      setAdminFields({
+        markup_1: "",
+        delivery_fee: "",
+        markup_2: "",
+      });
+      setSupplierOpen(false);
+      setCategoryOpen(false);
+    }
+  }, [isOpen]);
+
+  // Fetch suppliers on open
   useEffect(() => {
     if (!isOpen) return;
     setSuppliersLoading(true);
@@ -56,75 +79,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
         if (!r.ok) throw new Error(t("suppliers_error"));
         return r.json();
       })
-      .then((res) => setSuppliers(res.data || []))
+      .then(res => setSuppliers(res.data || [])) 
       .catch((e) => setSuppliersError(e.message))
       .finally(() => setSuppliersLoading(false));
   }, [isOpen, token, t]);
 
-  // ДОБАВЛЕНО: загрузка админских полей при открытии модального окна
-  useEffect(() => {
-    if (!isOpen || !product?.id) return;
-    
-    // Загружаем админские поля только для лекарств
-    if (product.category === "medicine") {
-      setAdminFieldsLoading(true);
-      fetch(`${BASE_URL}/api/products/${product.id}/admin-fields`, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-        .then((r) => {
-          if (!r.ok) {
-            // Если админских полей нет, это нормально - просто оставляем пустые значения
-            if (r.status === 404) return null;
-            throw new Error("Failed to load admin fields");
-          }
-          return r.json();
-        })
-        .then((data) => {
-          if (data) {
-            setAdminFields({
-              markup_1: data.markup_1?.toString() || "",
-              delivery_fee: data.delivery_fee?.toString() || "",
-              markup_2: data.markup_2?.toString() || "",
-            });
-          }
-        })
-        .catch((e) => console.error("Error loading admin fields:", e))
-        .finally(() => setAdminFieldsLoading(false));
-    }
-  }, [isOpen, product?.id, product?.category, token]);
-
-  // Сброс скрытых полей если категория = other
-  useEffect(() => {
-    if (form.category === "other") {
-      setForm((prev) => ({
-        ...prev,
-        expiration_date: "",
-      }));
-      // ДОБАВЛЕНО: сброс админских полей для категории "other"
-      setAdminFields({
-        markup_1: "",
-        delivery_fee: "",
-        markup_2: "",
-      });
-    }
-  }, [form.category]);
-
-  useEffect(() => {
-    if (product) {
-      setForm({
-        name: product.name || "",
-        description: product.description || "",
-        barcode: product.barcode || "",
-        qr_code: product.qr_code || "",
-        category: product.category || "",
-        supplier_id: product.supplier_id?.toString() || "",
-        purchase_price: product.purchase_price || "",
-        stock_quantity: product.stock_quantity || "",
-        expiration_date: product.expiration_date?.slice(0, 10) || "",
-      });
-    }
-  }, [product]);
-
+  // Handle close dropdowns
   useEffect(() => {
     if (!supplierOpen) return;
     const handleClick = (e) => {
@@ -147,6 +107,22 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
     return () => document.removeEventListener("mousedown", handleClick);
   }, [categoryOpen]);
 
+  // Reset "hidden" fields when category is switched to other
+  useEffect(() => {
+    if (form.category === "other") {
+      setForm((prev) => ({
+        ...prev,
+        expiration_date: "",
+      }));
+      // ДОБАВЛЕНО: сброс админских полей для категории "other"
+      setAdminFields({
+        markup_1: "",
+        delivery_fee: "",
+        markup_2: "",
+      });
+    }
+  }, [form.category]);
+
   const handleChange = (e) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
@@ -166,8 +142,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
     setCategoryOpen(false);
   };
 
-  // ДОБАВЛЕНО: функция для обновления админских полей
-  const updateAdminFields = async (productId) => {
+  // ДОБАВЛЕНО: функция для отправки админских полей
+  const submitAdminFields = async (productId) => {
     try {
       const payload = {
         markup_1: Number(adminFields.markup_1) || 0,
@@ -176,7 +152,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
       };
 
       const response = await fetch(`${BASE_URL}/api/products/${productId}/admin-fields`, {
-        method: 'PUT', // Используем PUT для обновления
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
@@ -185,12 +161,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update admin fields');
+        throw new Error('Failed to save admin fields');
       }
 
       return await response.json();
     } catch (error) {
-      console.error('Error updating admin fields:', error);
+      console.error('Error saving admin fields:', error);
       throw error;
     }
   };
@@ -208,19 +184,22 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
         ...(form.expiration_date && { expiration_date: form.expiration_date }),
       };
 
-      // Обновляем основные данные продукта
-      await onSubmit(payload);
-
-      // ДОБАВЛЕНО: Обновляем админские поля если продукт - лекарство
-      if (form.category === "medicine" && product?.id && 
-          (adminFields.markup_1 || adminFields.delivery_fee || adminFields.markup_2)) {
-        await updateAdminFields(product.id);
+      // Сначала создаем продукт
+      let productResult;
+      if (onSubmit) {
+        productResult = await onSubmit(payload);
       }
 
-      onClose();
+      // ДОБАВЛЕНО: Если продукт создан и есть админские поля для категории "medicine"
+      if (productResult && form.category === "medicine" && 
+          (adminFields.markup_1 || adminFields.delivery_fee || adminFields.markup_2)) {
+        await submitAdminFields(productResult.id || productResult.data?.id);
+      }
+
+      if (onClose) onClose();
     } catch (error) {
-      console.error("Error updating product:", error);
-      alert("Ошибка при обновлении продукта: " + error.message);
+      console.error("Error adding product:", error);
+      alert("Ошибка при добавлении продукта: " + error.message);
     } finally {
       setIsLoading(false);
     }
@@ -243,7 +222,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
   );
 
   return (
-    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
+    <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4"
          onClick={handleBackdropClick}>
       
       <div className="relative bg-gray-900/95 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl w-full max-w-2xl overflow-x-auto max-h-[95vh]"
@@ -261,8 +240,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
                 <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
                 <div className="relative bg-gray-800 border-2 border-emerald-400 p-3 rounded-2xl">
                   <div className="flex items-center gap-2">
-                    <Edit3 className="text-emerald-400 w-5 h-5" 
-                           style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
+                    <Plus className="text-emerald-400 w-5 h-5" 
+                          style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
                     <Package className="text-cyan-400 w-4 h-4" 
                              style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
                   </div>
@@ -271,10 +250,10 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
               <div>
                 <h2 className="text-2xl font-bold text-white"
                     style={{ textShadow: '0 0 15px rgba(16, 185, 129, 0.5)' }}>
-                  {t("edit_product")}
+                  {t("add_product")}
                 </h2>
                 <p className="text-emerald-400 text-sm mt-1">
-                  {t("edit_product_desc")}
+                  {t("add_product_desc")}
                 </p>
               </div>
             </div>
@@ -292,27 +271,8 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
         
         {/* Содержимое формы */}
         <div className="px-8 py-6 relative z-10 max-h-[calc(95vh-180px)] overflow-y-auto">
-          
-          {/* Информация о продукте */}
-          {product && (
-            <div className="bg-gray-800/30 border border-gray-700/50 rounded-2xl p-4 mb-8">
-              <div className="flex items-center gap-3">
-                <div className="w-2 h-2 bg-emerald-400 rounded-full"
-                     style={{ boxShadow: '0 0 8px #10b981' }}></div>
-                <div>
-                  <p className="text-gray-400 text-sm">{t("edit_product")}</p>
-                  <p className="text-white font-semibold">{product.name}</p>
-                  {product.category && (
-                    <p className="text-emerald-400 text-xs">
-                      {product.category === 'medicine' ? t('category.medicine') : t('category.other')}
-                    </p>
-                  )}
-                </div>
-              </div>
-            </div>
-          )}
-          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            
             {/* Название */}
             <div>
               <label className="block text-gray-400 text-sm font-medium mb-3">
@@ -467,9 +427,11 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
                   {suppliersError && (
                     <div className="px-4 py-3 text-red-400 font-medium">{t("suppliers_error")}</div>
                   )}
-                  {!suppliersLoading && !suppliersError && suppliers.length === 0 && (
-                    <div className="px-4 py-3 text-gray-400">{t("no_suppliers")}</div>
-                  )}
+                  {!suppliersLoading &&
+                    !suppliersError &&
+                    suppliers.length === 0 && (
+                      <div className="px-4 py-3 text-gray-400">{t("no_suppliers")}</div>
+                    )}
                   {!suppliersLoading &&
                     suppliers.map((s) => (
                       <button
@@ -531,23 +493,15 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
               />
             </div>
 
-            {/* АДМИНСКИЕ ПОЛЯ: только если лекарство */}
+            {/* НОВЫЕ ПОЛЯ АДМИНА: только если лекарство */}
             {form.category === "medicine" && (
               <>
-                {/* ДОБАВЛЕНО: Индикатор загрузки админских полей */}
-                {adminFieldsLoading && (
-                  <div className="md:col-span-2 flex justify-center items-center py-4">
-                    <Loader className="animate-spin mr-2 w-5 h-5 text-emerald-400" />
-                    <span className="text-gray-400">Загрузка данных для расчета прибыли...</span>
-                  </div>
-                )}
-
-                {/* Сумма для маркетинга */}
+                {/* Наценка 1 */}
                 <div>
                   <label className="block text-gray-400 text-sm font-medium mb-3">
                     <TrendingUp className="inline w-4 h-4 mr-2 text-green-400" 
                                  style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
-                    {t("marketing_amount")}
+                    Наценка 1
                   </label>
                   <input
                     name="markup_1"
@@ -562,12 +516,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
                   />
                 </div>
 
-                {/* Логистика */}
+                {/* Стоимость доставки */}
                 <div>
                   <label className="block text-gray-400 text-sm font-medium mb-3">
                     <Truck className="inline w-4 h-4 mr-2 text-blue-400" 
                            style={{ filter: 'drop-shadow(0 0 8px #3b82f6)' }} />
-                    {t("delivery_fee")}
+                    Стоимость доставки
                   </label>
                   <input
                     name="delivery_fee"
@@ -582,12 +536,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
                   />
                 </div>
 
-                {/* Процент товара */}
+                {/* Наценка 2 */}
                 <div>
                   <label className="block text-gray-400 text-sm font-medium mb-3">
                     <Calculator className="inline w-4 h-4 mr-2 text-purple-400" 
                                 style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
-                    {t("product_percentage")}
+                    Наценка 2
                   </label>
                   <input
                     name="markup_2"
@@ -625,7 +579,7 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
             )}
           </div>
 
-          {/* Кнопка сохранения */}
+          {/* Кнопка добавления */}
           <button
             onClick={handleSubmit}
             disabled={isLoading}
@@ -642,12 +596,12 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
               {isLoading ? (
                 <>
                   <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                  <span>Сохранение...</span>
+                  <span>Добавление...</span>
                 </>
               ) : (
                 <>
-                  <Package className="w-5 h-5" />
-                  <span>{t("save")}</span>
+                  <Plus className="w-5 h-5" />
+                  <span>{t("add")}</span>
                 </>
               )}
             </div>
@@ -676,4 +630,4 @@ const EditProductModal = ({ isOpen, onClose, product, onSubmit }) => {
   );
 };
 
-export default EditProductModal;
+export default AddProductModal;

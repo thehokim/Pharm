@@ -1,49 +1,7 @@
-import React from "react";
-import {
-  ResponsiveContainer,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  LabelList,
-  Cell,
-} from "recharts";
+import React, { useMemo } from "react";
+import ReactECharts from 'echarts-for-react';
 import { Activity, TrendingUp, BarChart3 } from "lucide-react";
 import { useTranslation } from "react-i18next";
-
-// Кастомный тултип в фармацевтическом стиле
-const CustomTooltip = ({ active, payload, label }) => {
-  const { t } = useTranslation();
-  if (active && payload?.length) {
-    return (
-      <div className="bg-gray-900/95 backdrop-blur-xl border-2 border-emerald-400/50 rounded-2xl p-4 text-sm shadow-2xl"
-           style={{ 
-             boxShadow: '0 0 30px #10b98130, 0 0 60px #10b98120',
-             background: 'linear-gradient(135deg, rgba(17, 24, 39, 0.95), rgba(31, 41, 55, 0.95))'
-           }}>
-        <div className="flex items-center gap-2 mb-2">
-          <div className="w-2 h-2 bg-emerald-400 rounded-full"
-               style={{ boxShadow: '0 0 8px #10b981' }}></div>
-          <p className="text-emerald-400 font-semibold"
-             style={{ textShadow: '0 0 10px #10b98150' }}>
-            {label}
-          </p>
-        </div>
-        <p className="text-white font-medium flex items-center gap-2">
-          <TrendingUp className="w-4 h-4 text-cyan-400" 
-                      style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
-          {t("monthly.income")}: 
-          <span className="text-emerald-400 font-bold"
-                style={{ textShadow: '0 0 8px #10b981' }}>
-            {payload[0].value.toLocaleString()} {t("home.soum")}
-          </span>
-        </p>
-      </div>
-    );
-  }
-  return null;
-};
 
 // Неоновые цвета для баров в фармацевтическом стиле
 const getBarColor = (value, min, max) => {
@@ -52,22 +10,118 @@ const getBarColor = (value, min, max) => {
   return "#06b6d4"; // Циан для обычных значений (медицинский синий)
 };
 
-// Получить неоновое свечение для бара
-const getBarGlow = (value, min, max) => {
-  if (value === max) return "0 0 15px #10b981, 0 0 30px #10b98150";
-  if (value === min) return "0 0 15px #ef4444, 0 0 30px #ef444450";
-  return "0 0 10px #06b6d4, 0 0 20px #06b6d450";
-};
-
 const MonthlyChart = ({ data }) => {
   const { t } = useTranslation("home");
   const amounts = data.map((item) => item.amount);
   const max = Math.max(...amounts, 0);
   const min = Math.min(...amounts, 0);
 
+  const chartOption = useMemo(() => {
+    return {
+      backgroundColor: 'transparent',
+      grid: {
+        left: 120,
+        right: 60,
+        top: 20,
+        bottom: 20,
+        containLabel: false
+      },
+      xAxis: {
+        type: 'value',
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: '#94a3b8',
+          fontSize: 12,
+          fontWeight: 500,
+          formatter: (value) => value.toLocaleString()
+        },
+        splitLine: { show: false }
+      },
+      yAxis: {
+        type: 'category',
+        data: data.map(item => item.name),
+        axisLine: { show: false },
+        axisTick: { show: false },
+        axisLabel: {
+          color: '#e2e8f0',
+          fontSize: 11,
+          fontWeight: 600,
+          width: 100,
+          overflow: 'truncate'
+        }
+      },
+      series: [{
+        type: 'bar',
+        data: data.map(item => ({
+          value: item.amount,
+          itemStyle: {
+            color: getBarColor(item.amount, min, max),
+            borderRadius: [0, 8, 8, 0],
+            shadowColor: getBarColor(item.amount, min, max),
+            shadowBlur: item.amount === max ? 15 : item.amount === min ? 15 : 10,
+            shadowOffsetX: 0,
+            shadowOffsetY: 0
+          }
+        })),
+        barWidth: 26,
+        label: {
+          show: true,
+          position: 'insideRight',
+          color: '#ffffff',
+          fontSize: 11,
+          fontWeight: 700,
+          formatter: (params) => params.value.toLocaleString(),
+          textShadowColor: 'rgba(0,0,0,0.8)',
+          textShadowBlur: 8
+        },
+        animationDuration: 1000,
+        animationEasing: 'cubicOut'
+      }],
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'none' },
+        backgroundColor: 'rgba(17, 24, 39, 0.95)',
+        borderColor: '#10b981',
+        borderWidth: 2,
+        borderRadius: 16,
+        padding: 16,
+        textStyle: {
+          color: '#10b981',
+          fontSize: 14
+        },
+        formatter: (params) => {
+          const data = params[0];
+          return `
+            <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 8px;">
+              <div style="width: 8px; height: 8px; background: #10b981; border-radius: 50%; box-shadow: 0 0 8px #10b981;"></div>
+              <span style="color: #10b981; font-weight: 600; text-shadow: 0 0 10px rgba(16, 185, 129, 0.3);">${data.name}</span>
+            </div>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" stroke-width="2">
+                <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                <polyline points="17 6 23 6 23 12"></polyline>
+              </svg>
+              <span style="color: #10b981; font-weight: 500;">${t("monthly.income")}: </span>
+              <span style="color: #10b981; font-weight: 700; text-shadow: 0 0 8px #10b981;">${data.value.toLocaleString()} ${t("home.soum")}</span>
+            </div>
+          `;
+        },
+        extraCssText: `
+          box-shadow: 0 0 30px rgba(16, 185, 129, 0.3), 0 0 60px rgba(16, 185, 129, 0.2);
+          backdrop-filter: blur(12px);
+        `
+      }
+    };
+  }, [data, max, min, t]);
+
   return (
-    <div className="relative bg-gray-900/90 backdrop-blur-xl border border-emerald-500/30 rounded-3xl p-6 col-span-2 overflow-hidden"
-         style={{ boxShadow: '0 0 30px #10b98115, 0 0 60px #10b98110' }}>
+    <div 
+      className="relative bg-gray-900/90 backdrop-blur-xl border border-emerald-500/30 rounded-3xl p-6 col-span-2 overflow-hidden"
+      style={{ 
+        boxShadow: '0 0 30px #10b98115, 0 0 60px #10b98110',
+      }}
+    >
       
       {/* Декоративные неоновые элементы */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-400/10 rounded-full blur-3xl -translate-y-16 translate-x-16"></div>
@@ -100,61 +154,11 @@ const MonthlyChart = ({ data }) => {
 
         {/* График с неоновыми эффектами */}
         <div className="relative">
-          <ResponsiveContainer width="100%" height={380}>
-            <BarChart
-              data={data}
-              layout="vertical"
-              margin={{ top: 10, bottom: 10, left: -40, right: 20 }}
-              barCategoryGap={10}
-            >
-              <XAxis
-                type="number"
-                tickFormatter={(val) => val.toLocaleString()}
-                tick={{ fill: "#94a3b8", fontSize: 12, fontWeight: 500 }}
-                axisLine={false}
-                tickLine={false}
-                style={{ filter: 'drop-shadow(0 0 5px #06b6d450)' }}
-              />
-              <YAxis
-                dataKey="name"
-                type="category"
-                tick={{ fill: "#e2e8f0", fontSize: 12, fontWeight: 600 }}
-                axisLine={false}
-                tickLine={false}
-                width={90}
-                interval={0}
-                style={{ filter: 'drop-shadow(0 0 5px #10b98150)' }}
-              />
-              <Tooltip content={<CustomTooltip />} />
-              <Bar
-                dataKey="amount"
-                radius={[0, 8, 8, 0]}
-                barSize={26}
-                isAnimationActive={true}
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={getBarColor(entry.amount, min, max)}
-                    style={{
-                      filter: `drop-shadow(${getBarGlow(entry.amount, min, max)})`,
-                    }}
-                  />
-                ))}
-                <LabelList
-                  dataKey="amount"
-                  position="insideRight"
-                  formatter={(val) => `${val.toLocaleString()}`}
-                  fill="#ffffff"
-                  fontSize={11}
-                  style={{ 
-                    fontWeight: 700,
-                    textShadow: '0 0 8px rgba(0,0,0,0.8)'
-                  }}
-                />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
+          <ReactECharts
+            option={chartOption}
+            style={{ height: '380px', width: '100%' }}
+            opts={{ renderer: 'svg' }}
+          />
           
           {/* Неоновая сетка-подложка */}
           <div className="absolute inset-0 pointer-events-none">

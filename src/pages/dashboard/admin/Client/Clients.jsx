@@ -1,5 +1,15 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, UserPlus2, User, Phone, MapPin, Contact, DollarSign, Users } from "lucide-react";
+import {
+  Plus,
+  Search,
+  UserPlus2,
+  User,
+  Phone,
+  MapPin,
+  Contact,
+  DollarSign,
+  Users,
+} from "lucide-react";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddClientModal from "./AddClientModal";
 import EditClientModal from "./EditClientModal";
@@ -13,7 +23,12 @@ const PAGE_SIZE = 10;
 const Clients = () => {
   const { t } = useTranslation("client");
   const [clients, setClients] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  const [meta, setMeta] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    pageSize: PAGE_SIZE,
+  });
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -46,13 +61,17 @@ const Clients = () => {
     fetchClients(page, PAGE_SIZE);
     // eslint-disable-next-line
   }, [page]);
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   // Фильтрация по всем полям таблицы (только для текущей страницы)
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return clients.filter((c) =>
-      [c.name, c.phones, c.address, c.contact_person, String(c.debt || 0)]
-        .some((v) => (v || "").toLowerCase().includes(q))
+      [c.name, c.phones, c.address, c.contact_person, String(c.debt || 0)].some(
+        (v) => (v || "").toLowerCase().includes(q)
+      )
     );
   }, [clients, search]);
 
@@ -117,28 +136,35 @@ const Clients = () => {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-emerald-400/5 rounded-full blur-3xl"></div>
 
       {/* Header */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 overflow-hidden"
-           style={{ boxShadow: '0 0 50px rgba(6, 182, 212, 0.2)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 overflow-hidden"
+        style={{ boxShadow: "0 0 50px rgba(6, 182, 212, 0.2)" }}
+      >
         {/* Неоновое свечение заголовка */}
         <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-transparent to-emerald-400/10"></div>
-        
+
         <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="absolute inset-0 bg-cyan-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-cyan-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <Users className="text-cyan-400 w-7 h-7" 
-                         style={{ filter: 'drop-shadow(0 0 10px #06b6d4)' }} />
-                  <UserPlus2 className="text-emerald-400 w-5 h-5" 
-                             style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                  <Users
+                    className="text-cyan-400 w-7 h-7"
+                    style={{ filter: "drop-shadow(0 0 10px #06b6d4)" }}
+                  />
+                  <UserPlus2
+                    className="text-emerald-400 w-5 h-5"
+                    style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                  />
                 </div>
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white"
-                  style={{ textShadow: '0 0 20px rgba(6, 182, 212, 0.5)' }}>
+              <h1
+                className="text-3xl font-bold text-white"
+                style={{ textShadow: "0 0 20px rgba(6, 182, 212, 0.5)" }}
+              >
                 {t("clients.title")}
               </h1>
               <p className="text-cyan-400 text-sm mt-1">
@@ -146,36 +172,40 @@ const Clients = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {/* Кнопка добавления */}
             <button
               onClick={() => setIsAddOpen(true)}
               className="relative bg-gradient-to-r from-cyan-500 to-emerald-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
-              style={{ 
-                boxShadow: '0 0 20px rgba(6, 182, 212, 0.3)',
-                filter: 'drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))'
+              style={{
+                boxShadow: "0 0 20px rgba(6, 182, 212, 0.3)",
+                filter: "drop-shadow(0 0 15px rgba(6, 182, 212, 0.5))",
               }}
               title={t("clients.addClient")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-emerald-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Plus className="w-6 h-6 text-white relative z-10" />
             </button>
-            
+
             {/* Поиск */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Search className="text-cyan-400 w-5 h-5" 
-                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                <Search
+                  className="text-cyan-400 w-5 h-5"
+                  style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                />
               </div>
               <input
                 type="text"
                 placeholder={t("clients.search")}
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
-                style={{ 
-                  boxShadow: search ? '0 0 20px rgba(6, 182, 212, 0.2)' : 'none'
+                style={{
+                  boxShadow: search
+                    ? "0 0 20px rgba(6, 182, 212, 0.2)"
+                    : "none",
                 }}
               />
             </div>
@@ -184,58 +214,68 @@ const Clients = () => {
       </div>
 
       {/* Desktop Table */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
-           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
+        style={{ boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)" }}
+      >
         <div className="">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-cyan-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <User
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
                     {t("clients.table.name")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
-                    {t("clients.table.phone")}
+                    <Phone
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
+                    {t("clients.table.phones")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-purple-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <MapPin
+                      className="w-4 h-4 text-purple-400"
+                      style={{ filter: "drop-shadow(0 0 8px #a855f7)" }}
+                    />
                     {t("clients.table.address")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Contact className="w-4 h-4 text-amber-400" 
-                             style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    <Contact
+                      className="w-4 h-4 text-amber-400"
+                      style={{ filter: "drop-shadow(0 0 8px #f59e0b)" }}
+                    />
                     {t("clients.table.contactPerson")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-red-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <DollarSign
+                      className="w-4 h-4 text-red-400"
+                      style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                    />
                     {t("clients.table.debt")}
                   </div>
                 </th>
-                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("clients.table.actions")}</th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("clients.table.actions")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td
-                    className="text-center px-6 py-12"
-                    colSpan={6}
-                  >
+                  <td className="text-center px-6 py-12" colSpan={6}>
                     <div className="flex flex-col items-center gap-4">
                       <Users className="w-12 h-12 text-gray-600" />
                       <span className="text-gray-400 font-medium text-lg">
@@ -252,8 +292,10 @@ const Clients = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-cyan-400 rounded-full"
-                             style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
+                        <div
+                          className="w-2 h-2 bg-cyan-400 rounded-full"
+                          style={{ boxShadow: "0 0 8px #06b6d4" }}
+                        ></div>
                         <span className="font-medium text-white group-hover:text-cyan-400 transition-colors">
                           {client.name}
                         </span>
@@ -265,9 +307,7 @@ const Clients = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-purple-400">
-                        {client.address}
-                      </span>
+                      <span className="text-purple-400">{client.address}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-amber-400">
@@ -275,12 +315,15 @@ const Clients = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className={`font-semibold ${
-                        Number(client.debt) > 0 
-                          ? "text-red-400" 
-                          : "text-gray-400"
-                      }`}>
-                        {(client.debt ?? 0).toLocaleString()} {t("editClientModal.delete_sum")}
+                      <span
+                        className={`font-semibold ${
+                          Number(client.debt) > 0
+                            ? "text-red-400"
+                            : "text-gray-400"
+                        }`}
+                      >
+                        {(client.debt ?? 0).toLocaleString()}{" "}
+                        {t("editClientModal.delete_sum")}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-center">
@@ -308,7 +351,9 @@ const Clients = () => {
         {filtered.length === 0 ? (
           <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl py-12 text-center">
             <Users className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <span className="text-gray-400 font-medium">{t("clients.noData")}</span>
+            <span className="text-gray-400 font-medium">
+              {t("clients.noData")}
+            </span>
           </div>
         ) : (
           <div className="space-y-4">
@@ -316,13 +361,17 @@ const Clients = () => {
               <div
                 key={client.id}
                 className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
-                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+                style={{ boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)" }}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-cyan-400 rounded-full"
-                         style={{ boxShadow: '0 0 8px #06b6d4' }}></div>
-                    <span className="text-lg font-semibold text-white">{client.name}</span>
+                    <div
+                      className="w-2 h-2 bg-cyan-400 rounded-full"
+                      style={{ boxShadow: "0 0 8px #06b6d4" }}
+                    ></div>
+                    <span className="text-lg font-semibold text-white">
+                      {client.name}
+                    </span>
                   </div>
                   <ActionMenu
                     onEdit={() => {
@@ -335,39 +384,60 @@ const Clients = () => {
                     }}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-3 text-sm">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <Phone
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
                     <span className="text-gray-400">{t("phone_colon")}</span>
-                    <span className="text-emerald-400 font-medium">{client.phones}</span>
+                    <span className="text-emerald-400 font-medium">
+                      {client.phones}
+                    </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-purple-400" 
-                            style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
-                    <span className="text-gray-400">{t("clients.table.address")}</span>
+                    <MapPin
+                      className="w-4 h-4 text-purple-400"
+                      style={{ filter: "drop-shadow(0 0 8px #a855f7)" }}
+                    />
+                    <span className="text-gray-400">
+                      {t("clients.table.address")}
+                    </span>
                     <span className="text-purple-400">{client.address}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <Contact className="w-4 h-4 text-amber-400" 
-                             style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
-                    <span className="text-gray-400">{t("clients.table.contactPerson")}</span>
-                    <span className="text-amber-400">{client.contact_person}</span>
+                    <Contact
+                      className="w-4 h-4 text-amber-400"
+                      style={{ filter: "drop-shadow(0 0 8px #f59e0b)" }}
+                    />
+                    <span className="text-gray-400">
+                      {t("clients.table.contactPerson")}
+                    </span>
+                    <span className="text-amber-400">
+                      {client.contact_person}
+                    </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-red-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
-                    <span className="text-gray-400">{t("clients.table.debt")}</span>
-                    <span className={`font-semibold ${
-                      Number(client.debt) > 0 
-                        ? "text-red-400" 
-                        : "text-gray-400"
-                    }`}>
-                      {(client.debt ?? 0).toLocaleString()} {t("editClientModal.delete_sum")}
+                    <DollarSign
+                      className="w-4 h-4 text-red-400"
+                      style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                    />
+                    <span className="text-gray-400">
+                      {t("clients.table.debt")}
+                    </span>
+                    <span
+                      className={`font-semibold ${
+                        Number(client.debt) > 0
+                          ? "text-red-400"
+                          : "text-gray-400"
+                      }`}
+                    >
+                      {(client.debt ?? 0).toLocaleString()}{" "}
+                      {t("editClientModal.delete_sum")}
                     </span>
                   </div>
                 </div>
@@ -379,32 +449,26 @@ const Clients = () => {
 
       {/* Pagination */}
       <div className="flex justify-center">
-        <Pagination
-          page={meta.page}
-          pageSize={meta.pageSize}
-          total={meta.total}
-          totalPages={meta.totalPages}
-          onPageChange={setPage}
-        />
+        <Pagination meta={meta} onPageChange={handlePageChange} />
       </div>
 
       {/* Модальные окна */}
-      <AddClientModal 
-        isOpen={isAddOpen} 
-        onClose={() => setIsAddOpen(false)} 
-        onSubmit={handleAddClient} 
+      <AddClientModal
+        isOpen={isAddOpen}
+        onClose={() => setIsAddOpen(false)}
+        onSubmit={handleAddClient}
       />
-      <EditClientModal 
-        isOpen={isEditOpen} 
-        onClose={() => setIsEditOpen(false)} 
-        client={editingClient} 
-        onSubmit={handleEditClient} 
+      <EditClientModal
+        isOpen={isEditOpen}
+        onClose={() => setIsEditOpen(false)}
+        client={editingClient}
+        onSubmit={handleEditClient}
       />
-      <DeleteClientModal 
-        isOpen={isDeleteOpen} 
-        onClose={() => setIsDeleteOpen(false)} 
-        onConfirm={handleDeleteClient} 
-        client={deletingClient} 
+      <DeleteClientModal
+        isOpen={isDeleteOpen}
+        onClose={() => setIsDeleteOpen(false)}
+        onConfirm={handleDeleteClient}
+        client={deletingClient}
       />
     </div>
   );

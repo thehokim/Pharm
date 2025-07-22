@@ -137,7 +137,12 @@ const PAGE_SIZE = 10;
 const Users = () => {
   const { t } = useTranslation("user");
   const [users, setUsers] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  const [meta, setMeta] = useState({ 
+    page: 1, 
+    totalPages: 1, 
+    total: 0, 
+    pageSize: PAGE_SIZE 
+  });
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -165,6 +170,7 @@ const Users = () => {
             lastActive: new Date(u.created_at).toLocaleString(),
           }))
         );
+        // ИСПРАВЛЕНО: правильно устанавливаем meta объект
         setMeta({
           page: result.meta?.page || 1,
           pageSize: result.meta?.pageSize || PAGE_SIZE,
@@ -179,6 +185,11 @@ const Users = () => {
     fetchUsers(page, PAGE_SIZE);
     // eslint-disable-next-line
   }, [page]);
+
+  // ДОБАВЛЕНО: обработчик смены страницы
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   const handleAddUser = (form) => {
     fetch(`${BASE_URL}/api/users/`, {
@@ -500,16 +511,11 @@ const Users = () => {
         </div>
       </div>
 
-      {/* Pagination */}
-      <div className="flex justify-center">
-        <Pagination
-          page={meta.page}
-          pageSize={meta.pageSize}
-          total={meta.total}
-          totalPages={meta.totalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {/* ИСПРАВЛЕНО: Pagination с правильным API */}
+      <Pagination 
+        meta={meta}
+        onPageChange={handlePageChange}
+      />
 
       {/* Модальные окна */}
       <AddUserModal

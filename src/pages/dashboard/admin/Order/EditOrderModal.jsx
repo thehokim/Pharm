@@ -97,7 +97,7 @@ const EditOrderModal = ({ isOpen, onClose, order, onSubmit }) => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [form, setForm] = useState({
-    client_id: "",
+    client_full_name: "",
     status: STATUS_OPTIONS[0].value,
     payment_status: PAYMENT_OPTIONS[0].value,
     payment_type: PAYMENT_TYPE_OPTIONS[0].value,
@@ -133,7 +133,7 @@ const EditOrderModal = ({ isOpen, onClose, order, onSubmit }) => {
   useEffect(() => {
     if (order) {
       setForm({
-        client_id: order.client_id ?? "",
+        client_full_name: order.client_full_name ?? "",
         status: order.status ?? STATUS_OPTIONS[0].value,
         payment_status: order.payment_status ?? PAYMENT_OPTIONS[0].value,
         payment_type: order.payment_type ?? PAYMENT_TYPE_OPTIONS[0].value,
@@ -199,7 +199,7 @@ const EditOrderModal = ({ isOpen, onClose, order, onSubmit }) => {
     setIsLoading(true);
     try {
       const payload = {
-        client_id: Number(form.client_id),
+        client_full_name: form.client_full_name,
         status: form.status,
         payment_status: form.payment_status,
         payment_type: form.payment_type,

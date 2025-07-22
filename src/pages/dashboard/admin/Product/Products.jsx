@@ -1,5 +1,20 @@
 import React, { useEffect, useState } from "react";
-import { Package, Plus, Search, Calendar, DollarSign, Hash, Pill, AlertTriangle, CheckCircle, XCircle, Edit3, Trash2, Eye, EyeOff } from "lucide-react";
+import {
+  Package,
+  Plus,
+  Search,
+  Calendar,
+  DollarSign,
+  Hash,
+  Pill,
+  AlertTriangle,
+  CheckCircle,
+  XCircle,
+  Edit3,
+  Trash2,
+  Eye,
+  EyeOff,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddProductModal from "./AddProductModal";
@@ -13,14 +28,14 @@ const PharmaToggleSwitch = ({ checked, onChange }) => (
   <button
     onClick={onChange}
     className={`relative w-14 h-8 flex items-center rounded-full p-1 transition-all duration-300 border-2 ${
-      checked 
-        ? "bg-emerald-900/30 border-emerald-400/50" 
+      checked
+        ? "bg-emerald-900/30 border-emerald-400/50"
         : "bg-gray-800/50 border-gray-600/50"
     }`}
     style={{
-      boxShadow: checked 
-        ? '0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 20px rgba(16, 185, 129, 0.1)' 
-        : '0 0 10px rgba(107, 114, 128, 0.2)'
+      boxShadow: checked
+        ? "0 0 20px rgba(16, 185, 129, 0.3), inset 0 0 20px rgba(16, 185, 129, 0.1)"
+        : "0 0 10px rgba(107, 114, 128, 0.2)",
     }}
     tabIndex={0}
     aria-checked={checked}
@@ -31,21 +46,27 @@ const PharmaToggleSwitch = ({ checked, onChange }) => (
         checked ? "translate-x-6 bg-emerald-400" : "translate-x-0 bg-gray-400"
       }`}
       style={{
-        boxShadow: checked 
-          ? '0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4)' 
-          : '0 0 10px rgba(107, 114, 128, 0.5)'
+        boxShadow: checked
+          ? "0 0 15px rgba(16, 185, 129, 0.8), 0 0 30px rgba(16, 185, 129, 0.4)"
+          : "0 0 10px rgba(107, 114, 128, 0.5)",
       }}
     >
       {checked && (
         <div className="absolute inset-0 bg-emerald-400 rounded-full animate-pulse opacity-50"></div>
       )}
     </div>
-    
+
     {/* Индикатор видимости */}
-    <div className={`absolute ${checked ? 'right-2' : 'left-2'} transition-all duration-300`}>
+    <div
+      className={`absolute ${
+        checked ? "right-2" : "left-2"
+      } transition-all duration-300`}
+    >
       {checked ? (
-        <Eye className="w-3 h-3 text-emerald-400" 
-             style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+        <Eye
+          className="w-3 h-3 text-emerald-400"
+          style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+        />
       ) : (
         <EyeOff className="w-3 h-3 text-gray-400" />
       )}
@@ -55,32 +76,35 @@ const PharmaToggleSwitch = ({ checked, onChange }) => (
 
 // Бейдж категории
 const CategoryBadge = ({ category, label }) => {
-  const config = category === "medicine" 
-    ? {
-        color: "text-emerald-400",
-        bg: "bg-emerald-900/20",
-        border: "border-emerald-400/30",
-        icon: Pill,
-        glow: "#10b981"
-      }
-    : {
-        color: "text-amber-400",
-        bg: "bg-amber-900/20", 
-        border: "border-amber-400/30",
-        icon: Package,
-        glow: "#f59e0b"
-      };
+  const config =
+    category === "medicine"
+      ? {
+          color: "text-emerald-400",
+          bg: "bg-emerald-900/20",
+          border: "border-emerald-400/30",
+          icon: Pill,
+          glow: "#10b981",
+        }
+      : {
+          color: "text-amber-400",
+          bg: "bg-amber-900/20",
+          border: "border-amber-400/30",
+          icon: Package,
+          glow: "#f59e0b",
+        };
 
   const IconComponent = config.icon;
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.border}`}
-         style={{ boxShadow: `0 0 15px ${config.glow}20` }}>
-      <IconComponent className={`w-4 h-4 ${config.color}`} 
-                    style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }} />
-      <span className={`text-xs font-semibold ${config.color}`}>
-        {label}
-      </span>
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.border}`}
+      style={{ boxShadow: `0 0 15px ${config.glow}20` }}
+    >
+      <IconComponent
+        className={`w-4 h-4 ${config.color}`}
+        style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }}
+      />
+      <span className={`text-xs font-semibold ${config.color}`}>{label}</span>
     </div>
   );
 };
@@ -89,10 +113,10 @@ const CategoryBadge = ({ category, label }) => {
 const ExpirationBadge = ({ expirationDate }) => {
   const { t } = useTranslation("product");
   if (!expirationDate) return <span className="text-gray-400">-</span>;
-  
+
   const days = (new Date(expirationDate) - new Date()) / (1000 * 60 * 60 * 24);
   let config;
-  
+
   if (days < 0) {
     config = {
       color: "text-red-400",
@@ -100,16 +124,16 @@ const ExpirationBadge = ({ expirationDate }) => {
       border: "border-red-400/30",
       icon: XCircle,
       glow: "#ef4444",
-      label: t("expired")
+      label: t("expired"),
     };
   } else if (days < 30) {
     config = {
       color: "text-amber-400",
       bg: "bg-amber-900/20",
-      border: "border-amber-400/30", 
+      border: "border-amber-400/30",
       icon: AlertTriangle,
       glow: "#f59e0b",
-      label: t("expiring")
+      label: t("expiring"),
     };
   } else {
     config = {
@@ -118,7 +142,7 @@ const ExpirationBadge = ({ expirationDate }) => {
       border: "border-emerald-400/30",
       icon: CheckCircle,
       glow: "#10b981",
-      label: t("valid")
+      label: t("valid"),
     };
   }
 
@@ -126,10 +150,14 @@ const ExpirationBadge = ({ expirationDate }) => {
   const formattedDate = new Date(expirationDate).toLocaleDateString("ru-RU");
 
   return (
-    <div className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.border}`}
-         style={{ boxShadow: `0 0 15px ${config.glow}20` }}>
-      <IconComponent className={`w-4 h-4 ${config.color}`} 
-                    style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }} />
+    <div
+      className={`inline-flex items-center gap-2 px-3 py-2 rounded-2xl border ${config.bg} ${config.border}`}
+      style={{ boxShadow: `0 0 15px ${config.glow}20` }}
+    >
+      <IconComponent
+        className={`w-4 h-4 ${config.color}`}
+        style={{ filter: `drop-shadow(0 0 8px ${config.glow})` }}
+      />
       <div className={config.color}>
         <span className="text-xs font-semibold block">{config.label}</span>
         <span className="text-xs">{formattedDate}</span>
@@ -144,7 +172,12 @@ const Products = () => {
   const { t } = useTranslation("product");
 
   const [products, setProducts] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  const [meta, setMeta] = useState({ 
+    page: 1, 
+    totalPages: 1, 
+    total: 0,
+    pageSize: PAGE_SIZE,
+  });
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [editingProduct, setEditingProduct] = useState(null);
   const [isEditOpen, setIsEditOpen] = useState(false);
@@ -178,7 +211,9 @@ const Products = () => {
     fetchProducts(page, PAGE_SIZE);
     // eslint-disable-next-line
   }, [page]);
-
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
   const handleAddProduct = (product) => {
     fetch(`${BASE_URL}/api/products`, {
       method: "POST",
@@ -266,28 +301,35 @@ const Products = () => {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl"></div>
 
       {/* Header */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl p-6 overflow-hidden"
-           style={{ boxShadow: '0 0 50px rgba(16, 185, 129, 0.2)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl p-6 overflow-hidden"
+        style={{ boxShadow: "0 0 50px rgba(16, 185, 129, 0.2)" }}
+      >
         {/* Неоновое свечение заголовка */}
         <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 via-transparent to-cyan-400/10"></div>
-        
+
         <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <Package className="text-emerald-400 w-7 h-7" 
-                           style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
-                  <Pill className="text-cyan-400 w-5 h-5" 
-                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                  <Package
+                    className="text-emerald-400 w-7 h-7"
+                    style={{ filter: "drop-shadow(0 0 10px #10b981)" }}
+                  />
+                  <Pill
+                    className="text-cyan-400 w-5 h-5"
+                    style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                  />
                 </div>
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white"
-                  style={{ textShadow: '0 0 20px rgba(16, 185, 129, 0.5)' }}>
+              <h1
+                className="text-3xl font-bold text-white"
+                style={{ textShadow: "0 0 20px rgba(16, 185, 129, 0.5)" }}
+              >
                 {t("products")}
               </h1>
               <p className="text-emerald-400 text-sm mt-1">
@@ -295,27 +337,29 @@ const Products = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {/* Кнопка добавления */}
             <button
               onClick={() => setIsAddOpen(true)}
               className="relative bg-gradient-to-r from-emerald-500 to-cyan-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
-              style={{ 
-                boxShadow: '0 0 20px rgba(16, 185, 129, 0.3)',
-                filter: 'drop-shadow(0 0 15px rgba(16, 185, 129, 0.5))'
+              style={{
+                boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
+                filter: "drop-shadow(0 0 15px rgba(16, 185, 129, 0.5))",
               }}
               title={t("add_product")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Plus className="w-6 h-6 text-white relative z-10" />
             </button>
-            
+
             {/* Поиск */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Search className="text-cyan-400 w-5 h-5" 
-                        style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                <Search
+                  className="text-cyan-400 w-5 h-5"
+                  style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                />
               </div>
               <input
                 type="text"
@@ -323,8 +367,10 @@ const Products = () => {
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-cyan-400 focus:outline-none transition-all duration-300"
-                style={{ 
-                  boxShadow: searchTerm ? '0 0 20px rgba(6, 182, 212, 0.2)' : 'none'
+                style={{
+                  boxShadow: searchTerm
+                    ? "0 0 20px rgba(6, 182, 212, 0.2)"
+                    : "none",
                 }}
               />
             </div>
@@ -333,62 +379,80 @@ const Products = () => {
       </div>
 
       {/* Desktop Table */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl overflow-hidden hidden md:block"
-           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl overflow-hidden hidden md:block"
+        style={{ boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)" }}
+      >
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Package className="w-4 h-4 text-emerald-400" 
-                             style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <Package
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
                     {t("name")}
                   </div>
                 </th>
-                <th className="px-6 py-5 font-semibold text-gray-300">{t("category")}</th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("category")}
+                </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-cyan-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <DollarSign
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
                     {t("purchase_price")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-emerald-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <DollarSign
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
                     {t("selling_price")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Hash className="w-4 h-4 text-amber-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                    <Hash
+                      className="w-4 h-4 text-amber-400"
+                      style={{ filter: "drop-shadow(0 0 8px #f59e0b)" }}
+                    />
                     {t("stock_quantity")}
                   </div>
                 </th>
-                <th className="px-6 py-5 font-semibold text-gray-300">{t("barcode")}</th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("barcode")}
+                </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Calendar className="w-4 h-4 text-cyan-400" 
-                              style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <Calendar
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
                     {t("arrival_date")}
                   </div>
                 </th>
-                <th className="px-6 py-5 font-semibold text-gray-300">{t("expiration_date")}</th>
-                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("visibility")}</th>
-                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("actions")}</th>
+                <th className="px-6 py-5 font-semibold text-gray-300">
+                  {t("expiration_date")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("visibility")}
+                </th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("actions")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {filteredProducts.length === 0 ? (
                 <tr>
-                  <td
-                    className="text-center px-6 py-12"
-                    colSpan={10}
-                  >
+                  <td className="text-center px-6 py-12" colSpan={10}>
                     <div className="flex flex-col items-center gap-4">
                       <Package className="w-12 h-12 text-gray-600" />
                       <span className="text-gray-400 font-medium text-lg">
@@ -405,17 +469,21 @@ const Products = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-emerald-400 rounded-full"
-                             style={{ boxShadow: '0 0 8px #10b981' }}></div>
+                        <div
+                          className="w-2 h-2 bg-emerald-400 rounded-full"
+                          style={{ boxShadow: "0 0 8px #10b981" }}
+                        ></div>
                         <span className="font-medium text-white group-hover:text-emerald-400 transition-colors">
                           {product.name}
                         </span>
                       </div>
                     </td>
                     <td className="px-6 py-4">
-                      <CategoryBadge 
+                      <CategoryBadge
                         category={product.category}
-                        label={CATEGORY_LABELS[product.category] || product.category}
+                        label={
+                          CATEGORY_LABELS[product.category] || product.category
+                        }
                       />
                     </td>
                     <td className="px-6 py-4">
@@ -444,21 +512,31 @@ const Products = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <ExpirationBadge expirationDate={product.expiration_date} />
+                      <ExpirationBadge
+                        expirationDate={product.expiration_date}
+                      />
                     </td>
                     <td className="px-6 py-4 text-center">
                       <PharmaToggleSwitch
                         checked={!!product.visible_for_media}
                         onChange={async () => {
                           try {
-                            await fetch(`${BASE_URL}/api/products/${product.id}`, {
-                              method: "PATCH",
-                              headers: {
-                                Authorization: `Bearer ${token}`,
-                                "Content-Type": "application/json",
-                              },
-                              body: JSON.stringify({ visible_for_media: !product.visible_for_media }),
-                            });
+                            // Собираем все нужные поля продукта для PUT
+                            const updatedProduct = {
+                              ...product,
+                              visible_for_media: !product.visible_for_media,
+                            };
+                            await fetch(
+                              `${BASE_URL}/api/products/${product.id}`,
+                              {
+                                method: "PUT",
+                                headers: {
+                                  Authorization: `Bearer ${token}`,
+                                  "Content-Type": "application/json",
+                                },
+                                body: JSON.stringify(updatedProduct),
+                              }
+                            );
                             fetchProducts(page, PAGE_SIZE);
                           } catch (err) {
                             alert("Ошибка обновления видимости для media");
@@ -474,11 +552,15 @@ const Products = () => {
                             setIsEditOpen(true);
                           }}
                           className="bg-gray-800 border border-emerald-400/30 p-2 rounded-xl text-emerald-400 hover:border-emerald-400 hover:scale-110 transition-all duration-300"
-                          style={{ boxShadow: '0 0 10px rgba(16, 185, 129, 0.2)' }}
+                          style={{
+                            boxShadow: "0 0 10px rgba(16, 185, 129, 0.2)",
+                          }}
                           title="Редактировать"
                         >
-                          <Edit3 className="w-4 h-4" 
-                                style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                          <Edit3
+                            className="w-4 h-4"
+                            style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                          />
                         </button>
                         <button
                           onClick={() => {
@@ -486,11 +568,15 @@ const Products = () => {
                             setIsDeleteOpen(true);
                           }}
                           className="bg-gray-800 border border-red-400/30 p-2 rounded-xl text-red-400 hover:border-red-400 hover:scale-110 transition-all duration-300"
-                          style={{ boxShadow: '0 0 10px rgba(239, 68, 68, 0.2)' }}
+                          style={{
+                            boxShadow: "0 0 10px rgba(239, 68, 68, 0.2)",
+                          }}
                           title="Удалить"
                         >
-                          <Trash2 className="w-4 h-4" 
-                                 style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                          <Trash2
+                            className="w-4 h-4"
+                            style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                          />
                         </button>
                       </div>
                     </td>
@@ -507,7 +593,9 @@ const Products = () => {
         {filteredProducts.length === 0 ? (
           <div className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl py-12 text-center">
             <Package className="w-12 h-12 text-gray-600 mx-auto mb-4" />
-            <span className="text-gray-400 font-medium">{t("no_products")}</span>
+            <span className="text-gray-400 font-medium">
+              {t("no_products")}
+            </span>
           </div>
         ) : (
           <div className="space-y-4">
@@ -515,13 +603,17 @@ const Products = () => {
               <div
                 key={product.id}
                 className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
-                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+                style={{ boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)" }}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-emerald-400 rounded-full"
-                         style={{ boxShadow: '0 0 8px #10b981' }}></div>
-                    <span className="text-lg font-semibold text-white">{product.name}</span>
+                    <div
+                      className="w-2 h-2 bg-emerald-400 rounded-full"
+                      style={{ boxShadow: "0 0 8px #10b981" }}
+                    ></div>
+                    <span className="text-lg font-semibold text-white">
+                      {product.name}
+                    </span>
                   </div>
                   <div className="flex gap-2">
                     <button
@@ -544,17 +636,19 @@ const Products = () => {
                     </button>
                   </div>
                 </div>
-                
+
                 <div className="flex flex-wrap gap-2">
-                  <CategoryBadge 
+                  <CategoryBadge
                     category={product.category}
-                    label={CATEGORY_LABELS[product.category] || product.category}
+                    label={
+                      CATEGORY_LABELS[product.category] || product.category
+                    }
                   />
                   <span className="text-xs text-gray-400 font-mono bg-gray-800/30 px-2 py-1 rounded">
                     {product.barcode}
                   </span>
                 </div>
-                
+
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
                     <span className="text-gray-400">Закупка:</span>
@@ -581,23 +675,32 @@ const Products = () => {
                     </span>
                   </div>
                 </div>
-                
+
                 <div className="space-y-3">
                   <ExpirationBadge expirationDate={product.expiration_date} />
                   <div className="flex items-center justify-between">
-                    <span className="text-gray-400 text-sm">Видимость для media:</span>
+                    <span className="text-gray-400 text-sm">
+                      Видимость для media:
+                    </span>
                     <PharmaToggleSwitch
                       checked={!!product.visible_for_media}
                       onChange={async () => {
                         try {
-                          await fetch(`${BASE_URL}/api/products/${product.id}`, {
-                            method: "PATCH",
-                            headers: {
-                              Authorization: `Bearer ${token}`,
-                              "Content-Type": "application/json",
-                            },
-                            body: JSON.stringify({ visible_for_media: !product.visible_for_media }),
-                          });
+                          const updatedProduct = {
+                            ...product,
+                            visible_for_media: !product.visible_for_media,
+                          };
+                          await fetch(
+                            `${BASE_URL}/api/products/${product.id}`,
+                            {
+                              method: "PUT",
+                              headers: {
+                                Authorization: `Bearer ${token}`,
+                                "Content-Type": "application/json",
+                              },
+                              body: JSON.stringify(updatedProduct),
+                            }
+                          );
                           fetchProducts(page, PAGE_SIZE);
                         } catch (err) {
                           alert("Ошибка обновления видимости для media");
@@ -614,13 +717,7 @@ const Products = () => {
 
       {/* Pagination */}
       <div className="flex justify-center">
-        <Pagination
-          page={meta.page}
-          pageSize={meta.pageSize}
-          total={meta.total}
-          totalPages={meta.totalPages}
-          onPageChange={setPage}
-        />
+        <Pagination meta={meta} onPageChange={handlePageChange} />
       </div>
 
       {/* Модальные окна */}

@@ -25,6 +25,7 @@ import MonthlyChart from "./MonthlyChart";
 import DebtList from "./DebtList";
 import PopupNotification from "../Notif/PopupNotification";
 import { BASE_URL } from "../../../../utils/auth";
+import LogoutButton from "../Settings/LogoutButton";
 
 const Home = () => {
   const { t } = useTranslation("home");
@@ -50,6 +51,7 @@ const Home = () => {
 
   useEffect(() => {
     fetchIncome();
+    fetchMonthlyChartData();
     fetchProducts();
     fetchClients();
     fetchManagers();
@@ -59,34 +61,31 @@ const Home = () => {
 
   const fetchIncome = async () => {
     try {
+      const res = await fetch(`${BASE_URL}/api/profit`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      setTotalIncome(data.total_income || 0);
+      setTodayIncome(data.today_income || 0);
+    } catch (err) {
+      console.error("Ошибка загрузки дохода:", err);
+    }
+  };
+
+  const fetchMonthlyChartData = async () => {
+    try {
       const res = await fetch(`${BASE_URL}/api/income/`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       const data = await res.json();
-      const today = new Date().toISOString().slice(0, 10);
-      const monthlyMap = {};
-
-      let total = 0;
-      let todayTotal = 0;
-
-      for (const item of data) {
-        const date = new Date(item.timestamp);
-        const month = date.toLocaleString("ru-RU", { month: "short" });
-        total += item.amount;
-        if (item.timestamp.slice(0, 10) === today) todayTotal += item.amount;
-        monthlyMap[month] = (monthlyMap[month] || 0) + item.amount;
-      }
-
-      const chart = Object.entries(monthlyMap).map(([name, amount]) => ({
-        name,
-        amount,
+      // Новый формат: [{ year: '2025', month: 'Jul', income: 11219.04 }]
+      const chart = (data || []).map((item) => ({
+        name: `${item.month} ${item.year}`,
+        amount: item.income,
       }));
-
-      setTotalIncome(total);
-      setTodayIncome(todayTotal);
       setChartData(chart);
     } catch (err) {
-      console.error("Ошибка загрузки дохода:", err);
+      console.error("Ошибка загрузки данных для графика:", err);
     }
   };
 
@@ -278,6 +277,11 @@ const Home = () => {
     return link ? <Link to={link}>{CardContent}</Link> : CardContent;
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    window.location.href = "/login";
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-4 space-y-6">
       {/* Заголовок с фармацевтической тематикой */}
@@ -334,6 +338,7 @@ const Home = () => {
                 <Settings className="w-5 h-5 text-purple-400" style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
               </div>
             </Link>
+            <LogoutButton handleLogout={handleLogout} />
           </div>
         </div>
       </div>

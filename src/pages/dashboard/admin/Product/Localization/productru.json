@@ -57,5 +57,8 @@
   "data_will_be_deleted": "Данные будут удалены безвозвратно из фармацевтической системы",
   "error_updating_product": "Ошибка обновления товара",
   "error_deleting_product": "Ошибка удаления товара",
-  "visibility": "Видимость"
+  "visibility": "Видимость",
+  "marketing_amount": "Сумма для маркетинга",
+  "product_percentage": "Процент товара",
+  "delivery_fee": "Стоимость логистики"
 }

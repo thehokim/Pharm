@@ -1,5 +1,14 @@
 import React, { useState, useEffect, useMemo } from "react";
-import { Plus, Search, Truck, User, Phone, Mail, MapPin, DollarSign } from "lucide-react";
+import {
+  Plus,
+  Search,
+  Truck,
+  User,
+  Phone,
+  Mail,
+  MapPin,
+  DollarSign,
+} from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../../components/layout/ActionMenu";
 import AddSupplierModal from "./AddSupplierModal";
@@ -14,7 +23,12 @@ const Suppliers = () => {
   const { t } = useTranslation("supplier");
 
   const [suppliers, setSuppliers] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  const [meta, setMeta] = useState({
+    page: 1,
+    totalPages: 1,
+    total: 0,
+    pageSize: PAGE_SIZE,
+  });
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [isEditOpen, setIsEditOpen] = useState(false);
   const [isDeleteOpen, setIsDeleteOpen] = useState(false);
@@ -107,10 +121,20 @@ const Suppliers = () => {
   const filtered = useMemo(() => {
     const q = search.toLowerCase();
     return suppliers.filter((s) =>
-      [s.name, s.contact_person, s.phones, s.email, s.address, String(s.debt)]
-        .some((v) => (v || "").toLowerCase().includes(q))
+      [
+        s.name,
+        s.contact_person,
+        s.phones,
+        s.email,
+        s.address,
+        String(s.debt),
+      ].some((v) => (v || "").toLowerCase().includes(q))
     );
   }, [suppliers, search]);
+
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
@@ -119,28 +143,35 @@ const Suppliers = () => {
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-amber-400/5 rounded-full blur-3xl"></div>
 
       {/* Header */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-orange-400/30 rounded-3xl p-6 overflow-hidden"
-           style={{ boxShadow: '0 0 50px rgba(249, 115, 22, 0.2)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-orange-400/30 rounded-3xl p-6 overflow-hidden"
+        style={{ boxShadow: "0 0 50px rgba(249, 115, 22, 0.2)" }}
+      >
         {/* Неоновое свечение заголовка */}
         <div className="absolute inset-0 bg-gradient-to-r from-orange-400/10 via-transparent to-amber-400/10"></div>
-        
+
         <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
               <div className="absolute inset-0 bg-orange-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-orange-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <Truck className="text-orange-400 w-7 h-7" 
-                         style={{ filter: 'drop-shadow(0 0 10px #f97316)' }} />
-                  <Plus className="text-amber-400 w-5 h-5" 
-                        style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
+                  <Truck
+                    className="text-orange-400 w-7 h-7"
+                    style={{ filter: "drop-shadow(0 0 10px #f97316)" }}
+                  />
+                  <Plus
+                    className="text-amber-400 w-5 h-5"
+                    style={{ filter: "drop-shadow(0 0 8px #f59e0b)" }}
+                  />
                 </div>
               </div>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white"
-                  style={{ textShadow: '0 0 20px rgba(249, 115, 22, 0.5)' }}>
+              <h1
+                className="text-3xl font-bold text-white"
+                style={{ textShadow: "0 0 20px rgba(249, 115, 22, 0.5)" }}
+              >
                 {t("suppliers")}
               </h1>
               <p className="text-orange-400 text-sm mt-1">
@@ -148,36 +179,40 @@ const Suppliers = () => {
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-4">
             {/* Кнопка добавления */}
             <button
               onClick={() => setIsAddOpen(true)}
               className="relative bg-gradient-to-r from-orange-500 to-amber-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
-              style={{ 
-                boxShadow: '0 0 20px rgba(249, 115, 22, 0.3)',
-                filter: 'drop-shadow(0 0 15px rgba(249, 115, 22, 0.5))'
+              style={{
+                boxShadow: "0 0 20px rgba(249, 115, 22, 0.3)",
+                filter: "drop-shadow(0 0 15px rgba(249, 115, 22, 0.5))",
               }}
               title={t("add_supplier")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-orange-400/20 to-amber-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Plus className="w-6 h-6 text-white relative z-10" />
             </button>
-            
+
             {/* Поиск */}
             <div className="relative">
               <div className="absolute left-4 top-1/2 -translate-y-1/2">
-                <Search className="text-orange-400 w-5 h-5" 
-                        style={{ filter: 'drop-shadow(0 0 8px #f97316)' }} />
+                <Search
+                  className="text-orange-400 w-5 h-5"
+                  style={{ filter: "drop-shadow(0 0 8px #f97316)" }}
+                />
               </div>
               <input
                 type="text"
                 placeholder={t("search_placeholder")}
                 value={search}
-                onChange={e => setSearch(e.target.value)}
+                onChange={(e) => setSearch(e.target.value)}
                 className="w-80 bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-400 pl-12 pr-4 py-4 rounded-2xl focus:border-orange-400 focus:outline-none transition-all duration-300"
-                style={{ 
-                  boxShadow: search ? '0 0 20px rgba(249, 115, 22, 0.2)' : 'none'
+                style={{
+                  boxShadow: search
+                    ? "0 0 20px rgba(249, 115, 22, 0.2)"
+                    : "none",
                 }}
               />
             </div>
@@ -186,65 +221,77 @@ const Suppliers = () => {
       </div>
 
       {/* Desktop Table */}
-      <div className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
-           style={{ boxShadow: '0 0 30px rgba(0, 0, 0, 0.5)' }}>
-        
+      <div
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-gray-700/50 rounded-3xl  hidden md:block"
+        style={{ boxShadow: "0 0 30px rgba(0, 0, 0, 0.5)" }}
+      >
         <div className="">
           <table className="w-full text-sm text-left">
             <thead className="bg-gray-800/50 border-b border-gray-700/50">
               <tr>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Truck className="w-4 h-4 text-orange-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #f97316)' }} />
+                    <Truck
+                      className="w-4 h-4 text-orange-400"
+                      style={{ filter: "drop-shadow(0 0 8px #f97316)" }}
+                    />
                     {t("name")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-cyan-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <User
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
                     {t("contact_person")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <Phone
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
                     {t("phones")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-purple-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <Mail
+                      className="w-4 h-4 text-purple-400"
+                      style={{ filter: "drop-shadow(0 0 8px #a855f7)" }}
+                    />
                     {t("email")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-indigo-400" 
-                            style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    <MapPin
+                      className="w-4 h-4 text-indigo-400"
+                      style={{ filter: "drop-shadow(0 0 8px #6366f1)" }}
+                    />
                     {t("address")}
                   </div>
                 </th>
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-red-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <DollarSign
+                      className="w-4 h-4 text-red-400"
+                      style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                    />
                     {t("debt")}
                   </div>
                 </th>
-                <th className="px-6 py-5 font-semibold text-gray-300 text-center">{t("actions")}</th>
+                <th className="px-6 py-5 font-semibold text-gray-300 text-center">
+                  {t("actions")}
+                </th>
               </tr>
             </thead>
             <tbody>
               {filtered.length === 0 ? (
                 <tr>
-                  <td
-                    className="text-center px-6 py-12"
-                    colSpan={7}
-                  >
+                  <td className="text-center px-6 py-12" colSpan={7}>
                     <div className="flex flex-col items-center gap-4">
                       <Truck className="w-12 h-12 text-gray-600" />
                       <span className="text-gray-400 font-medium text-lg">
@@ -261,8 +308,10 @@ const Suppliers = () => {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="w-2 h-2 bg-orange-400 rounded-full"
-                             style={{ boxShadow: '0 0 8px #f97316' }}></div>
+                        <div
+                          className="w-2 h-2 bg-orange-400 rounded-full"
+                          style={{ boxShadow: "0 0 8px #f97316" }}
+                        ></div>
                         <span className="font-medium text-white group-hover:text-orange-400 transition-colors">
                           {s.name}
                         </span>
@@ -274,19 +323,13 @@ const Suppliers = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-emerald-400">
-                        {s.phones}
-                      </span>
+                      <span className="text-emerald-400">{s.phones}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-purple-400">
-                        {s.email}
-                      </span>
+                      <span className="text-purple-400">{s.email}</span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-indigo-400">
-                        {s.address}
-                      </span>
+                      <span className="text-indigo-400">{s.address}</span>
                     </td>
                     <td className="px-6 py-4">
                       <span className="text-red-400 font-semibold">
@@ -326,13 +369,17 @@ const Suppliers = () => {
               <div
                 key={s.id}
                 className="bg-gray-900/90 backdrop-blur-xl border border-gray-700/50 rounded-3xl p-6 space-y-4"
-                style={{ boxShadow: '0 0 20px rgba(0, 0, 0, 0.3)' }}
+                style={{ boxShadow: "0 0 20px rgba(0, 0, 0, 0.3)" }}
               >
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
-                    <div className="w-2 h-2 bg-orange-400 rounded-full"
-                         style={{ boxShadow: '0 0 8px #f97316' }}></div>
-                    <span className="text-lg font-semibold text-white">{s.name}</span>
+                    <div
+                      className="w-2 h-2 bg-orange-400 rounded-full"
+                      style={{ boxShadow: "0 0 8px #f97316" }}
+                    ></div>
+                    <span className="text-lg font-semibold text-white">
+                      {s.name}
+                    </span>
                   </div>
                   <ActionMenu
                     onEdit={() => {
@@ -345,39 +392,51 @@ const Suppliers = () => {
                     }}
                   />
                 </div>
-                
+
                 <div className="grid grid-cols-1 gap-3 text-sm">
                   <div className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-cyan-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
+                    <User
+                      className="w-4 h-4 text-cyan-400"
+                      style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
+                    />
                     <span className="text-gray-400">Контакт:</span>
-                    <span className="text-cyan-400 font-medium">{s.contact_person}</span>
+                    <span className="text-cyan-400 font-medium">
+                      {s.contact_person}
+                    </span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <Phone className="w-4 h-4 text-emerald-400" 
-                           style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                    <Phone
+                      className="w-4 h-4 text-emerald-400"
+                      style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
+                    />
                     <span className="text-gray-400">Телефон:</span>
                     <span className="text-emerald-400">{s.phones}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <Mail className="w-4 h-4 text-purple-400" 
-                          style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
+                    <Mail
+                      className="w-4 h-4 text-purple-400"
+                      style={{ filter: "drop-shadow(0 0 8px #a855f7)" }}
+                    />
                     <span className="text-gray-400">Email:</span>
                     <span className="text-purple-400">{s.email}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <MapPin className="w-4 h-4 text-indigo-400" 
-                            style={{ filter: 'drop-shadow(0 0 8px #6366f1)' }} />
+                    <MapPin
+                      className="w-4 h-4 text-indigo-400"
+                      style={{ filter: "drop-shadow(0 0 8px #6366f1)" }}
+                    />
                     <span className="text-gray-400">Адрес:</span>
                     <span className="text-indigo-400">{s.address}</span>
                   </div>
-                  
+
                   <div className="flex items-center gap-2">
-                    <DollarSign className="w-4 h-4 text-red-400" 
-                               style={{ filter: 'drop-shadow(0 0 8px #ef4444)' }} />
+                    <DollarSign
+                      className="w-4 h-4 text-red-400"
+                      style={{ filter: "drop-shadow(0 0 8px #ef4444)" }}
+                    />
                     <span className="text-gray-400">Задолженность:</span>
                     <span className="text-red-400 font-semibold">
                       {Number(s.debt).toLocaleString()} {t("soum")}
@@ -392,13 +451,7 @@ const Suppliers = () => {
 
       {/* Pagination */}
       <div className="flex justify-center">
-        <Pagination
-          page={meta.page}
-          pageSize={meta.pageSize}
-          total={meta.total}
-          totalPages={meta.totalPages}
-          onPageChange={setPage}
-        />
+        <Pagination meta={meta} onPageChange={handlePageChange} />
       </div>
 
       {/* Модальные окна */}

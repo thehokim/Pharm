@@ -7,6 +7,7 @@ import ToggleRow from "./ToggleRow";
 import AutoLogoutSelector from "./AutoLogoutSelector";
 import SaveButton from "./SaveButton";
 import { useTranslation } from "react-i18next";
+import LogoutButton from "./LogoutButton";
 
 export const languages = [
   { code: "ru", label: "Русский", flag: "🇷🇺" },
@@ -106,18 +107,7 @@ const Settings = () => {
                 {t("title")}
               </span>
             </div>
-            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
-              <button
-                onClick={handleLogout}
-                className="relative flex items-center justify-center gap-2 px-4 py-3 rounded-2xl font-bold bg-red-500/20 border-2 border-red-400/50 text-red-400 hover:bg-red-500/30 hover:border-red-400 hover:text-red-300 hover:scale-105 transition-all duration-200 group "
-                style={{ boxShadow: '0 0 20px rgba(239, 68, 68, 0.3)' }}
-              >
-                {/* Анимированный фон */}
-                <div className="absolute inset-0 bg-gradient-to-r from-red-400/10 to-red-500/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-                
-                <LogOut className="relative w-5 h-5" style={{ filter: 'drop-shadow(0 0 8px currentColor)' }} />
-              </button>
-            </div>
+            <LogoutButton handleLogout={handleLogout} />
           </div>
 
           {/* Controls - оригинальная структура */}

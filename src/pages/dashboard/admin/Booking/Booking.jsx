@@ -65,7 +65,13 @@ const PAGE_SIZE = 10;
 const Booking = () => {
   const { t } = useTranslation("booking");
   const [reservations, setReservations] = useState([]);
-  const [meta, setMeta] = useState({ page: 1, totalPages: 1 });
+  // ИСПРАВЛЕНО: добавлены все необходимые поля в meta
+  const [meta, setMeta] = useState({ 
+    page: 1, 
+    totalPages: 1, 
+    total: 0, 
+    pageSize: PAGE_SIZE 
+  });
   const [searchTerm, setSearchTerm] = useState("");
   const [isAddOpen, setIsAddOpen] = useState(false);
   const [activeMenuId, setActiveMenuId] = useState(null);
@@ -86,6 +92,11 @@ const Booking = () => {
     // eslint-disable-next-line
   }, [page]);
 
+  // ДОБАВЛЕНО: обработчик смены страницы
+  const handlePageChange = (newPage) => {
+    setPage(newPage);
+  };
+
   const fetchReservations = (page = 1, pageSize = PAGE_SIZE) => {
     fetch(`${BASE_URL}/api/reservations?page=${page}&pageSize=${pageSize}`, {
       headers: {
@@ -95,6 +106,7 @@ const Booking = () => {
       .then((res) => res.json())
       .then((result) => {
         setReservations(result.data || []);
+        // ИСПРАВЛЕНО: правильно устанавливаем meta
         setMeta({
           page: result.meta?.page || 1,
           pageSize: result.meta?.pageSize || PAGE_SIZE,
@@ -361,16 +373,11 @@ const Booking = () => {
         </div>
       </div>
 
-      {/* Pagination - нужно будет стилизовать отдельно */}
-      <div className="flex justify-center">
-        <Pagination
-          page={meta.page}
-          pageSize={meta.pageSize}
-          total={meta.total}
-          totalPages={meta.totalPages}
-          onPageChange={setPage}
-        />
-      </div>
+      {/* ИСПРАВЛЕНО: Pagination с новым API */}
+      <Pagination 
+        meta={meta}
+        onPageChange={handlePageChange}
+      />
 
       {/* Модальные окна */}
       <AddReservationModal

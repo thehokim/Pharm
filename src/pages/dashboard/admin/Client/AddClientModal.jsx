@@ -153,11 +153,11 @@ const AddClientModal = ({ isOpen, onClose, onSubmit }) => {
               <label className="block text-gray-400 text-sm font-medium mb-3">
                 <Phone className="inline w-4 h-4 mr-2 text-purple-400" 
                        style={{ filter: 'drop-shadow(0 0 8px #a855f7)' }} />
-                {t("addClientModal.phone")}
+                {t("addClientModal.phones")}
               </label>
               <input
                 name="phones"
-                placeholder={t("addClientModal.phone")}
+                placeholder={t("addClientModal.phones")}
                 value={form.phones}
                 onChange={handleChange}
                 className="w-full bg-gray-800/50 border border-gray-600/50 text-white placeholder-gray-500 px-4 py-4 rounded-2xl focus:border-purple-400 focus:outline-none transition-all duration-300"

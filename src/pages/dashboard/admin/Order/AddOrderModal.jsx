@@ -124,8 +124,9 @@ const AddOrderModal = ({ isOpen, onClose, onSubmit }) => {
     e.preventDefault();
     setIsLoading(true);
     try {
+      const client = clients.find((c) => c.id === form.client_id);
       const payload = {
-        client_id: Number(form.client_id),
+        client_full_name: client ? client.name : "",
         status: form.status,
         payment_status: form.payment_status,
         payment_type: form.payment_type,
