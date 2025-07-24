@@ -17,6 +17,7 @@ import {
   Pill,
   Stethoscope,
   Heart,
+  HeartPlus,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import AddManagerModal from "./AddManagerModal";
@@ -154,7 +155,7 @@ const Home = () => {
         .filter((c) => c.debt > 0)
         .map((c) => ({
           name: c.name,
-          days: Math.floor(Math.random() * 20) + 5,
+          days: c.created_at ? Math.floor((new Date() - new Date(c.created_at)) / (1000 * 60 * 60 * 24)) : 0,
           sum: c.debt.toLocaleString(),
         }));
       setDebts(debtsFiltered);
@@ -297,8 +298,7 @@ const Home = () => {
               <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="text-emerald-400 w-6 h-6" style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
-                  <Heart className="text-emerald-400 w-5 h-5" style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
+                  <HeartPlus className="text-emerald-400 w-6 h-6" style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
                 </div>
               </div>
             </div>

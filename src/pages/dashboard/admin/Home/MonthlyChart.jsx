@@ -1,13 +1,14 @@
 import React, { useMemo } from "react";
 import ReactECharts from 'echarts-for-react';
-import { Activity, TrendingUp, BarChart3 } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { Line } from "recharts";
 
 // Неоновые цвета для баров в фармацевтическом стиле
 const getBarColor = (value, min, max) => {
-  if (value === max) return "#10b981"; // Ярко-зеленый для максимума (здоровье)
-  if (value === min) return "#ef4444";  // Красный для минимума (опасность)
-  return "#06b6d4"; // Циан для обычных значений (медицинский синий)
+  if (value === max) return "#10b981";
+  if (value === min) return "#ef4444";
+  return "#06b6d4";
 };
 
 const MonthlyChart = ({ data }) => {
@@ -134,10 +135,8 @@ const MonthlyChart = ({ data }) => {
             <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
             <div className="relative bg-gray-800 border-2 border-emerald-400 p-3 rounded-2xl">
               <div className="flex items-center gap-2">
-                <Activity className="text-emerald-400 w-5 h-5" 
+                <TrendingUp className="text-emerald-400 w-5 h-5" 
                          style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
-                <BarChart3 className="text-cyan-400 w-5 h-5" 
-                           style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
               </div>
             </div>
           </div>

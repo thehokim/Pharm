@@ -297,27 +297,23 @@ const Products = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-900 to-black p-6 space-y-6">
       {/* Декоративные неоновые элементы */}
-      <div className="absolute top-0 right-0 w-96 h-96 bg-emerald-400/5 rounded-full blur-3xl"></div>
+      <div className="absolute top-0 right-0 w-96 h-96 bg-cyan-400/5 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 left-0 w-64 h-64 bg-cyan-400/5 rounded-full blur-3xl"></div>
 
       {/* Header */}
       <div
-        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-emerald-400/30 rounded-3xl p-6 overflow-hidden"
+        className="relative bg-gray-900/90 backdrop-blur-xl border-2 border-cyan-400/30 rounded-3xl p-6 overflow-hidden"
         style={{ boxShadow: "0 0 50px rgba(16, 185, 129, 0.2)" }}
       >
         {/* Неоновое свечение заголовка */}
-        <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/10 via-transparent to-cyan-400/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/10 via-transparent to-cyan-400/10"></div>
 
         <div className="relative flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4">
             <div className="relative">
-              <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
-              <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
+              <div className="absolute inset-0 bg-cyan-400 rounded-2xl blur-md opacity-50"></div>
+              <div className="relative bg-gray-800 border-2 border-cyan-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <Package
-                    className="text-emerald-400 w-7 h-7"
-                    style={{ filter: "drop-shadow(0 0 10px #10b981)" }}
-                  />
                   <Pill
                     className="text-cyan-400 w-5 h-5"
                     style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
@@ -332,7 +328,7 @@ const Products = () => {
               >
                 {t("products")}
               </h1>
-              <p className="text-emerald-400 text-sm mt-1">
+              <p className="text-cyan-400 text-sm mt-1">
                 Управление лекарственными препаратами
               </p>
             </div>
@@ -342,14 +338,14 @@ const Products = () => {
             {/* Кнопка добавления */}
             <button
               onClick={() => setIsAddOpen(true)}
-              className="relative bg-gradient-to-r from-emerald-500 to-cyan-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
+              className="relative bg-gradient-to-r from-cyan-500 to-cyan-500 p-4 rounded-2xl transition-all duration-300 hover:scale-110 hover:shadow-lg group overflow-hidden"
               style={{
                 boxShadow: "0 0 20px rgba(16, 185, 129, 0.3)",
                 filter: "drop-shadow(0 0 15px rgba(16, 185, 129, 0.5))",
               }}
               title={t("add_product")}
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-emerald-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-cyan-400/20 to-cyan-400/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <Plus className="w-6 h-6 text-white relative z-10" />
             </button>
 
@@ -390,7 +386,7 @@ const Products = () => {
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
                     <Package
-                      className="w-4 h-4 text-emerald-400"
+                      className="w-4 h-4 text-cyan-400"
                       style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
                     />
                     {t("name")}
@@ -411,7 +407,7 @@ const Products = () => {
                 <th className="px-6 py-5 font-semibold text-gray-300">
                   <div className="flex items-center gap-2">
                     <DollarSign
-                      className="w-4 h-4 text-emerald-400"
+                      className="w-4 h-4 text-cyan-400"
                       style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
                     />
                     {t("selling_price")}
@@ -470,10 +466,10 @@ const Products = () => {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div
-                          className="w-2 h-2 bg-emerald-400 rounded-full"
+                          className="w-2 h-2 bg-cyan-400 rounded-full"
                           style={{ boxShadow: "0 0 8px #10b981" }}
                         ></div>
-                        <span className="font-medium text-white group-hover:text-emerald-400 transition-colors">
+                        <span className="font-medium text-white group-hover:text-cyan-400 transition-colors">
                           {product.name}
                         </span>
                       </div>
@@ -492,7 +488,7 @@ const Products = () => {
                       </span>
                     </td>
                     <td className="px-6 py-4">
-                      <span className="text-emerald-400 font-semibold">
+                      <span className="text-cyan-400 font-semibold">
                         {product.selling_price?.toLocaleString()}
                       </span>
                     </td>
@@ -551,7 +547,7 @@ const Products = () => {
                             setEditingProduct(product);
                             setIsEditOpen(true);
                           }}
-                          className="bg-gray-800 border border-emerald-400/30 p-2 rounded-xl text-emerald-400 hover:border-emerald-400 hover:scale-110 transition-all duration-300"
+                          className="bg-gray-800 border border-cyan-400/30 p-2 rounded-xl text-cyan-400 hover:border-cyan-400 hover:scale-110 transition-all duration-300"
                           style={{
                             boxShadow: "0 0 10px rgba(16, 185, 129, 0.2)",
                           }}
@@ -608,7 +604,7 @@ const Products = () => {
                 <div className="flex justify-between items-start">
                   <div className="flex items-center gap-3">
                     <div
-                      className="w-2 h-2 bg-emerald-400 rounded-full"
+                      className="w-2 h-2 bg-cyan-400 rounded-full"
                       style={{ boxShadow: "0 0 8px #10b981" }}
                     ></div>
                     <span className="text-lg font-semibold text-white">
@@ -621,7 +617,7 @@ const Products = () => {
                         setEditingProduct(product);
                         setIsEditOpen(true);
                       }}
-                      className="bg-gray-800 border border-emerald-400/30 p-2 rounded-xl text-emerald-400"
+                      className="bg-gray-800 border border-cyan-400/30 p-2 rounded-xl text-cyan-400"
                     >
                       <Edit3 className="w-4 h-4" />
                     </button>
@@ -658,7 +654,7 @@ const Products = () => {
                   </div>
                   <div>
                     <span className="text-gray-400">Продажа:</span>
-                    <span className="text-emerald-400 font-semibold block">
+                    <span className="text-cyan-400 font-semibold block">
                       {product.selling_price?.toLocaleString()}
                     </span>
                   </div>

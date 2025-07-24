@@ -8,6 +8,7 @@ import {
   Mail,
   MapPin,
   DollarSign,
+  TruckElectric,
 } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import ActionMenu from "../../../../components/layout/ActionMenu";
@@ -156,13 +157,9 @@ const Suppliers = () => {
               <div className="absolute inset-0 bg-orange-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-orange-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <Truck
+                  <TruckElectric
                     className="text-orange-400 w-7 h-7"
                     style={{ filter: "drop-shadow(0 0 10px #f97316)" }}
-                  />
-                  <Plus
-                    className="text-amber-400 w-5 h-5"
-                    style={{ filter: "drop-shadow(0 0 8px #f59e0b)" }}
                   />
                 </div>
               </div>

@@ -26,11 +26,9 @@ const DebtList = ({ debts }) => {
         {/* Заголовок с предупреждающими иконками */}
         <div className="flex items-center gap-4 mb-6">
           <div className="relative">
-            <div className="absolute inset-0 bg-red-400 rounded-2xl blur-md opacity-50"></div>
-            <div className="relative bg-gray-800 border-2 border-red-400 p-3 rounded-2xl">
+            <div className="absolute inset-0 bg-amber-400 rounded-2xl blur-md opacity-50"></div>
+            <div className="relative bg-gray-800 border-2 border-amber-400 p-3 rounded-2xl">
               <div className="flex items-center gap-2">
-                <AlertTriangle className="text-red-400 w-5 h-5" 
-                              style={{ filter: 'drop-shadow(0 0 10px #ef4444)' }} />
                 <CreditCard className="text-amber-400 w-5 h-5" 
                             style={{ filter: 'drop-shadow(0 0 8px #f59e0b)' }} />
               </div>
@@ -41,7 +39,7 @@ const DebtList = ({ debts }) => {
                   style={{ textShadow: '0 0 15px #ef444450' }}>
               {t("debtList.title")}
             </span>
-            <p className="text-red-400 text-sm mt-1">
+            <p className="text-amber-400 text-sm mt-1">
               {t("critical_debts")}
             </p>
           </div>
@@ -60,7 +58,7 @@ const DebtList = ({ debts }) => {
                    }}>
                 
                 {/* Индикатор критичности */}
-                <div className="absolute left-0 top-0 bottom-0 w-1 rounded-l-2xl transition-all duration-300 group-hover:w-2"
+                <div className="absolute left-0 top-0 bottom-0 w-2 rounded-l-2xl transition-all duration-300 group-hover:w-3"
                      style={{ 
                        backgroundColor: severity.color,
                        boxShadow: severity.glow

@@ -153,10 +153,6 @@ const Clients = () => {
                     className="text-cyan-400 w-7 h-7"
                     style={{ filter: "drop-shadow(0 0 10px #06b6d4)" }}
                   />
-                  <UserPlus2
-                    className="text-emerald-400 w-5 h-5"
-                    style={{ filter: "drop-shadow(0 0 8px #10b981)" }}
-                  />
                 </div>
               </div>
             </div>

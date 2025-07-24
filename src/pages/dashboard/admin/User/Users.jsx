@@ -320,10 +320,6 @@ const Users = () => {
                     className="text-emerald-400 w-7 h-7"
                     style={{ filter: "drop-shadow(0 0 10px #10b981)" }}
                   />
-                  <Shield
-                    className="text-cyan-400 w-5 h-5"
-                    style={{ filter: "drop-shadow(0 0 8px #06b6d4)" }}
-                  />
                 </div>
               </div>
             </div>

@@ -95,9 +95,7 @@ const Analytics = () => {
               <div className="absolute inset-0 bg-emerald-400 rounded-2xl blur-md opacity-50"></div>
               <div className="relative bg-gray-800 border-2 border-emerald-400 p-4 rounded-2xl">
                 <div className="flex items-center gap-2">
-                  <BarChart3 className="text-emerald-400 w-7 h-7" 
-                             style={{ filter: 'drop-shadow(0 0 10px #10b981)' }} />
-                  <Activity className="text-cyan-400 w-5 h-5" 
+                  <Activity className="text-emerald-400 w-5 h-5" 
                             style={{ filter: 'drop-shadow(0 0 8px #06b6d4)' }} />
                 </div>
               </div>

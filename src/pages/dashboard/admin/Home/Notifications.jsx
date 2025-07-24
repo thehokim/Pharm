@@ -142,8 +142,6 @@ const Notifications = () => {
               <div className="flex items-center gap-2">
                 <Bell className="text-cyan-400 w-7 h-7"
                      style={{ filter: 'drop-shadow(0 0 10px #06b6d4)' }} />
-                <MessageSquare className="text-emerald-400 w-5 h-5"
-                               style={{ filter: 'drop-shadow(0 0 8px #10b981)' }} />
               </div>
             </div>
           </div>
